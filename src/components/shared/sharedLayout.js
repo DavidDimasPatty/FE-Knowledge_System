@@ -13,11 +13,7 @@ const SharedLayout = () => {
         <div className="w-full h-screen flex flex-col">
             <TopBar setDark={setDark} dark={dark} login={login} setLogin={setLogin} />
             <div
-                className={
-                    "wrapperHomeContent flex " +
-                    (dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black")
-                }
-                style={{ height: "calc(100vh - 60px)" }}
+                className={`flex flex-1 ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
             >
                 <SideBarLeft dark={dark} login={login} setLogin={setLogin} />
 
