@@ -33,18 +33,19 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
           </button>
 
 
-          <input
+
+          <textarea
+            style={{ resize: "both", overflow: "auto" }}
             className={
-              "flex-1 px-4 py-3 border rounded-full outline-none transition-all " +
+              "custom-scroll flex-1 px-4 py-3 border rounded-lg outline-none transition-all overflow-auto resize-y " +
               (dark
                 ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
                 : "bg-white border-gray-300 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400")
             }
-            value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             placeholder="Ketik pesan atau gunakan voice..."
-          />
+          >{input}</textarea>
 
           <button
             onClick={sendMessage}
