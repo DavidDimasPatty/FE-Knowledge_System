@@ -7,7 +7,6 @@ import TopBar from "./topBar";
 const SharedLayout = () => {
     const [dark, setDark] = useState(false);
     const [login, setLogin] = useState(false);
-    const bottomRef = useRef(null);
 
     return (
 
