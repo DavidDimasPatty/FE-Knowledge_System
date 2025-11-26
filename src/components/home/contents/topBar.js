@@ -5,8 +5,8 @@ const TopBar = ({ dark, setDark, login, setLogin }) => {
         <div
             className={
                 dark
-                    ? "w-full px-4 py-3 border-b border-gray-700 bg-gray-900 flex items-center justify-between"
-                    : "w-full px-4 py-3 border-b border-gray-300 bg-white flex items-center justify-between"
+                    ? "w-full px-4 py-3 border-b  text-white border-gray-700 bg-gray-900 flex items-center justify-between"
+                    : "w-full px-4 py-3 border-b  text-gray border-gray-300 bg-white flex items-center justify-between"
             }
         >
             <h2 className="text-lg font-semibold">
@@ -46,24 +46,21 @@ const TopBar = ({ dark, setDark, login, setLogin }) => {
                         }
                     ></div>
                 </button>
-                {login ?
+
+            </div>
+            {login ?
+                <div className="flex items-end space-x-3">
+
                     <button
                         onClick={() => setLogin(!login)}
                         className={
                             "w-16 h-8  rounded-full p-1 transition-all duration-300 relative " +
                             (dark ? "bg-gray-700" : "bg-blue-400")
                         }
-                    ><b>Log In</b></button> :
-                    (
-                        <div
-                            onClick={() => setLogin(!login)}
-                            className={
-                                "w-10 h-10 rounded-full flex items-center justify-center border border-gray-300 " +
-                                (dark ? "bg-gray-700 text-white" : "bg-blue-400 text-black")
-                            }>D</div>
-                    )
-                }
-            </div>
+                    ><b>Log In</b></button>
+
+                </div> : null
+            }
         </div>
     );
 };

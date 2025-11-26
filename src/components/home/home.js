@@ -44,7 +44,7 @@ const Home = () => {
         }
         style={{ height: "calc(100vh - 60px)" }}
       >
-        <SideBarLeftHome dark={dark} />
+        <SideBarLeftHome dark={dark} login={login} setLogin={setLogin} />
 
         <div className="flex-1 flex flex-col">
           <ChatAreaHome
