@@ -1,7 +1,19 @@
 import React from "react";
 import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors, FiDownload, FiUser } from "react-icons/fi";
+import { useLocation, useNavigate } from "react-router-dom";
+const SideBarLeft = ({ dark, login, setLogin }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const bgColor = (bg) => {
+        return location.pathname === bg
+            ? "bg-blue-200  hover:bg-blue-300 "
+            : location.pathname === bg
+                ? "bg-blue-200  hover:bg-blue-300 "
+                : location.pathname === bg
+                    ? "bg-blue-200  hover:bg-blue-300 "
+                    : "hover:bg-gray-300 ";
+    }
 
-const SideBarLeftHome = ({ dark, login, setLogin }) => {
     return (
         <div
             className={
@@ -15,22 +27,26 @@ const SideBarLeftHome = ({ dark, login, setLogin }) => {
 
             <div>
 
-                <div className="flex flex-col gap-4 mb-6">
-                    <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
+                <div className="flex flex-col gap-2">
+                    <button
+                        className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/")}
+                        onClick={() => navigate("/")}
+                    >
                         <FiHome /> <span>Start Chat</span>
                     </button>
 
-
-                    <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
+                    <button
+                        className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/dokumen")}
+                        onClick={() => navigate("/dokumen")}
+                    >
                         <FiDownload /> <span>List Dokumen</span>
                     </button>
 
-                    <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
+                    <button
+                        className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/userManagement")}
+                        onClick={() => navigate("/userManagement")}
+                    >
                         <FiUser /> <span>User Management</span>
-                    </button>
-
-                    <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
-                        <FiSettings /> <span>Settings</span>
                     </button>
                 </div>
 
@@ -97,4 +113,4 @@ const SidebarItem = ({ dark, icon, title, time }) => {
     );
 };
 
-export default SideBarLeftHome;
+export default SideBarLeft;

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import './style/home.css';
-import SideBarLeftHome from "./contents/sideBarLeftHome";
+import SideBarLeftHome from "../shared/sideBarLeft";
 import ChatAreaHome from "./contents/chatAreaHome";
 import InputAreaHome from "./contents/inputAreaHome";
-import SideBarRightHome from "./contents/sideBarRightHome";
-import TopBar from "./contents/topBar";
-const Home = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
+import SideBarRightHome from "../shared/sideBarRight";
+import TopBar from "../shared/topBar";
+const Home = ({dark}) => {
+   const [messages, setMessages] = useState([]);
+   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [dark, setDark] = useState(false);
-  const [login, setLogin] = useState(false);
   const bottomRef = useRef(null);
   const [isFirst, setIsFirst] = useState(true);
 
@@ -37,16 +35,6 @@ const Home = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <TopBar setDark={setDark} dark={dark} login={login} setLogin={setLogin} />
-      <div
-        className={
-          "wrapperHomeContent flex " +
-          (dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black")
-        }
-        style={{ height: "calc(100vh - 60px)" }}
-      >
-        <SideBarLeftHome dark={dark} login={login} setLogin={setLogin} />
 
         <div className="flex-1 flex flex-col  wrapperChat">
           <ChatAreaHome
@@ -69,9 +57,6 @@ const Home = () => {
           />
         </div>
 
-        <SideBarRightHome dark={dark} />
-      </div>
-    </div>
   );
 }
 
