@@ -1,5 +1,5 @@
 import React from "react";
-import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors } from "react-icons/fi";
+import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors, FiDownload, FiUser } from "react-icons/fi";
 
 const SideBarLeftHome = ({ dark, login, setLogin }) => {
     return (
@@ -8,7 +8,7 @@ const SideBarLeftHome = ({ dark, login, setLogin }) => {
                 (dark
                     ? "bg-gray-800 text-white border-gray-700"
                     : "bg-white text-gray-900 border-gray-200") +
-                " w-64 border-r p-4 flex flex-col justify-between"
+                " w-80 border-r p-4 flex flex-col justify-between"
             }
             style={{ height: "calc(100vh - 60px)" }}
         >
@@ -18,6 +18,15 @@ const SideBarLeftHome = ({ dark, login, setLogin }) => {
                 <div className="flex flex-col gap-4 mb-6">
                     <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
                         <FiHome /> <span>Start Chat</span>
+                    </button>
+
+
+                    <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
+                        <FiDownload /> <span>List Dokumen</span>
+                    </button>
+
+                    <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
+                        <FiUser /> <span>User Management</span>
                     </button>
 
                     <button className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
@@ -45,7 +54,7 @@ const SideBarLeftHome = ({ dark, login, setLogin }) => {
                     </div>
 
                     <div className="ml-1 space-y-2">
-            <SidebarItem dark={dark} icon={<FiCode />} title="Programming" time="01:30" />
+                        <SidebarItem dark={dark} icon={<FiCode />} title="Programming" time="01:30" />
                         <SidebarItem dark={dark} icon={<FiBook />} title="Education" time="12:45" />
                         <SidebarItem dark={dark} icon={<FiScissors />} title="Science" time="11:30" />
                     </div>

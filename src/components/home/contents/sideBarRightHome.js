@@ -2,7 +2,7 @@ import React from "react";
 import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors, FiArchive } from "react-icons/fi";
 
 const SideBarRightHome = ({ dark }) => {
-    return (<div className={dark ? "w-56 bg-gray-800 p-4" : "w-56 bg-white p-4 border-r"}>
+    return (<div className={dark ? "w-80 bg-gray-800 p-4" : "w-80 bg-white p-4 border-r"}>
 
         <div className="mt-3">
             <div className="flex items-center gap-2 mb-2">

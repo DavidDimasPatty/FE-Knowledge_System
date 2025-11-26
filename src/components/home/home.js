@@ -12,6 +12,7 @@ const Home = () => {
   const [dark, setDark] = useState(false);
   const [login, setLogin] = useState(false);
   const bottomRef = useRef(null);
+  const [isFirst, setIsFirst] = useState(true);
 
   useEffect(() => {
     if (bottomRef.current) {
@@ -21,7 +22,8 @@ const Home = () => {
 
   const sendMessage = () => {
     if (!input.trim()) return;
-
+    
+    !isFirst?setIsFirst(true):setIsFirst(false);
     const userMsg = { role: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
@@ -46,12 +48,16 @@ const Home = () => {
       >
         <SideBarLeftHome dark={dark} login={login} setLogin={setLogin} />
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col  wrapperChat">
           <ChatAreaHome
             messages={messages}
             isLoading={isLoading}
             bottomRef={bottomRef}
             dark={dark}
+            isFirst={isFirst}
+            input={input}
+            setInput={setInput}
+            sendMessage={sendMessage}
           />
 
           <InputAreaHome
@@ -59,6 +65,7 @@ const Home = () => {
             setInput={setInput}
             sendMessage={sendMessage}
             dark={dark}
+            isFirst={isFirst}
           />
         </div>
 

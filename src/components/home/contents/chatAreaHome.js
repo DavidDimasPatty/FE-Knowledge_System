@@ -1,36 +1,98 @@
 import React from "react";
-const ChatAreaHome = ({messages,isLoading,bottomRef,dark}) => 
-  {
-    return (        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((msg, idx) => (
+import { FiSend, FiMic, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors } from "react-icons/fi";
+
+const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, sendMessage, setInput }) => {
+  return (isFirst ?
+    <div className={(dark
+      ? " text-white"
+      : " text-gray-900") + " flex flex-col items-center justify-center h-full"}>
+
+      <div className="flex items-center justify-center text-3xl">
+        Pertanyaan Apa Hari Ini?
+      </div>
+
+      <div className="flex items-center justify-center w-full mt-4">
+        <div
+          className={
+            (dark
+              ? "bg-gray-900 border-gray-700"
+              : "bg-gray-100 border-gray-300") +
+            " p-2  flex items-center gap-3 justify-center rounded-xl w-full max-w-[600px]"
+          }
+        >
+
+          <button
+            className={
+              "p-3 rounded-full shadow flex items-center justify-center transition-all " +
+              (dark
+                ? "bg-gray-800 hover:bg-gray-700 text-white"
+                : "bg-white hover:bg-gray-200 text-gray-700")
+            }
+          >
+            <FiMic size={20} />
+          </button>
+
+
+          <input
+            className={
+              "flex-1 px-4 py-3 border rounded-full outline-none transition-all " +
+              (dark
+                ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                : "bg-white border-gray-300 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400")
+            }
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            placeholder="Ketik pesan atau gunakan voice..."
+          />
+
+          <button
+            onClick={sendMessage}
+            className="p-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all shadow"
+          >
+            <FiSend size={20} />
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    :
+
+    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {
+        messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={msg.role === "user" ? "text-right" : "text-left"}
+          >
             <div
-              key={idx}
-              className={msg.role === "user" ? "text-right" : "text-left"}
-            >
-              <div
-                className={
-                  msg.role === "user"
-                    ? "inline-block px-4 py-2 bg-blue-600 text-white rounded-lg"
-                    : dark
+              className={
+                msg.role === "user"
+                  ? "inline-block px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  : dark
                     ? "inline-block px-4 py-2 bg-gray-700 text-white rounded-lg"
                     : "inline-block px-4 py-2 bg-gray-300 text-black rounded-lg"
-                }
-              >
-                {msg.text}
-              </div>
+              }
+            >
+              {msg.text}
             </div>
-          ))}
+          </div>
+        ))
+      }
 
-          {isLoading && (
-            <div className="text-left">
-              <div className={dark ? "px-4 py-2 bg-gray-700 rounded-lg inline-block" : "px-4 py-2 bg-gray-300 rounded-lg inline-block"}>
-                <span className="animate-pulse">•••</span>
-              </div>
-            </div>
-          )}
+      {isLoading && (
+        <div className="text-left">
+          <div className={dark ? "px-4 py-2 bg-gray-700 rounded-lg inline-block" : "px-4 py-2 bg-gray-300 rounded-lg inline-block"}>
+            <span className="animate-pulse">•••</span>
+          </div>
+        </div>
+      )}
 
-          <div ref={bottomRef}></div>
-        </div>)
+      <div ref={bottomRef}></div>
+    </div>
+
+  )
 }
 
 
