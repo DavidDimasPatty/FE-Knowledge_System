@@ -37,10 +37,22 @@ const SideBarRight = ({ dark }) => {
                 <SidebarItem dark={dark} icon={<BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} />} title="Science" desc="Test Description 123" />
             </div>
 
-            <div className="flex items-center gap-2 mb-2  ml-2  border-b">
+            <div className="flex items-center gap-2 mb-2  ml-2  border-b ">
                 <span className="font-semibold">Recents</span>
             </div>
-            <div className="ml-1 space-y-2">
+            <div className="ml-1 space-y-2" style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}>
+                <SidebarItem dark={dark} icon={<FiStar />} title="Programming" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Education" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Science" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Programming" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Education" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Science" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Programming" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Education" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Science" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Programming" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Education" desc="Test Description 123" />
+                <SidebarItem dark={dark} icon={<FiStar />} title="Science" desc="Test Description 123" />
                 <SidebarItem dark={dark} icon={<FiStar />} title="Programming" desc="Test Description 123" />
                 <SidebarItem dark={dark} icon={<FiStar />} title="Education" desc="Test Description 123" />
                 <SidebarItem dark={dark} icon={<FiStar />} title="Science" desc="Test Description 123" />
