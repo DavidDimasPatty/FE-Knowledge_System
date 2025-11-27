@@ -1,7 +1,7 @@
 import React from "react";
 import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors, FiDownload, FiUser } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
-const SideBarLeft = ({ dark, login, setLogin }) => {
+const SideBarLeft = ({ dark, login, setLogin, setIsLoginOpen }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const bgColor = (bg) => {

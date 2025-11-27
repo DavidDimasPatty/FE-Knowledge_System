@@ -1,6 +1,7 @@
 import React from "react";
+import LoginModal from "./loginModal";
 
-const TopBar = ({ dark, setDark, login, setLogin }) => {
+const TopBar = ({ dark, setDark, login, setLogin, setIsLoginOpen, isLoginOpen, handleLogin }) => {
     return (
         <div
             className={
@@ -51,7 +52,7 @@ const TopBar = ({ dark, setDark, login, setLogin }) => {
                     <div className="flex items-end space-x-3">
 
                         <button
-                            onClick={() => setLogin(!login)}
+                            onClick={() => setIsLoginOpen(true)}
                             className={
                                 "w-16 h-8  rounded-full p-1 transition-all duration-300 relative " +
                                 (dark ? "bg-gray-700" : "bg-blue-400")
@@ -61,7 +62,13 @@ const TopBar = ({ dark, setDark, login, setLogin }) => {
                     </div> : null
                 }
             </div>
-
+            <LoginModal
+                isOpen={isLoginOpen}
+                onClose={() => setIsLoginOpen(false)}
+                onLogin={handleLogin}
+                setLogin={setLogin}
+                login={login}
+            />
         </div>
     );
 };
