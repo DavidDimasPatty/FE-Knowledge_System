@@ -1,36 +1,74 @@
 import React, { useState, useEffect, useRef } from "react";
 import './style/home.css';
 import ChatAreaHome from "./contents/chatAreaHome";
-import InputAreaHome from "./contents/inputAreaHome"; 
+import InputAreaHome from "./contents/inputAreaHome";
 import { useOutletContext } from "react-router-dom";
 const Home = () => {
   const { dark } = useOutletContext();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [socket, setSocket] = useState(null);
   const bottomRef = useRef(null);
   const [isFirst, setIsFirst] = useState(true);
-  console.log(dark);
+  // scroll ke bawah setiap ada message / loading
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isLoading]);
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
+  // Connect WebSocket sekali saat load
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:8080/ws?userId=123");
 
-    !isFirst ? setIsFirst(true) : setIsFirst(false);
+    ws.onopen = () => console.log("WS Connected");
+
+    ws.onmessage = (msg) => {
+      const botMessage = {
+        role: "bot",
+        text: msg.data,
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
+      setIsLoading(false);
+    };
+
+    ws.onerror = (err) => console.error("WS Error:", err);
+    ws.onclose = () => console.log("WS closed");
+
+    setSocket(ws);
+
+    return () => ws.close();
+  }, []);
+
+
+  // const sendMessage = () => {
+  //   if (!input.trim()) return;
+
+  //   if (isFirst) setIsFirst(false);
+  //   const userMsg = { role: "user", text: input };
+  //   setMessages((prev) => [...prev, userMsg]);
+  //   setInput("");
+  //   setIsLoading(true);
+
+  //   setTimeout(() => {
+  //     const botMsg = { role: "bot", text: "Ini adalah respon AI (dummy)." };
+  //     setMessages((prev) => [...prev, botMsg]);
+  //     setIsLoading(false);
+  //   }, 1500);
+  // };
+  const sendMessage = () => {
+    if (!input.trim() || !socket) return;
+    if (isFirst) setIsFirst(false);
+    setIsLoading(true);
     const userMsg = { role: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    setIsLoading(true);
 
-    setTimeout(() => {
-      const botMsg = { role: "bot", text: "Ini adalah respon AI (dummy)." };
-      setMessages((prev) => [...prev, botMsg]);
-      setIsLoading(false);
-    }, 1500);
+    // kirim ke Go melalui WS
+    socket.send(input);
+
+    setInput("");
   };
 
   return (

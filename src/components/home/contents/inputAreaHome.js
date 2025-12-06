@@ -27,7 +27,7 @@ const InputAreaHome = ({ dark, input, sendMessage, setInput, isFirst }) => {
 
 
         <textarea
-          style={{resize:"both",overflow:"auto"}}
+          style={{ resize: "both", overflow: "auto" }}
           className={
             "custom-scroll flex-1 px-4 py-3 border rounded-lg outline-none transition-all overflow-auto resize-y " +
             (dark
@@ -37,7 +37,8 @@ const InputAreaHome = ({ dark, input, sendMessage, setInput, isFirst }) => {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           placeholder="Ketik pesan atau gunakan voice..."
-        >{input}</textarea>
+          value={input}
+        />
 
         <button
           onClick={sendMessage}
