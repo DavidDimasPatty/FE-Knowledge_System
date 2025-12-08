@@ -1,29 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 import AddUser from "./addUser";
 import EditUser from "./editUser";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-const TableUser = () => {
-    const [users, setUsers] = useState([]);
+
+const TableUser = ({ users, loading }) => {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const MySwal = withReactContent(Swal);
 
-    useEffect(() => {
-        setUsers(dataDummy);
-    }, []);
-
     const openEditPopUp = (idUser) => {
         setSelectedUserId(idUser);
         setIsOpenEdit(true);
-    }
+    };
 
     const handleDelete = (userId) => {
-        const user = users.find(u => u.id === userId);
+        const user = users?.find(u => u.id === userId);
+
         MySwal.fire({
-            title: `Are you sure to delete ${user.name}?`,
+            title: `Are you sure to delete ${user?.Nama ?? "this user"}?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Hapus!",
@@ -32,7 +29,7 @@ const TableUser = () => {
             if (result.isConfirmed) {
                 MySwal.fire({
                     title: "Deleted!",
-                    text: `${user.name} has been deleted.`,
+                    text: `${user?.name ?? "User"} has been deleted.`,
                     icon: "success",
                     timer: 1500,
                     showConfirmButton: false,
@@ -41,47 +38,41 @@ const TableUser = () => {
         });
     };
 
-    const dataDummy = [
-        { id: 1, name: "User A", role: "Super Admin", createdAt: "2025-11-27" },
-        { id: 2, name: "User B", role: "Admin", createdAt: "2025-11-26" },
-        { id: 3, name: "User C", role: "Subordinate", createdAt: "2025-11-25" },
-    ];
-
     const columns = [
         {
             name: "ID",
-            selector: row => row.id,
+            selector: row => row.ID,
             sortable: true,
-            maxWidth: "80px"
+            maxWidth: "80px",
         },
         {
-            name: "Nama Dokumen",
-            selector: row => row.name,
-            sortable: true
+            name: "Nama User",
+            selector: row => row.Nama,
+            sortable: true,
         },
         {
             name: "Role",
-            selector: row => row.role,
-            sortable: true
+            selector: row => row.Roles,
+            sortable: true,
         },
         {
             name: "Tanggal Dibuat",
-            selector: row => row.createdAt,
+            selector: row => row.AddTime,
             sortable: true,
-            maxWidth: "150px"
+            maxWidth: "150px",
         },
         {
             name: "Aksi",
             cell: row => (
                 <div className="flex gap-2">
                     <button
-                        onClick={() => openEditPopUp(row.id)}
+                        onClick={() => openEditPopUp(row.ID)}
                         className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
                         Edit
                     </button>
                     <button
-                        onClick={() => handleDelete(row.id)}
+                        onClick={() => handleDelete(row.ID)}
                         className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                         Delete
@@ -92,36 +83,41 @@ const TableUser = () => {
             allowOverflow: true,
             button: true,
             width: "300px",
-        }
+        },
     ];
+
     return (
-        <div>
-            <div className="p-4">
-                <h1 className="text-2xl font-bold mb-4">List Users</h1>
-                <button
-                    onClick={() => setIsOpenAdd(true)}
-                    className="px-3 py-1 w-30 mb-3 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Add User
-                </button>
-                <DataTable
-                    columns={columns}
-                    data={users}
-                    pagination
-                    highlightOnHover
-                    selectableRows
-                />
-            </div>
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">List Users</h1>
+
+            <button
+                onClick={() => setIsOpenAdd(true)}
+                className="px-3 py-1 w-30 mb-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                Add User
+            </button>
+
+            <DataTable
+                columns={columns}
+                data={users ?? []}
+                progressPending={loading}
+                pagination
+                highlightOnHover
+                selectableRows
+            />
+
             <AddUser
                 isOpen={isOpenAdd}
-                onClose={() => setIsOpenAdd(!isOpenAdd)}
+                onClose={() => setIsOpenAdd(false)}
             />
+
             <EditUser
                 isOpen={isOpenEdit}
-                onClose={() => setIsOpenEdit(!isOpenEdit)}
+                onClose={() => setIsOpenEdit(false)}
                 idUser={selectedUserId}
             />
-        </div>);
-}
+        </div>
+    );
+};
 
 export default TableUser;

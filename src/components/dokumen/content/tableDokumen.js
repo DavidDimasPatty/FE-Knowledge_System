@@ -4,16 +4,12 @@ import AddDokumen from "./addDokumen";
 import EditDokumen from "./editDokumen";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-const TableDokumen = () => {
-    const [documents, setDocuments] = useState([]);
+const TableDokumen = ({ dokumen, loading }) => {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [selectedDokumenId, setSelectedDokumenId] = useState(null);
     const MySwal = withReactContent(Swal);
 
-    useEffect(() => {
-        setDocuments(dataDummy);
-    }, []);
 
     const openEditPopUp = (idUser) => {
         setSelectedDokumenId(idUser);
@@ -27,7 +23,7 @@ const TableDokumen = () => {
     ];
 
     const handleDelete = (userId) => {
-        const document = documents.find(u => u.id === userId);
+        const document = dokumen.find(u => u.id === userId);
         MySwal.fire({
             title: `Are you sure to delete ${document.name}?`,
             icon: "warning",
@@ -50,18 +46,18 @@ const TableDokumen = () => {
     const columns = [
         {
             name: "ID",
-            selector: row => row.id,
+            selector: row => row.ID,
             sortable: true,
             maxWidth: "80px"
         },
         {
             name: "Nama Dokumen",
-            selector: row => row.name,
+            selector: row => row.NamaDokumen,
             sortable: true
         },
         {
             name: "Tanggal Dibuat",
-            selector: row => row.createdAt,
+            selector: row => row.AddTime,
             sortable: true,
             maxWidth: "150px"
         },
@@ -70,19 +66,19 @@ const TableDokumen = () => {
             cell: row => (
                 <div className="flex gap-2">
                     <button
-                        onClick={() => alert(`Download ${row.name}`)}
+                        onClick={() => alert(`Download ${row.Nama}`)}
                         className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
                     >
                         Download
                     </button>
                     <button
-                        onClick={() => openEditPopUp(row.id)}
+                        onClick={() => openEditPopUp(row.ID)}
                         className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
                         Edit
                     </button>
                     <button
-                        onClick={() => handleDelete(row.id)}
+                        onClick={() => handleDelete(row.ID)}
                         className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                         Delete
@@ -106,7 +102,7 @@ const TableDokumen = () => {
             </button>
             <DataTable
                 columns={columns}
-                data={documents}
+                data={dokumen}
                 pagination
                 highlightOnHover
                 selectableRows
