@@ -9,6 +9,8 @@ const SideBarRight = ({ dark }) => {
     const [favoriteTopics, setFavoriteTopics] = useState([]);
     const [nonFavoriteTopics, setNonFavoriteTopics] = useState([]);
 
+    const [searchKeyword, setSearchKeyword] = useState("");
+
     // const username = localStorage.getItem("username");
     const username = 'nando';
 
@@ -31,6 +33,17 @@ const SideBarRight = ({ dark }) => {
         setNonFavoriteTopics(res.data.data || []);
     };
 
+    const filteredFavorite = favoriteTopics.filter((item) =>
+        (item.Topic || "").toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        (item.Desctription || "").toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+
+    const filteredNonFavorite = nonFavoriteTopics.filter((item) =>
+        (item.Topic || "").toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        (item.Desctription || "").toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+
+
     return (
         <div className={dark ? "w-80 bg-gray-800 p-4" : "w-80 bg-white p-4 border-r"}>
 
@@ -41,13 +54,24 @@ const SideBarRight = ({ dark }) => {
                     <span className="font-semibold transition-all">Topics</span>
 
                     <div className="relative flex-1">
-                        <input
+                        {/* <input
                             type="text"
                             placeholder="Cari Topik..."
                             className={`h-7 pl-2 pr-6 border rounded-md outline-none transition-all duration-500 ease-in-out
       ${isSearch ? 'w-full  opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
                             autoFocus={isSearch} style={{ float: 'right' }}
+                        /> */}
+                        <input
+                            type="text"
+                            placeholder="Cari Topik..."
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            className={`h-7 pl-2 pr-6 border rounded-md outline-none transition-all duration-500 ease-in-out
+    ${isSearch ? 'w-full opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
+                            autoFocus={isSearch}
+                            style={{ float: 'right' }}
                         />
+
                         <FiSearch
                             onClick={() => setIsSearch(!isSearch)}
                             className="absolute right-1 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
@@ -59,30 +83,30 @@ const SideBarRight = ({ dark }) => {
                     <span className="font-semibold">Saved Topics</span>
                 </div>
                 <div className="ml-1 space-y-2">
-                    {favoriteTopics.map((item) => (
-                    <SidebarItem
-                        key={item.ID}
-                        dark={dark}
-                        icon={<BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} />}
-                        title={item.Topic}
-                        desc={item.Desctription}
-                    />
-                ))}
+                    {filteredFavorite.map((item) => (
+                        <SidebarItem
+                            key={item.ID}
+                            dark={dark}
+                            icon={<BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} />}
+                            title={item.Topic}
+                            desc={item.Desctription}
+                        />
+                    ))}
                 </div>
 
                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
                     <span className="font-semibold">Recents</span>
                 </div>
                 <div className="ml-1 space-y-2" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }}>
-                    {nonFavoriteTopics.map((item) => (
-                    <SidebarItem
-                        key={item.ID}
-                        dark={dark}
-                        icon={<FiStar />}
-                        title={item.Topic}
-                        desc={item.Desctription}
-                    />
-                ))}
+                    {filteredNonFavorite.map((item) => (
+                        <SidebarItem
+                            key={item.ID}
+                            dark={dark}
+                            icon={<FiStar />}
+                            title={item.Topic}
+                            desc={item.Desctription}
+                        />
+                    ))}
                 </div>
             </div>
         </div >)
