@@ -1,15 +1,48 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-const LoginModal = ({ isOpen, onClose, onLogin, setLogin,login }) => {
-    const [email, setEmail] = useState("");
+const LoginModal = ({ isOpen, onClose, onLogin, setLogin, login }) => {
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     onLogin({ username, password });
+    //     setLogin(!login)
+    // };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onLogin({ email, password });
-        setLogin(!login)
+
+        try {
+            const response = await axios.post("http://localhost:8080/login", {
+                username: username,
+                password: password,
+            });
+
+            const data = response.data;
+            
+            alert("Login berhasil!");
+
+            // Kirim data user ke global state
+            onLogin(data);
+
+            // Tutup modal
+            setLogin(!login);
+            onClose();
+
+        } catch (error) {
+            console.error("ERROR:", error);
+
+            if (error.response) {
+                // Error dari backend
+                alert(error.response.data.error || "Login gagal");
+            } else {
+                alert("Tidak bisa terhubung ke server!");
+            }
+        }
     };
 
     return (
@@ -20,8 +53,8 @@ const LoginModal = ({ isOpen, onClose, onLogin, setLogin,login }) => {
                     <input
                         type="text"
                         placeholder="Enter Username..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
