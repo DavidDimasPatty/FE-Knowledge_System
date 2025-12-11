@@ -1,10 +1,10 @@
 import TableDokumen from "./content/tableDokumen";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 const Dokumen = () => {
     const [dokumen, setDokumen] = useState([]);
     const [loading, setLoading] = useState(true);
-    const fetchUsers = async () => {
+    const fetchDokumen = async () => {
         try {
             const res = await axios.get("http://localhost:8080/getAllDokumen");
             console.log(res.data.dokumen.data)
@@ -17,11 +17,11 @@ const Dokumen = () => {
     };
 
     useEffect(() => {
-        fetchUsers();
+        fetchDokumen();
     }, []);
     return (
         <div className="flex-1 flex flex-col ">
-            <TableDokumen dokumen={dokumen} loading={loading}/>
+            <TableDokumen dokumen={dokumen} loading={loading} fetchDokumen={fetchDokumen} />
         </div>
     )
 }

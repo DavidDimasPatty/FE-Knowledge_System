@@ -1,14 +1,32 @@
 import React, { useState } from "react";
 
 const AddDokumen = ({ isOpen, onClose }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [docName, setDocName] = useState("");
+    const [file, setFile] = useState(null);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!file) return;
 
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("judul", docName);
+        formData.append("addId", "David");
+        try {
+            const res = await fetch("http://localhost:8080/addDokumen", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.text();
+            alert(data);
+            onClose();
+        } catch (err) {
+            console.error(err);
+            alert("Failed to upload file");
+        }
     };
 
     return (
@@ -19,16 +37,15 @@ const AddDokumen = ({ isOpen, onClose }) => {
                     <input
                         type="text"
                         placeholder="Enter Document Name..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={docName}
+                        onChange={(e) => setDocName(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
                     <input
                         type="file"
                         placeholder="Submit File"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setFile(e.target.files[0])}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />

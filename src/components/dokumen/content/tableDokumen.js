@@ -3,42 +3,84 @@ import DataTable from "react-data-table-component";
 import AddDokumen from "./addDokumen";
 import EditDokumen from "./editDokumen";
 import Swal from "sweetalert2";
+import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
-const TableDokumen = ({ dokumen, loading }) => {
+import { useLocation, useNavigate } from "react-router-dom";
+const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [selectedDokumenId, setSelectedDokumenId] = useState(null);
     const MySwal = withReactContent(Swal);
+    const navigate = useNavigate();
 
+    const downloadDokumen = async (id) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/downloadDokumen",
+                { id },
+                {
+                    responseType: "blob",
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+
+            const contentDisposition = response.headers["content-disposition"];
+            let fileName = "file.pdf";
+            if (contentDisposition) {
+                const fileNameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                if (fileNameMatch.length > 1) fileName = fileNameMatch[1];
+            }
+
+            link.href = url;
+            link.setAttribute("download", fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            console.log("File downloaded:", fileName);
+        } catch (err) {
+            console.error("Download failed:", err);
+        }
+    };
 
     const openEditPopUp = (idUser) => {
         setSelectedDokumenId(idUser);
         setIsOpenEdit(true);
     }
 
-    const dataDummy = [
-        { id: 1, name: "Dokumen A", createdAt: "2025-11-27" },
-        { id: 2, name: "Dokumen B", createdAt: "2025-11-26" },
-        { id: 3, name: "Dokumen C", createdAt: "2025-11-25" },
-    ];
-
-    const handleDelete = (userId) => {
-        const document = dokumen.find(u => u.id === userId);
+    const handleDelete = async (id) => {
+        const document = dokumen.find(u => u.ID === id);
         MySwal.fire({
-            title: `Are you sure to delete ${document.name}?`,
+            title: `Are you sure to delete ${document.Judul}?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Hapus!",
             cancelButtonText: "Cancel",
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                MySwal.fire({
-                    title: "Deleted!",
-                    text: `${document.name} has been deleted.`,
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false,
-                });
+                try {
+                    await axios.post("http://localhost:8080/deleteDokumen", { id });
+
+                    MySwal.fire({
+                        title: "Deleted!",
+                        text: `${document.Judul} has been deleted.`,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    fetchDokumen();
+                } catch (err) {
+                    MySwal.fire({
+                        title: "Error!",
+                        text: `${document.Judul} Error Deleted : ${err}.`,
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                }
             }
         });
     };
@@ -52,7 +94,7 @@ const TableDokumen = ({ dokumen, loading }) => {
         },
         {
             name: "Nama Dokumen",
-            selector: row => row.NamaDokumen,
+            selector: row => row.Judul,
             sortable: true
         },
         {
@@ -66,7 +108,7 @@ const TableDokumen = ({ dokumen, loading }) => {
             cell: row => (
                 <div className="flex gap-2">
                     <button
-                        onClick={() => alert(`Download ${row.Nama}`)}
+                        onClick={() => downloadDokumen(row.ID)}
                         className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
                     >
                         Download

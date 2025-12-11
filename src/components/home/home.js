@@ -25,15 +25,18 @@ const Home = () => {
     ws.onopen = () => console.log("WS Connected");
 
     ws.onmessage = (msg) => {
-      const botMessage = {
-        role: "bot",
-        text: msg.data,
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
-      setIsLoading(false);
-    };
-
+      try {
+        const data = JSON.parse(msg.data); 
+        const botMessage = {
+          role: "bot",
+          text: data.answer, 
+        };
+        setMessages((prev) => [...prev, botMessage]);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Invalid JSON from server:", msg.data);
+      }
+    }
     ws.onerror = (err) => console.error("WS Error:", err);
     ws.onclose = () => console.log("WS closed");
 

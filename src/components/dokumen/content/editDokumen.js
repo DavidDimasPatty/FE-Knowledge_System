@@ -1,17 +1,32 @@
-import React, { useState, useEffect } from "react";
 
+import React, { useState,useEffect } from "react";
+import axios from "axios";
 const EditDokumen = ({ isOpen, onClose, idDokumen }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const fetchEditDokumen = async () => {
+        try {
+            const res = await axios.get("http://localhost:8080/getAllDokumen");
+            console.log(res.data.dokumen.data)
+            //setDokumen(res.data.dokumen.data);
+        } catch (err) {
+            console.error("Fetch dokumen error:", err);
+        } finally {
+           // setLoading(false);
+        }
+    };
+
     useEffect(() => {
         //fetch dataDokumen
         // if (isOpen && idUser) {
-        //     const userData = users.find(u => u.id === idUser); 
-        //     if (userData) {
-        //         setEmail(userData.email);
-        //         setName(userData.name);
-        //     }
+        //     //     const userData = users.find(u => u.id === idUser); 
+        //     //     if (userData) {
+        //     //         setEmail(userData.email);
+        //     //         setName(userData.name);
+        //     //     }
+        //     fetchEditDokumen()
+
         // }
     }, [isOpen, idDokumen]);
 
