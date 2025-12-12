@@ -41,10 +41,10 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
             fetchUser();
             onClose();
         } catch (err) {
-            console.log("Backend error:", err);
+            console.log("Backend error:", err.response.data);
             MySwal.fire({
                 title: "Error!",
-                text: `Error Edit : ${err}.`,
+                text: `Error Add : ${err.response.data.error}.`,
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,

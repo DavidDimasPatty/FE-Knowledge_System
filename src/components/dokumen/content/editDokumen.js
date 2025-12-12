@@ -3,11 +3,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-const EditDokumen = ({ isOpen, onClose, idDokumen }) => {
+const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen }) => {
     const [docName, setDocName] = useState("");
     const [docLink, setDocLink] = useState("");
     const [file, setFile] = useState(null);
     const MySwal = withReactContent(Swal);
+
     const fetchEditDokumen = async () => {
         try {
             const res = await axios.get("http://localhost:8080/editDokumenGet?id=" + idDokumen);
@@ -15,9 +16,14 @@ const EditDokumen = ({ isOpen, onClose, idDokumen }) => {
             setDocName(res.data.data.Judul);
             setDocLink(res.data.data.Link);
         } catch (err) {
-            console.error("Fetch dokumen error:", err);
-        } finally {
-            // setLoading(false);
+            console.log("Backend error:", err.response.data);
+            MySwal.fire({
+                title: "Error!",
+                text: `Error Add : ${err.response.data.error}.`,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false,
+            });
         }
     };
 
@@ -42,15 +48,21 @@ const EditDokumen = ({ isOpen, onClose, idDokumen }) => {
                 timer: 1500,
                 showConfirmButton: false
             });
+            fetchDokumen();
             onClose();
         } catch (err) {
-            console.error(err);
-            alert("Failed to upload file");
+            console.log("Backend error:", err.response.data);
+            MySwal.fire({
+                title: "Error!",
+                text: `Error Add : ${err.response.data.error}.`,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false,
+            });
         }
     };
 
     useEffect(() => {
-        //fetch dataDokumen
         if (isOpen && idDokumen) {
             fetchEditDokumen()
         }

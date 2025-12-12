@@ -153,11 +153,13 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         <AddDokumen
             isOpen={isOpenAdd}
             onClose={() => setIsOpenAdd(!isOpenAdd)}
+            fetchDokumen={fetchDokumen}
         />
         <EditDokumen
             isOpen={isOpenEdit}
             onClose={() => setIsOpenEdit(!isOpenEdit)}
             idDokumen={selectedDokumenId}
+            fetchDokumen={fetchDokumen}
         />
     </div>);
 }

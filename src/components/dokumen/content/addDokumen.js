@@ -1,15 +1,16 @@
 import React, { useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-const AddDokumen = ({ isOpen, onClose }) => {
+const AddDokumen = ({ isOpen, onClose, fetchDokumen }) => {
     const [docName, setDocName] = useState("");
     const [file, setFile] = useState(null);
-
-    if (!isOpen) return null;
+    const MySwal = withReactContent(Swal);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!file) return;
-
         const formData = new FormData();
         formData.append("file", file);
         formData.append("judul", docName);
@@ -20,15 +21,29 @@ const AddDokumen = ({ isOpen, onClose }) => {
                 body: formData,
             });
 
-            const data = await res.text();
-            alert(data);
+            MySwal.fire({
+                title: "Added!",
+                text: `${docName} has been added.`,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            fetchDokumen();
             onClose();
         } catch (err) {
-            console.error(err);
-            alert("Failed to upload file");
+            console.log("Backend error:", err.response.data);
+            MySwal.fire({
+                title: "Error!",
+                text: `Error Add : ${err.response.data.error}.`,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false,
+            });
         }
     };
 
+    if (!isOpen) return null;
+    
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 shadow-lg">
