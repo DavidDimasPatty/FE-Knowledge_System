@@ -17,7 +17,7 @@ const SideBarRight = ({ dark }) => {
     const [loadingNonFavorite, setLoadingNonFavorite] = useState(false);
     const [loadingFavorite, setLoadingFavorite] = useState(false);
 
-
+    const [limit, setLimit] = useState(20);
 
 
     // const username = localStorage.getItem("username");
@@ -33,7 +33,7 @@ const SideBarRight = ({ dark }) => {
         setLoadingFavorite(true);
 
         const res = await axios.get(`http://localhost:8080/getAllTopicUser`, {
-            params: { username, isFavorite: true, page, limit: 5, search }
+            params: { username, isFavorite: true, page, limit: limit, search }
         });
 
         setLoadingFavorite(false);
@@ -42,7 +42,7 @@ const SideBarRight = ({ dark }) => {
         if (page === 1) setFavoriteTopics(newData);
         else setFavoriteTopics(prev => [...prev, ...newData]);
 
-        setHasMoreFavorite(newData.length === 5);
+        setHasMoreFavorite(newData.length === limit);
     };
 
 
@@ -55,7 +55,7 @@ const SideBarRight = ({ dark }) => {
                 username,
                 isFavorite: false,
                 page,
-                limit: 5,
+                limit: limit,
                 search
             }
         }
@@ -70,7 +70,7 @@ const SideBarRight = ({ dark }) => {
             setNonFavoriteTopics(prev => [...prev, ...newData]);
         }
 
-        setHasMoreNonFavorite(newData.length === 5);
+        setHasMoreNonFavorite(newData.length === limit);
     };
 
     const handleScroll = (e) => {
