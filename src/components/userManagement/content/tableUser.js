@@ -4,8 +4,8 @@ import AddUser from "./addUser";
 import EditUser from "./editUser";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
-const TableUser = ({ users, loading }) => {
+import axios from "axios";
+const TableUser = ({ users, loading, fetchUser }) => {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
@@ -17,7 +17,7 @@ const TableUser = ({ users, loading }) => {
     };
 
     const handleDelete = (userId) => {
-        const user = users?.find(u => u.id === userId);
+        const user = users?.find(u => u.ID === userId);
 
         MySwal.fire({
             title: `Are you sure to delete ${user?.Nama ?? "this user"}?`,
@@ -25,15 +25,28 @@ const TableUser = ({ users, loading }) => {
             showCancelButton: true,
             confirmButtonText: "Hapus!",
             cancelButtonText: "Cancel",
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                MySwal.fire({
-                    title: "Deleted!",
-                    text: `${user?.name ?? "User"} has been deleted.`,
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false,
-                });
+                try {
+                    await axios.post("http://localhost:8080/deleteUser", { "Id": userId });
+
+                    MySwal.fire({
+                        title: "Deleted!",
+                        text: `${user.Nama} has been deleted.`,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    fetchUser();
+                } catch (err) {
+                    MySwal.fire({
+                        title: "Error!",
+                        text: `${user.Nama} Error Deleted : ${err}.`,
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                }
             }
         });
     };
@@ -109,12 +122,14 @@ const TableUser = ({ users, loading }) => {
             <AddUser
                 isOpen={isOpenAdd}
                 onClose={() => setIsOpenAdd(false)}
+                fetchUser={fetchUser}
             />
 
             <EditUser
                 isOpen={isOpenEdit}
                 onClose={() => setIsOpenEdit(false)}
                 idUser={selectedUserId}
+                fetchUser={fetchUser}
             />
         </div>
     );

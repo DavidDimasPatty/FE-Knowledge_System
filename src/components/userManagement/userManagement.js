@@ -1,5 +1,5 @@
 import TableUser from "./content/tableUser";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const UserManagement = () => {
@@ -10,7 +10,7 @@ const UserManagement = () => {
         try {
             const res = await axios.get("http://localhost:8080/getAllUser");
             console.log(res.data.user.data)
-            setUsers(res.data.user.data); 
+            setUsers(res.data.user.data);
         } catch (err) {
             console.error("Fetch users error:", err);
         } finally {
@@ -23,7 +23,7 @@ const UserManagement = () => {
     }, []);
     return (
         <div className="flex-1 flex flex-col">
-            <TableUser  users={users} loading={loading}  />
+            <TableUser users={users} loading={loading} fetchUser={fetchUsers} />
         </div>
     )
 }

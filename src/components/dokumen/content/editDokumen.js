@@ -1,41 +1,63 @@
 
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const EditDokumen = ({ isOpen, onClose, idDokumen }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
+    const [docName, setDocName] = useState("");
+    const [docLink, setDocLink] = useState("");
+    const [file, setFile] = useState(null);
+    const MySwal = withReactContent(Swal);
     const fetchEditDokumen = async () => {
         try {
-            const res = await axios.get("http://localhost:8080/getAllDokumen");
-            console.log(res.data.dokumen.data)
-            //setDokumen(res.data.dokumen.data);
+            const res = await axios.get("http://localhost:8080/editDokumenGet?id=" + idDokumen);
+            console.log(res.data.data)
+            setDocName(res.data.data.Judul);
+            setDocLink(res.data.data.Link);
         } catch (err) {
             console.error("Fetch dokumen error:", err);
         } finally {
-           // setLoading(false);
+            // setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("id", idDokumen);
+        formData.append("judul", docName);
+        formData.append("updId", "David");
+        try {
+            const res = await fetch("http://localhost:8080/editDokumen", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await res.text();
+            MySwal.fire({
+                title: "Edited!",
+                text: `${docName} success edited.`,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            onClose();
+        } catch (err) {
+            console.error(err);
+            alert("Failed to upload file");
         }
     };
 
     useEffect(() => {
         //fetch dataDokumen
-        // if (isOpen && idUser) {
-        //     //     const userData = users.find(u => u.id === idUser); 
-        //     //     if (userData) {
-        //     //         setEmail(userData.email);
-        //     //         setName(userData.name);
-        //     //     }
-        //     fetchEditDokumen()
-
-        // }
+        if (isOpen && idDokumen) {
+            fetchEditDokumen()
+        }
     }, [isOpen, idDokumen]);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-    };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -45,18 +67,25 @@ const EditDokumen = ({ isOpen, onClose, idDokumen }) => {
                     <input
                         type="text"
                         placeholder="Enter Document Name..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={docName}
+                        onChange={(e) => setDocName(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
                     <input
+                        type="text"
+                        placeholder="Submit File"
+                        value={docLink}
+                        onChange={(e) => setDocLink(e.target.value)}
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        readOnly={true}
+                    />
+                    <input
                         type="file"
                         placeholder="Submit File"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setFile(e.target.files[0])}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
+
                     />
                     <button
                         type="submit"

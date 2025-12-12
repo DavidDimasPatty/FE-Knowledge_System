@@ -1,15 +1,51 @@
 import React, { useState } from "react";
-
-const AddUser = ({ isOpen, onClose }) => {
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import axios from "axios";
+const AddUser = ({ isOpen, onClose, fetchUser }) => {
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [nama, setNama] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [role, setRole] = useState(1);
+    const MySwal = withReactContent(Swal);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            var res = await axios.post("http://localhost:8080/addUser",
+                {
+                    "nama": nama,
+                    "username": username,
+                    "email": email,
+                    "noTelp": phoneNumber,
+                    "roleId": Number(role),
+                    "addId": "David"
+                }
+            );
+            console.log("Success:", res.data);
+            MySwal.fire({
+                title: "Added!",
+                text: `${nama} has been added.`,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            fetchUser();
+            onClose();
+        } catch (err) {
+            console.log("Backend error:", err);
+            MySwal.fire({
+                title: "Error!",
+                text: `Error Add : ${err}.`,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        }
+    };
 
     if (!isOpen) return null;
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-    };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -19,14 +55,22 @@ const AddUser = ({ isOpen, onClose }) => {
                     <input
                         type="text"
                         placeholder="Enter Username..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
                     <input
                         type="text"
                         placeholder="Enter Name..."
+                        value={nama}
+                        onChange={(e) => setNama(e.target.value)}
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Enter Email..."
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -35,15 +79,19 @@ const AddUser = ({ isOpen, onClose }) => {
                     <input
                         type="number"
                         placeholder="Enter Phone Number..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
-                    <select className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>Super Admin</option>
-                        <option>Admin</option>
-                        <option>Subordinate</option>
+                    <select className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={(e) => setRole(Number(e.target.value))}
+                        value={role}
+                        required
+                    >
+                        <option value={1}>Super Admin</option>
+                        <option value={2}>Admin</option>
+                        <option value={3}>Staff</option>
                     </select>
                     <button
                         type="submit"

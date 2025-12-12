@@ -1,26 +1,74 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-const EditUser = ({ isOpen, onClose, idUser }) => {
+const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [nama, setNama] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [role, setRole] = useState(0);
+    const MySwal = withReactContent(Swal);
 
     useEffect(() => {
-        //fetch dataUser
-        // if (isOpen && idUser) {
-        //     const userData = users.find(u => u.id === idUser); 
-        //     if (userData) {
-        //         setEmail(userData.email);
-        //         setName(userData.name);
-        //     }
-        // }
+        if (isOpen && idUser) {
+            fetchEditUser()
+        }
     }, [isOpen, idUser]);
 
-    if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
+        try {
+            await axios.post("http://localhost:8080/editUser",
+                {
+                    "id": idUser,
+                    "nama": nama,
+                    "email": email,
+                    "noTelp": phoneNumber,
+                    "roleId": Number(role),
+                    "updId": "David"
+                }
+            );
+            MySwal.fire({
+                title: "Added!",
+                text: `${nama} has been edited.`,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            fetchUser();
+            onClose();
+        } catch (err) {
+            console.log("Backend error:", err);
+            MySwal.fire({
+                title: "Error!",
+                text: `Error Edit : ${err}.`,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        }
     };
+
+    const fetchEditUser = async () => {
+        try {
+            const res = await axios.get("http://localhost:8080/editUserGet?id=" + idUser);
+            console.log(res.data.data)
+            setUsername(res.data.data.Username);
+            setEmail(res.data.data.Email);
+            setNama(res.data.data.Nama);
+            setPhoneNumber(res.data.data.NoTelp);
+            setRole(res.data.data.Roles);
+        } catch (err) {
+            console.error("Fetch dokumen error:", err);
+        } finally {
+            // setLoading(false);
+        }
+    };
+
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -30,32 +78,47 @@ const EditUser = ({ isOpen, onClose, idUser }) => {
                     <input
                         type="text"
                         placeholder="Enter Username..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                        readOnly={true}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Enter Name..."
+                        value={nama}
+                        onChange={(e) => setNama(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
                     <input
                         type="text"
-                        placeholder="Enter Name..."
+                        placeholder="Enter Email..."
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
+                        readOnly={true}
                     />
                     <input
                         type="number"
                         placeholder="Enter Phone Number..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                         className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
+                        readOnly={true}
                     />
-                    
-                    <select className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>Super Admin</option>
-                        <option>Admin</option>
-                        <option>Subordinate</option>
+
+                    <select className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={(e) => setRole(Number(e.target.value))}
+                        value={role}
+                        required
+                    >
+                        <option value={1}>Super Admin</option>
+                        <option value={2}>Admin</option>
+                        <option value={3}>Staff</option>
                     </select>
 
                     <button
