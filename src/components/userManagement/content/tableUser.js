@@ -51,6 +51,76 @@ const TableUser = ({ users, loading, fetchUser }) => {
         });
     };
 
+    const handleActivate = (userId) => {
+        const user = users?.find(u => u.ID === userId);
+
+        MySwal.fire({
+            title: `Are you sure to activate ${user?.Nama ?? "this user"}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Hapus!",
+            cancelButtonText: "Cancel",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axios.post("http://localhost:8080/changeStatusUser", { "Id": userId, "Status": user.Status });
+
+                    MySwal.fire({
+                        title: "Success!",
+                        text: `${user.Nama} has been activated.`,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    fetchUser();
+                } catch (err) {
+                    MySwal.fire({
+                        title: "Error!",
+                        text: `${user.Nama} Error activated : ${err}.`,
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                }
+            }
+        });
+    };
+
+    const handleDeactivate = (userId) => {
+        const user = users?.find(u => u.ID === userId);
+
+        MySwal.fire({
+            title: `Are you sure to block ${user?.Nama ?? "this user"}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Hapus!",
+            cancelButtonText: "Cancel",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axios.post("http://localhost:8080/changeStatusUser", { "Id": userId, "Status": user.Status });
+
+                    MySwal.fire({
+                        title: "Success!",
+                        text: `${user.Nama} has been block.`,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    fetchUser();
+                } catch (err) {
+                    MySwal.fire({
+                        title: "Error!",
+                        text: `${user.Nama} Error block : ${err}.`,
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                }
+            }
+        });
+    };
+
     const columns = [
         {
             name: "ID",
@@ -90,6 +160,23 @@ const TableUser = ({ users, loading, fetchUser }) => {
                     >
                         Delete
                     </button>
+
+
+                    {row.Status == "Active" ? (
+                        <button
+                            onClick={() => handleDeactivate(row.ID)}
+                            className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+                        >
+                            Deactivate
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => handleActivate(row.ID)}
+                            className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                        >
+                            Activate
+                        </button>
+                    )}
                 </div>
             ),
             ignoreRowClick: true,

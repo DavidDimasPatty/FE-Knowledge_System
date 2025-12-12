@@ -1,17 +1,19 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-
-const LoginModal = ({ isOpen, onClose, onLogin, setLogin, login }) => {
+const LoginModal = (
+    { 
+    isOpen,
+    onClose,
+    onLogin,
+    setLogin,
+    login,
+        
+    }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
-    if (!isOpen) return null;
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     onLogin({ username, password });
-    //     setLogin(!login)
-    // };
+    const MySwal = withReactContent(Swal);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,13 +25,16 @@ const LoginModal = ({ isOpen, onClose, onLogin, setLogin, login }) => {
             });
 
             const data = response.data;
-            
-            alert("Login berhasil!");
 
-            // Kirim data user ke global state
+
+            MySwal.fire({
+                title: "Login Successs!",
+                text: `Berhasil Login.`,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
             onLogin(data);
-
-            // Tutup modal
             setLogin(!login);
             onClose();
 
@@ -37,14 +42,27 @@ const LoginModal = ({ isOpen, onClose, onLogin, setLogin, login }) => {
             console.error("ERROR:", error);
 
             if (error.response) {
-                // Error dari backend
-                alert(error.response.data.error || "Login gagal");
+                // alert(error.response.data.error || "Login gagal");
+                MySwal.fire({
+                    title: "Error!",
+                    text: `Error Login : ${error.response.data.error}.`,
+                    icon: "error",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
             } else {
-                alert("Tidak bisa terhubung ke server!");
+                MySwal.fire({
+                    title: "Error!",
+                    text: `Error Login.`,
+                    icon: "error",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
             }
         }
     };
 
+    if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 shadow-lg">

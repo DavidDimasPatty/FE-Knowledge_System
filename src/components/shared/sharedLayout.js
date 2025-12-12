@@ -7,20 +7,39 @@ import TopBar from "./topBar";
 const SharedLayout = () => {
     const [dark, setDark] = useState(false);
     const [login, setLogin] = useState(false);
+    const [nama, setNama] = useState("");
+    const [roleName, setRoleName] = useState("");
+    const [roleId, setRoleId] = useState(0);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
 
     const handleLogin = (data) => {
-        console.log("Login data:", data);
+        setNama(data.user.nama);
+        setRoleId(data.user.roleId);
+        setRoleName(data.user.roleName);
         setIsLoginOpen(false);
     };
     return (
 
         <div className="w-full h-screen flex flex-col">
-            <TopBar setDark={setDark} dark={dark} login={login} setLogin={setLogin} handleLogin={handleLogin} isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
+            <TopBar
+                setDark={setDark}
+                dark={dark}
+                login={login}
+                setLogin={setLogin}
+                handleLogin={handleLogin}
+                isLoginOpen={isLoginOpen}
+                setIsLoginOpen={setIsLoginOpen}
+            />
             <div
                 className={`flex flex-1 ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
             >
-                <SideBarLeft dark={dark} login={login} setLogin={setLogin} />
+                <SideBarLeft
+                    dark={dark}
+                    login={login}
+                    setLogin={setLogin}
+                    nama={nama}
+                    roleName={roleName}
+                    roleId={roleId} />
 
                 <Outlet context={{ dark }} />
 

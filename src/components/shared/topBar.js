@@ -1,7 +1,14 @@
 import React from "react";
 import LoginModal from "./loginModal";
 
-const TopBar = ({ dark, setDark, login, setLogin, setIsLoginOpen, isLoginOpen, handleLogin }) => {
+const TopBar = ({ 
+    dark, 
+    setDark, 
+    login, 
+    setLogin, 
+    setIsLoginOpen, 
+    isLoginOpen, 
+    handleLogin }) => {
     return (
         <div
             className={
