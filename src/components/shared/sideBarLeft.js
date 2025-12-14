@@ -32,8 +32,8 @@ const SideBarLeft =
         const [loading, setLoading] = useState(false);
         const [limit, setLimit] = useState(5);
 
-        // const username = localStorage.getItem("username");
-        const username = 'nando';
+        const username = localStorage.getItem("username");
+        //const username = 'nando';
 
         useEffect(() => {
             fetchCategories(1, "");
