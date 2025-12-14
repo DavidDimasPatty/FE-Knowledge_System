@@ -17,9 +17,8 @@ const SideBarLeft =
         dark,
         login,
         setLogin,
-        nama,
-        roleName,
-        roleId
+        openDropDown,
+        setOpenDropdown
     }) => {
         const [isMinimized, setIsMinimized] = useState(false);
         const location = useLocation();
@@ -113,22 +112,63 @@ const SideBarLeft =
                         )}
                     </div>
 
-                    {/* Footer */}
-                    {!login && !isMinimized && (
-                        <div className="mt-6 mb-2 flex items-center">
-                            <div
-                                onClick={() => setLogin(!login)}
-                                className={
-                                    "w-10 h-10 rounded-full flex items-center justify-center font-bold " +
-                                    (dark ? "bg-gray-700" : "bg-blue-500 text-white")
-                                }
-                            >
-                                {nama.charAt(0).toUpperCase()}
+                    {localStorage.getItem("login") && !isMinimized && (
+                        <div className="relative mt-6 mb-2">
+                            {openDropDown && (
+                                <div
+                                    className={
+                                        "absolute left-0 w-48 rounded-lg shadow-lg z-50 bottom-14 " +
+                                        (dark ? "bg-gray-800 text-white" : "bg-white")
+                                    }
+                                >
+                                    <button
+                                        onClick={() => {
+                                            setOpenDropdown(false);
+                                        }}
+                                        className={
+                                            "w-full text-left px-4 py-2 hover:bg-gray-100 " +
+                                            (dark ? "hover:bg-gray-700" : "")
+                                        }
+                                    >
+                                        🔑 Edit Password
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setLogin(!login)
+                                            localStorage.clear();
+                                            window.location.reload();
+                                        }}
+                                        className={
+                                            "w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 " +
+                                            (dark ? "hover:bg-gray-700" : "")
+                                        }
+                                    >
+                                        🚪 Logout
+                                    </button>
+                                </div>
+                            )}
+                            <div className="flex items-center">
+                                <div
+                                    onClick={() => setOpenDropdown(!openDropDown)}
+                                    className={
+                                        "w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer " +
+                                        (dark ? "bg-gray-700 text-white" : "bg-blue-500 text-white")
+                                    }
+                                >
+                                    {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
+                                </div>
+
+                                <div className="ml-3">
+                                    <div>
+                                        Halo, <b>{localStorage.getItem("nama")}</b>
+                                    </div>
+                                    <div>
+                                        <b>{localStorage.getItem("roleName")}</b>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="col ml-3">
-                                <div>Halo, <b>{nama}</b></div>
-                                <div> <b>{roleName}</b></div>
-                            </div>
+
                         </div>
                     )}
                 </div>

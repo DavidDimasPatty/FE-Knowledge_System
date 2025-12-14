@@ -11,6 +11,7 @@ const SharedLayout = () => {
     const [roleName, setRoleName] = useState("");
     const [roleId, setRoleId] = useState(0);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [openDropDown, setOpenDropdown] = useState(false);
 
     const handleLogin = (data) => {
         setNama(data.user.nama);
@@ -20,6 +21,7 @@ const SharedLayout = () => {
         localStorage.setItem("roleId", data.user.roleId);
         localStorage.setItem("roleName", data.user.roleName);
         localStorage.setItem("username", data.user.username);
+        localStorage.setItem("login", true);
         setIsLoginOpen(false);
     };
     return (
@@ -41,9 +43,9 @@ const SharedLayout = () => {
                     dark={dark}
                     login={login}
                     setLogin={setLogin}
-                    nama={nama}
-                    roleName={roleName}
-                    roleId={roleId} />
+                    openDropDown={openDropDown}
+                    setOpenDropdown={setOpenDropdown}
+                />
 
                 <Outlet context={{ dark }} />
 

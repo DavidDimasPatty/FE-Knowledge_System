@@ -2,7 +2,8 @@ import React from "react";
 import { FiSend, FiMic, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors } from "react-icons/fi";
 
 const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, sendMessage, setInput }) => {
-  return (isFirst ?
+  return (messages.length === 0 && isFirst
+    ?
     <div className={(dark
       ? " text-white"
       : " text-gray-900") + " flex flex-col items-center justify-center h-full"}>
@@ -43,7 +44,12 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
                 : "bg-white border-gray-300 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400")
             }
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            nKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
             placeholder="Ketik pesan atau gunakan voice..."
           >{input}</textarea>
 

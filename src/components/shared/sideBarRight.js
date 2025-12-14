@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BsFillStarFill } from "react-icons/bs";
 import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors, FiArchive, FiSearch } from "react-icons/fi";
 import axios from "axios";
-
+import { useSearchParams, useNavigate } from "react-router-dom";
 const SideBarRight = ({ dark }) => {
     const [isSearch, setIsSearch] = useState(false)
     const [favoriteTopics, setFavoriteTopics] = useState([]);
@@ -18,17 +18,30 @@ const SideBarRight = ({ dark }) => {
     const [loadingFavorite, setLoadingFavorite] = useState(false);
 
     const [limit, setLimit] = useState(20);
-
+    const navigate = useNavigate();
 
     // const username = localStorage.getItem("username");
-    const username = 'nando';
+    const username = localStorage.getItem("username");
 
     useEffect(() => {
-        fetchFavorite(1, "");
-        fetchNonFavorite(1, "");
+        fetchFavorite(1);
+        fetchNonFavorite(1);
+        const handleTopicUpdated = () => {
+            fetchFavorite(1);
+            fetchNonFavorite(1);
+        };
+
+        window.addEventListener("topic-updated", handleTopicUpdated);
+
+        return () => {
+            window.removeEventListener("topic-updated", handleTopicUpdated);
+        };
+
     }, [username]);
 
     const fetchFavorite = async (page = 1, search = "") => {
+        if (username == null) return;
+
         if (loadingFavorite) return;
         setLoadingFavorite(true);
 
@@ -47,6 +60,7 @@ const SideBarRight = ({ dark }) => {
 
 
     const fetchNonFavorite = async (page = 1, search = "") => {
+        if (username == null) return;
         if (loadingNonFavorite) return;
         setLoadingNonFavorite(true);
         const res = await axios.get(
@@ -63,7 +77,7 @@ const SideBarRight = ({ dark }) => {
         setLoadingNonFavorite(false);
 
         const newData = res.data.data;
-
+        console.log(newData);
         if (page === 1) {
             setNonFavoriteTopics(newData);
         } else {
@@ -138,7 +152,7 @@ const SideBarRight = ({ dark }) => {
                             placeholder="Cari Topik..."
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
-                            className={`h-7 pl-2 pr-6 border rounded-md outline-none transition-all duration-500 ease-in-out
+                            className={`h-7 pl-2 pr-10 border rounded-md outline-none transition-all duration-500 ease-in-out
     ${isSearch ? 'w-full opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
                             autoFocus={isSearch}
                             style={{ float: 'right' }}
@@ -147,7 +161,11 @@ const SideBarRight = ({ dark }) => {
 
                         <FiSearch
                             onClick={() => setIsSearch(!isSearch)}
-                            className="absolute right-1 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
+                            className="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
+                        />
+                        <FiPlus
+                            onClick={() => navigate("/")}
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
                         />
                     </div>
                 </div>
@@ -164,6 +182,8 @@ const SideBarRight = ({ dark }) => {
                             icon={<BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} />}
                             title={item.Topic}
                             desc={item.Desctription}
+                            idCategory={item.IdCategories}
+                            idTopic={item.ID}
                         />
                     ))}
                 </div>
@@ -179,6 +199,8 @@ const SideBarRight = ({ dark }) => {
                             icon={<FiStar />}
                             title={item.Topic}
                             desc={item.Desctription}
+                            idCategory={item.IdCategories}
+                            idTopic={item.ID}
                         />
                     ))}
                 </div>
@@ -186,9 +208,17 @@ const SideBarRight = ({ dark }) => {
         </div >)
 }
 
-const SidebarItem = ({ dark, title, desc, icon }) => {
+const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic }) => {
+    const navigate = useNavigate();
     return (
         <div
+            onClick={() => {
+                navigate(
+                    `?topic=${idTopic}&category=${idCategory}`,
+                    { replace: true }
+                )
+            }
+            }
             className={
                 "flex items-center justify-between p-2 rounded-lg cursor-pointer " +
                 (dark ? "hover:bg-gray-700" : "hover:bg-gray-100")
@@ -203,7 +233,7 @@ const SidebarItem = ({ dark, title, desc, icon }) => {
                     {desc}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

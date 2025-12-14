@@ -1,13 +1,13 @@
 import React from "react";
 import LoginModal from "./loginModal";
 
-const TopBar = ({ 
-    dark, 
-    setDark, 
-    login, 
-    setLogin, 
-    setIsLoginOpen, 
-    isLoginOpen, 
+const TopBar = ({
+    dark,
+    setDark,
+    login,
+    setLogin,
+    setIsLoginOpen,
+    isLoginOpen,
     handleLogin }) => {
     return (
         <div
@@ -55,7 +55,7 @@ const TopBar = ({
                     ></div>
                 </button>
 
-                {login ?
+                {!localStorage.getItem("login") && (
                     <div className="flex items-end space-x-3">
 
                         <button
@@ -66,8 +66,8 @@ const TopBar = ({
                             }
                         ><b>Log In</b></button>
 
-                    </div> : null
-                }
+                    </div>
+                )}
             </div>
             <LoginModal
                 isOpen={isLoginOpen}
