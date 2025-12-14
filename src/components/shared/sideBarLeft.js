@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     FiHome,
     FiDownload,
@@ -10,8 +10,12 @@ import {
     FiAlignCenter,
     FiChevronLeft,
     FiChevronRight,
+    FiSettings,
+    FiArchive,
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 const SideBarLeft =
     ({
         dark,
@@ -20,6 +24,95 @@ const SideBarLeft =
         openDropDown,
         setOpenDropdown
     }) => {
+        const [isSearch, setIsSearch] = useState(false)
+        const [categories, setCategories] = useState([]);
+        const [searchKeyword, setSearchKeyword] = useState("");
+        const [page, setPage] = useState(1);
+        const [hasMore, setHasMore] = useState(true);
+        const [loading, setLoading] = useState(false);
+        const [limit, setLimit] = useState(5);
+
+        // const username = localStorage.getItem("username");
+        const username = 'nando';
+
+        useEffect(() => {
+            fetchCategories(1, "");
+        }, [username]);
+
+        const fetchCategories = async (page = 1, search = "") => {
+            if (loading) return;
+            setLoading(true);
+            const res = await axios.get(
+                `http://localhost:8080/getAllCategoryUser`, {
+                params: {
+                    username,
+                    page,
+                    limit: limit,
+                    search
+                }
+            }
+            );
+            setLoading(false);
+
+            const newData = res.data.data;
+
+            if (page === 1) {
+                setCategories(newData);
+            } else {
+                setCategories(prev => [...prev, ...newData]);
+            }
+
+            setHasMore(newData.length === limit);
+        };
+
+        const handleScroll = (e) => {
+            if (searchKeyword !== "") return;
+
+            const isBottom =
+                e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
+
+            if (isBottom && hasMore && !loading) {
+                const nextPage = page + 1;
+                setPage(nextPage);
+                fetchCategories(nextPage, searchKeyword);
+            }
+        };
+
+        useEffect(() => {
+            const delay = setTimeout(() => {
+                // reset pagination
+                setPage(1);
+                setHasMore(true);
+
+                fetchCategories(1, searchKeyword);
+            }, 400);
+
+            return () => clearTimeout(delay);
+        }, [searchKeyword]);
+
+        const formatDate = (dateStr) => {
+            return new Intl.DateTimeFormat("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+            }).format(new Date(dateStr));
+        };
+
+        const iconMap = {
+            FiHome: <FiHome />,
+            FiDownload: <FiDownload />,
+            FiUser: <FiUser />,
+            FiStar: <FiStar />,
+            FiCode: <FiCode />,
+            FiBook: <FiBook />,
+            FiScissors: <FiScissors />,
+            FiAlignCenter: <FiAlignCenter />,
+            FiChevronLeft: <FiChevronLeft />,
+            FiChevronRight: <FiChevronRight />,
+            FiSettings: <FiSettings />,
+            FiArchive: <FiArchive />,
+        };
+
         const [isMinimized, setIsMinimized] = useState(false);
         const location = useLocation();
         const navigate = useNavigate();
@@ -85,7 +178,7 @@ const SideBarLeft =
                             {!isMinimized && <span>User Management</span>}
                         </button>
 
-                        {!isMinimized && (
+                        {/* {!isMinimized && (
                             <div className="mt-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <FiStar /> <span className="font-semibold">Favorites</span>
@@ -96,17 +189,22 @@ const SideBarLeft =
                                     <SidebarItem dark={dark} icon={<FiScissors />} title="Science" time="30 Aug" />
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
                         {!isMinimized && (
                             <div className="mt-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <FiAlignCenter /> <span className="font-semibold">Categories</span>
                                 </div>
-                                <div className="ml-1 space-y-2">
-                                    <SidebarItem dark={dark} icon={<FiCode />} title="Programming" time="1 Jun" />
-                                    <SidebarItem dark={dark} icon={<FiBook />} title="Education" time="1 Jul" />
-                                    <SidebarItem dark={dark} icon={<FiScissors />} title="Science" time="1 Aug" />
+                                <div className="ml-1 space-y-2" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
+                                    {categories.map((item) => (
+                                        <SidebarItem
+                                            key={item.ID}
+                                            dark={dark}
+                                            icon={iconMap[item.NamaIcon] || <FiStar />}
+                                            title={item.Category}
+                                            time={formatDate(item.AddTime)} />
+                                    ))}
                                 </div>
                             </div>
                         )}
