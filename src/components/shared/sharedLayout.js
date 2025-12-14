@@ -16,6 +16,10 @@ const SharedLayout = () => {
         setNama(data.user.nama);
         setRoleId(data.user.roleId);
         setRoleName(data.user.roleName);
+        localStorage.setItem("nama", data.user.nama);
+        localStorage.setItem("roleId", data.user.roleId);
+        localStorage.setItem("roleName", data.user.roleName);
+        localStorage.setItem("username", data.user.username);
         setIsLoginOpen(false);
     };
     return (
