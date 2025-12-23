@@ -30,7 +30,7 @@ const SideBarLeft =
         const [page, setPage] = useState(1);
         const [hasMore, setHasMore] = useState(true);
         const [loading, setLoading] = useState(false);
-        const [limit, setLimit] = useState(5);
+        const [limit, setLimit] = useState(20);
 
         const username = localStorage.getItem("username");
         //const username = 'nando';
