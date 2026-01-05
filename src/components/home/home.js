@@ -126,6 +126,13 @@ const Home = () => {
               },
             })
           );
+          window.dispatchEvent(
+            new CustomEvent("category-updated", {
+              detail: {
+                categoryId: data.category_id,
+              },
+            })
+          );
         }
         setIsLoading(false);
       } catch (err) {

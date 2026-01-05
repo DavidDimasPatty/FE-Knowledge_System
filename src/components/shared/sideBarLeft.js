@@ -36,11 +36,21 @@ const SideBarLeft =
 
         useEffect(() => {
             fetchCategories(1, "");
+            const handleCategoryUpdated = () => {
+                fetchCategories(1, "");
+            }
+
+            window.addEventListener("category-updated", handleCategoryUpdated);
+
+            return () => {
+                window.removeEventListener("category-updated", handleCategoryUpdated);
+            };
+
         }, [username]);
 
         const fetchCategories = async (page = 1, search = "") => {
             if (username == null) return;
-            
+
             if (loading) return;
             setLoading(true);
             const res = await axios.get(
