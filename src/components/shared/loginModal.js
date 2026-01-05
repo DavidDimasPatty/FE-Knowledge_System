@@ -64,36 +64,57 @@ const LoginModal = (
 
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 shadow-lg">
-                <h2 className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Login</h2>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="relative bg-white rounded-xl shadow-xl w-[460px] pt-20 pb-10 px-10">
+
+                {/* LOGO */}
+                <div className="absolute -top-14 left-1/2 -translate-x-1/2">
+                    <div className="w-28 h-28 rounded-full bg-white shadow-md flex items-center justify-center">
+                        <img
+                            src="/BLACK-LOGO.png"
+                            alt="logo"
+                            className="w-14 h-14 object-contain"
+                        />
+                    </div>
+                </div>
+
+                {/* TITLE */}
+                <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">
+                    Log in
+                </h2>
+
+                {/* FORM */}
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
-                        placeholder="Enter Username..."
+                        placeholder="Email or Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
+
                     <input
                         type="password"
-                        placeholder="Enter Password..."
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
+
                     <button
                         type="submit"
-                        className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition"
                     >
-                        Login
+                        Log In
                     </button>
                 </form>
+
+                {/* FOOTER */}
                 <button
                     onClick={onClose}
-                    className="mt-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-sm w-full"
+                    className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
                 >
                     Cancel
                 </button>
