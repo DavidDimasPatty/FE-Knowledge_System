@@ -33,6 +33,7 @@ const SideBarLeft =
         const [limit, setLimit] = useState(20);
 
         const username = localStorage.getItem("username");
+        const roleId = Number(localStorage.getItem("roleId"));
 
         useEffect(() => {
             fetchCategories(1, "");
@@ -173,21 +174,25 @@ const SideBarLeft =
                             {!isMinimized && <span>Start Chat</span>}
                         </button>
 
-                        <button
-                            className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/dokumen")}
-                            onClick={() => navigate("/dokumen")}
-                        >
-                            <FiDownload />
-                            {!isMinimized && <span>List Dokumen</span>}
-                        </button>
+                        {[1, 2].includes(roleId) && (
+                            <button
+                                className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/dokumen")}
+                                onClick={() => navigate("/dokumen")}
+                            >
+                                <FiDownload />
+                                {!isMinimized && <span>List Dokumen</span>}
+                            </button>
+                        )}
 
-                        <button
-                            className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/userManagement")}
-                            onClick={() => navigate("/userManagement")}
-                        >
-                            <FiUser />
-                            {!isMinimized && <span>User Management</span>}
-                        </button>
+                        {[1, 2].includes(roleId) && (
+                            <button
+                                className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/userManagement")}
+                                onClick={() => navigate("/userManagement")}
+                            >
+                                <FiUser />
+                                {!isMinimized && <span>User Management</span>}
+                            </button>
+                        )}
 
                         {/* {!isMinimized && (
                             <div className="mt-4">
