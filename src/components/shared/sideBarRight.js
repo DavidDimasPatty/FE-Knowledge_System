@@ -2,25 +2,23 @@ import React, { useEffect, useState } from "react";
 import { BsFillStarFill } from "react-icons/bs";
 import { FiPlus, FiBook, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors, FiArchive, FiSearch } from "react-icons/fi";
 import axios from "axios";
+import withReactContent from "sweetalert2-react-content";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const SideBarRight = ({ dark }) => {
     const [isSearch, setIsSearch] = useState(false)
     const [favoriteTopics, setFavoriteTopics] = useState([]);
     const [nonFavoriteTopics, setNonFavoriteTopics] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState("");
-
     const [pageFavorite, setPageFavorite] = useState(1);
     const [pageNonFavorite, setPageNonFavorite] = useState(1);
     const [hasMoreFavorite, setHasMoreFavorite] = useState(true);
     const [hasMoreNonFavorite, setHasMoreNonFavorite] = useState(true);
-
     const [loadingNonFavorite, setLoadingNonFavorite] = useState(false);
     const [loadingFavorite, setLoadingFavorite] = useState(false);
-
+    const MySwal = withReactContent(Swal);
     const [limit, setLimit] = useState(20);
     const navigate = useNavigate();
-
-    // const username = localStorage.getItem("username");
     const username = localStorage.getItem("username");
 
     useEffect(() => {
@@ -56,6 +54,31 @@ const SideBarRight = ({ dark }) => {
         else setFavoriteTopics(prev => [...prev, ...newData]);
 
         setHasMoreFavorite(newData.length === limit);
+    };
+
+    const handleFavoriteTopic = async (idTopic, like) => {
+        // e.preventDefault();
+        try {
+            var res = await axios.post("http://localhost:8080/editFavTopic",
+                {
+                    "idTopic": idTopic,
+                    "username": username,
+                    "like": like
+                }
+            );
+            console.log("Success:", res.data);
+            fetchFavorite(1);
+            fetchNonFavorite(1);
+        } catch (err) {
+            console.log("Backend error:", err.response.data);
+            MySwal.fire({
+                title: "Error!",
+                text: `Error Add : ${err.response.data.error}.`,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        }
     };
 
 
@@ -164,7 +187,7 @@ const SideBarRight = ({ dark }) => {
                             className="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
                         />
                         <FiPlus
-                            onClick={() =>  window.location.replace("/")}
+                            onClick={() => window.location.replace("/")}
                             className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
                         />
                     </div>
@@ -179,7 +202,7 @@ const SideBarRight = ({ dark }) => {
                         <SidebarItem
                             key={item.ID}
                             dark={dark}
-                            icon={<BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} />}
+                            icon={<div onClick={()=>handleFavoriteTopic(item.ID, 0)}><BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} /></div>}
                             title={item.Topic}
                             desc={item.Desctription}
                             idCategory={item.IdCategories}
@@ -196,7 +219,7 @@ const SideBarRight = ({ dark }) => {
                         <SidebarItem
                             key={item.ID}
                             dark={dark}
-                            icon={<FiStar />}
+                            icon={<div onClick={()=>handleFavoriteTopic(item.ID, 1)}><FiStar /></div>}
                             title={item.Topic}
                             desc={item.Desctription}
                             idCategory={item.IdCategories}
