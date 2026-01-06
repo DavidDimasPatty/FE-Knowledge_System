@@ -17,18 +17,18 @@ const Home = () => {
   const navigate = useNavigate();
   const urlTopic = searchParams.get("topic");
   const urlCategory = searchParams.get("category");
-  const [isFirst, setIsFirst] = useState(!urlTopic);
+  const isFirstRef = useRef(!urlTopic);
   const [isInitLoaded, setIsInitLoaded] = useState(false);
 
   useEffect(() => {
     if (urlTopic && urlCategory) {
       setIdTopic(Number(urlTopic));
       setIdCategory(Number(urlCategory));
-      setIsFirst(false);
+      isFirstRef.current = false;
 
       loadHistory(urlTopic, urlCategory);
     } else {
-      setIsFirst(true);
+      isFirstRef.current = true;
       setIsInitLoaded(true);
       setMessages([]);
       console.log("masuk")
@@ -109,7 +109,7 @@ const Home = () => {
           text: data.answer,
         };
         setMessages((prev) => [...prev, botMessage]);
-        if (isFirst && data.topic_id && data.category_id) {
+        if (isFirstRef.current && data.topic_id && data.category_id) {
           navigate(
             `?topic=${data.topic_id}&category=${data.category_id}`,
             { replace: true }
@@ -117,7 +117,8 @@ const Home = () => {
 
           setIdTopic(data.topic_id);
           setIdCategory(data.category_id);
-          setIsFirst(false);
+          //setIsFirst(false);
+          isFirstRef.current = false;
           window.dispatchEvent(
             new CustomEvent("topic-updated", {
               detail: {
@@ -156,7 +157,7 @@ const Home = () => {
       console.warn("WS not ready");
       return;
     }
-    if (isFirst) setIsFirst(false);
+    //isFirstRef.current = false;
     const username = localStorage.getItem("username");
     console.log("masukkk")
     setIsLoading(true);
@@ -174,7 +175,7 @@ const Home = () => {
         isLoading={isLoading}
         bottomRef={bottomRef}
         dark={dark}
-        isFirst={isFirst}
+        isFirst={isFirstRef.current}
         input={input}
         setInput={setInput}
         sendMessage={sendMessage}
@@ -185,7 +186,7 @@ const Home = () => {
         setInput={setInput}
         sendMessage={sendMessage}
         dark={dark}
-        isFirst={isFirst}
+        isFirst={isFirstRef.current}
       />
     </div>
 

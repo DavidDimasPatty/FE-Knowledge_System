@@ -164,7 +164,7 @@ const SideBarRight = ({ dark }) => {
                             className="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
                         />
                         <FiPlus
-                            onClick={() => navigate("/")}
+                            onClick={() =>  window.location.replace("/")}
                             className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
                         />
                     </div>
