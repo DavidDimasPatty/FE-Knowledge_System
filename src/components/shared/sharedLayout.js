@@ -11,6 +11,7 @@ const SharedLayout = () => {
     const [roleName, setRoleName] = useState("");
     const [roleId, setRoleId] = useState(0);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isEditPasswordOpen, setIsPasswordOpen] = useState(false);
     const [openDropDown, setOpenDropdown] = useState(false);
 
     const handleLogin = (data) => {
@@ -44,6 +45,8 @@ const SharedLayout = () => {
                     login={login}
                     setLogin={setLogin}
                     openDropDown={openDropDown}
+                    isEditPasswordOpen={isEditPasswordOpen}
+                    setIsPasswordOpen={setIsPasswordOpen}
                     setOpenDropdown={setOpenDropdown}
                 />
 

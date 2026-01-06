@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import EditPasswordModal from "./editPasswordModal";
 
 const SideBarLeft =
     ({
@@ -22,7 +23,9 @@ const SideBarLeft =
         login,
         setLogin,
         openDropDown,
-        setOpenDropdown
+        setOpenDropdown,
+        isEditPasswordOpen,
+        setIsPasswordOpen
     }) => {
         const [isSearch, setIsSearch] = useState(false)
         const [categories, setCategories] = useState([]);
@@ -217,7 +220,7 @@ const SideBarLeft =
                                         <SidebarItem
                                             key={item.ID}
                                             dark={dark}
-                                            icon={iconMap[item.NamaIcon] || <FiStar />}
+                                            // icon={iconMap[item.NamaIcon] || <FiStar />}
                                             title={item.Category}
                                             time={formatDate(item.AddTime)} />
                                     ))}
@@ -237,7 +240,7 @@ const SideBarLeft =
                                 >
                                     <button
                                         onClick={() => {
-                                            setOpenDropdown(false);
+                                            setIsPasswordOpen(true)
                                         }}
                                         className={
                                             "w-full text-left px-4 py-2 hover:bg-gray-100 " +
@@ -286,6 +289,10 @@ const SideBarLeft =
                         </div>
                     )}
                 </div>
+                <EditPasswordModal
+                    isOpen={isEditPasswordOpen}
+                    onClose={() => setIsPasswordOpen(false)}
+                />
             </div >
         );
     };
