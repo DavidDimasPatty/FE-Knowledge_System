@@ -43,7 +43,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen }) => {
     };
 
     if (!isOpen) return null;
-    
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 shadow-lg">
@@ -54,14 +54,24 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen }) => {
                         placeholder="Enter Document Name..."
                         value={docName}
                         onChange={(e) => setDocName(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="
+                            p-2 border border-gray-300 rounded
+                            focus:outline-none focus:ring-2 focus:ring-blue-500
+                            text-black dark:text-black
+                            bg-white dark:bg-white
+                        "
                         required
                     />
                     <input
                         type="file"
                         placeholder="Submit File"
                         onChange={(e) => setFile(e.target.files[0])}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="
+                            p-2 border border-gray-300 rounded
+                            focus:outline-none focus:ring-2 focus:ring-blue-500
+                            text-black dark:text-black
+                            bg-white dark:bg-white
+                        "
                         required
                     />
                     <button

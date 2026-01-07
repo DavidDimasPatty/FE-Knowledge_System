@@ -1,5 +1,6 @@
 import React from "react";
 import LoginModal from "./loginModal";
+import { useNavigate } from "react-router-dom";
 
 const TopBar = ({
     dark,
@@ -9,6 +10,9 @@ const TopBar = ({
     setIsLoginOpen,
     isLoginOpen,
     handleLogin }) => {
+
+    const navigate = useNavigate();
+
     return (
         <div
             className={
@@ -17,9 +21,19 @@ const TopBar = ({
                     : "w-full px-4 py-3 border-b  text-black border-gray-300 bg-white flex items-center justify-between"
             }
         >
-            <h2 className="text-lg font-semibold">
-                Ikodora
-            </h2>
+            <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => navigate("/")}
+            >
+                <img
+                    src={dark ? "/WHITE-LOGO.png" : "/BLACK-LOGO.png"}
+                    alt="Ikodora Logo"
+                    className="w-8 h-8 object-contain transition-transform duration-300 hover:scale-105"
+                />
+                <h2 className="text-lg font-semibold tracking-wide">
+                    Ikodora
+                </h2>
+            </div>
 
             <div className="flex items-center space-x-3">
                 <button

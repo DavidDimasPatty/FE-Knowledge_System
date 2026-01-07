@@ -131,15 +131,19 @@ const SideBarLeft =
         const [isMinimized, setIsMinimized] = useState(false);
         const location = useLocation();
         const navigate = useNavigate();
-        const bgColor = (bg) => {
-            return location.pathname === bg
-                ? "bg-blue-200  hover:bg-blue-300 "
-                : location.pathname === bg
-                    ? "bg-blue-200  hover:bg-blue-300 "
-                    : location.pathname === bg
-                        ? "bg-blue-200  hover:bg-blue-300 "
-                        : "hover:bg-gray-300 ";
-        }
+        const bgColor = (path) => {
+            const isActive = location.pathname === path;
+
+            if (isActive) {
+                return dark
+                    ? "bg-blue-600 text-white hover:bg-blue-700" // ACTIVE + DARK
+                    : "bg-blue-200 text-black hover:bg-blue-300"; // ACTIVE + LIGHT
+            }
+
+            return dark
+                ? "hover:bg-gray-700 text-gray-300"
+                : "hover:bg-gray-300 text-gray-800";
+        };
 
         return (
             <div
@@ -168,7 +172,7 @@ const SideBarLeft =
                         </button>
                     </div>
 
-                    <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
+                    <div className="flex flex-col gap-2 flex-1 overflow-y-auto custom-scroll">
                         <button
                             className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/")}
                             onClick={() => navigate("/")}
@@ -197,25 +201,12 @@ const SideBarLeft =
                             </button>
                         )}
 
-                        {/* {!isMinimized && (
-                            <div className="mt-4">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <FiStar /> <span className="font-semibold">Favorites</span>
-                                </div>
-                                <div className="ml-1 space-y-2">
-                                    <SidebarItem dark={dark} icon={<FiCode />} title="Programming" time="29 Aug" />
-                                    <SidebarItem dark={dark} icon={<FiBook />} title="Education" time="29 Aug" />
-                                    <SidebarItem dark={dark} icon={<FiScissors />} title="Science" time="30 Aug" />
-                                </div>
-                            </div>
-                        )} */}
-
                         {!isMinimized && (
                             <div className="mt-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <FiAlignCenter /> <span className="font-semibold">Categories</span>
                                 </div>
-                                <div className="ml-1 space-y-2" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
+                                <div className="ml-1 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
                                     {categories.map((item) => (
                                         <SidebarItem
                                             key={item.ID}
@@ -309,7 +300,7 @@ const SidebarItem = ({ dark, icon, title, time }) => {
                 {icon}
                 <span>{title}</span>
             </div>
-            <span className="text-xs opacity-70">{time}</span>
+            <span className="text-xs opacity-70 me-1">{time}</span>
         </div>
     );
 };

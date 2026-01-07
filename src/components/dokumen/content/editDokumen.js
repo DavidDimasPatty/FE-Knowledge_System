@@ -81,7 +81,7 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen }) => {
                         placeholder="Enter Document Name..."
                         value={docName}
                         onChange={(e) => setDocName(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
                     <input
@@ -89,14 +89,14 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen }) => {
                         placeholder="Submit File"
                         value={docLink}
                         onChange={(e) => setDocLink(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         readOnly={true}
                     />
                     <input
                         type="file"
                         placeholder="Submit File"
                         onChange={(e) => setFile(e.target.files[0])}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
 
                     />
                     <button

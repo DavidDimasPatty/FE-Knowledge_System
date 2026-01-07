@@ -175,7 +175,7 @@ const SideBarRight = ({ dark }) => {
                             placeholder="Cari Topik..."
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
-                            className={`h-7 pl-2 pr-10 border rounded-md outline-none transition-all duration-500 ease-in-out
+                            className={`h-7 pl-2 pr-10 border rounded-md outline-none transition-all duration-500 ease-in-out text-black dark:text-black bg-white dark:bg-white
     ${isSearch ? 'w-full opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
                             autoFocus={isSearch}
                             style={{ float: 'right' }}
@@ -184,11 +184,11 @@ const SideBarRight = ({ dark }) => {
 
                         <FiSearch
                             onClick={() => setIsSearch(!isSearch)}
-                            className="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
+                            className="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700 text-black dark:text-black bg-white dark:bg-white"
                         />
                         <FiPlus
                             onClick={() => window.location.replace("/")}
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700"
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700 text-black dark:text-black bg-white dark:bg-white"
                         />
                     </div>
                 </div>
@@ -196,7 +196,7 @@ const SideBarRight = ({ dark }) => {
                 <div className="flex items-center gap-2 mb-2 ml-2 p-1 border-b">
                     <span className="font-semibold">Saved Topics</span>
                 </div>
-                <div className="ml-1 space-y-2" style={{ maxHeight: "200px", overflowY: "auto" }} onScroll={handleScrollFavorite}>
+                <div className="ml-1 space-y-2 custom-scroll" style={{ maxHeight: "200px", overflowY: "auto" }} onScroll={handleScrollFavorite}>
 
                     {favoriteTopics.map((item) => (
                         <SidebarItem
@@ -214,7 +214,7 @@ const SideBarRight = ({ dark }) => {
                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
                     <span className="font-semibold">Recents</span>
                 </div>
-                <div className="ml-1 space-y-2" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
+                <div className="ml-1 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
                     {nonFavoriteTopics.map((item) => (
                         <SidebarItem
                             key={item.ID}

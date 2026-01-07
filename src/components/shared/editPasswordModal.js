@@ -142,7 +142,7 @@ const EditPasswordModal = (
                             placeholder="Password Lama"
                             value={oldPassword}
                             onChange={(e) => setOldPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12"
+                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white"
                             required
                         />
 
@@ -160,7 +160,7 @@ const EditPasswordModal = (
                             placeholder="Password Baru"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12"
+                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white"
                             required
                         />
 
@@ -178,7 +178,7 @@ const EditPasswordModal = (
                             placeholder="Ketik Ulang Password Baru"
                             value={retypeNewPassword}
                             onChange={(e) => setRetypeNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12"
+                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white"
                             required
                         />
 

@@ -90,7 +90,7 @@ const LoginModal = (
                         placeholder="Email or Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
 
@@ -99,7 +99,7 @@ const LoginModal = (
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
 

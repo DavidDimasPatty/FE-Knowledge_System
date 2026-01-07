@@ -57,7 +57,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                         placeholder="Enter Username..."
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
                     <input
@@ -65,7 +65,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                         placeholder="Enter Name..."
                         value={nama}
                         onChange={(e) => setNama(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
                     <input
@@ -73,7 +73,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                         placeholder="Enter Email..."
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
                     <input
@@ -81,10 +81,10 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                         placeholder="Enter Phone Number..."
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         required
                     />
-                    <select className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <select className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
                         onChange={(e) => setRole(Number(e.target.value))}
                         value={role}
                         required
