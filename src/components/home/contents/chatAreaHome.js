@@ -1,6 +1,7 @@
 import React from "react";
 import { FiSend, FiMic, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors } from "react-icons/fi";
-
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, sendMessage, setInput }) => {
   return (messages.length === 0 && isFirst
     ?
@@ -79,7 +80,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
             <div
               className={
                 [
-                  " max-w-[65%] break-words whitespace-pre-wrap text-sm leading-relaxed",
+                  " max-w-[65%] break-words whitespace-pre-wrap text-sm leading-relaxed text-justify",
                   "px-4 py-3 rounded-2xl shadow-sm transition-transform transform",
                   msg.role === "user"
                     ? "bg-blue-600 text-white rounded-br-[8px] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl hover:scale-[1.01]"
@@ -90,7 +91,19 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
               }
               style={{ wordBreak: "break-word" }}
             >
-              {msg.text}
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  strong: ({ children }) => (
+                    <strong className="font-semibold">{children}</strong>
+                  ),
+                  em: ({ children }) => (
+                    <em className="italic">{children}</em>
+                  ),
+                }}
+              >
+                {msg.text}
+              </ReactMarkdown>
             </div>
 
           </div>
@@ -99,8 +112,16 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
 
       {isLoading && (
         <div className="text-left">
-          <div className={dark ? "px-4 py-2 bg-gray-700 rounded-lg inline-block" : "px-4 py-2 bg-gray-300 rounded-lg inline-block"}>
-            <span className="animate-pulse">•••</span>
+          <div className={`px-4 py-2 rounded-2xl inline-flex items-center gap-2
+    ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-300 text-gray-700"}`}>
+
+            <div className="flex space-x-1">
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-150"></span>
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-300"></span>
+            </div>
+
+            <span className="text-xs">AI is thinking</span>
           </div>
         </div>
       )}

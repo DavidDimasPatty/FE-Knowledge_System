@@ -93,8 +93,9 @@ const Home = () => {
     const query = new URLSearchParams({
       userId: username,
       username: username,
-      idCategory: idCategory === 0 ? "" : idCategory,
-      topic: idTopic === 0 ? "" : idTopic,
+      // idCategory: idCategory === 0 ? "" : idCategory,
+      // topic: idTopic === 0 ? "" : idTopic,
+      // isFirst:isFirstRef.current
     });
 
     const ws = new WebSocket("ws://localhost:8080/ws?" + query.toString());
@@ -104,6 +105,7 @@ const Home = () => {
     ws.onmessage = (msg) => {
       try {
         const data = JSON.parse(msg.data);
+        console.log(data)
         const botMessage = {
           role: "bot",
           text: data.answer,
@@ -161,9 +163,12 @@ const Home = () => {
     const username = localStorage.getItem("username");
     console.log("masukkk")
     setIsLoading(true);
-    const userMsg = { role: "user", text: input, username: username };
+    const userMsg = {
+      role: "user", text: input, username: username, isFirst: isFirstRef.current, idCategory: idCategory === 0 ? null : idCategory,
+      topic: idTopic === 0 ? null : idTopic,
+    };
     setMessages((prev) => [...prev, userMsg]);
-    socket.send(input);
+    socket.send(JSON.stringify(userMsg));
     setInput("");
   };
 
