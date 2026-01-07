@@ -245,7 +245,7 @@ const SideBarLeft =
                                         onClick={() => {
                                             setLogin(!login)
                                             localStorage.clear();
-                                            window.location.reload();
+                                            window.location.href = "/";
                                         }}
                                         className={
                                             "w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 " +
