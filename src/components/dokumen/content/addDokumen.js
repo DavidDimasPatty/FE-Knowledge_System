@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-const AddDokumen = ({ isOpen, onClose, fetchDokumen }) => {
+const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) => {
     const [docName, setDocName] = useState("");
     const [file, setFile] = useState(null);
     const MySwal = withReactContent(Swal);
@@ -16,6 +16,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen }) => {
         formData.append("judul", docName);
         formData.append("addId", "David");
         try {
+            setIsLoading(true)
             const res = await fetch("http://localhost:8080/addDokumen", {
                 method: "POST",
                 body: formData,
@@ -30,7 +31,9 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen }) => {
             });
             fetchDokumen();
             onClose();
+            setIsLoading(false)
         } catch (err) {
+            setIsLoading(false)
             console.log("Backend error:", err.response.data);
             MySwal.fire({
                 title: "Error!",

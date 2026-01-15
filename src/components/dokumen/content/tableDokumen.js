@@ -12,9 +12,11 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
     const [selectedDokumenId, setSelectedDokumenId] = useState(null);
     const MySwal = withReactContent(Swal);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const downloadDokumen = async (id) => {
         try {
+            setIsLoading(true)
             const response = await axios.post(
                 "http://localhost:8080/downloadDokumen",
                 { id },
@@ -41,7 +43,9 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             window.URL.revokeObjectURL(url);
 
             console.log("File downloaded:", fileName);
+            setIsLoading(false)
         } catch (err) {
+            setIsLoading(false)
             console.error("Download failed:", err);
         }
     };
@@ -62,6 +66,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
+                    setIsLoading(true)
                     await axios.post("http://localhost:8080/deleteDokumen", { id });
 
                     MySwal.fire({
@@ -72,7 +77,9 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         showConfirmButton: false
                     });
                     fetchDokumen();
+                    setIsLoading(false)
                 } catch (err) {
+                    setIsLoading(false)
                     MySwal.fire({
                         title: "Error!",
                         text: `${document.Judul} Error Deleted : ${err}.`,
@@ -133,35 +140,45 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             width: "300px",
         }
     ];
-    return (<div>
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">List Dokumen</h1>
-            <button
-                onClick={() => setIsOpenAdd(true)}
-                className="px-3 py-1 w-30 mb-3 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-                Add Dokumen
-            </button>
-            <DataTable
-                columns={columns}
-                data={dokumen}
-                pagination
-                highlightOnHover
-                selectableRows
+    return (
+        <div>
+            {isLoading && (
+                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                    <div className="w-12 h-12 border-4 border-white/50 border-t-white rounded-full animate-spin" />
+                </div>
+            )}
+            <div className="p-4">
+                <h1 className="text-2xl font-bold mb-4">List Dokumen</h1>
+                <button
+                    onClick={() => setIsOpenAdd(true)}
+                    className="px-3 py-1 w-30 mb-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    Add Dokumen
+                </button>
+                <DataTable
+                    columns={columns}
+                    data={dokumen}
+                    pagination
+                    highlightOnHover
+                    selectableRows
+                />
+            </div>
+            <AddDokumen
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                isOpen={isOpenAdd}
+                onClose={() => setIsOpenAdd(!isOpenAdd)}
+                fetchDokumen={fetchDokumen}
             />
-        </div>
-        <AddDokumen
-            isOpen={isOpenAdd}
-            onClose={() => setIsOpenAdd(!isOpenAdd)}
-            fetchDokumen={fetchDokumen}
-        />
-        <EditDokumen
-            isOpen={isOpenEdit}
-            onClose={() => setIsOpenEdit(!isOpenEdit)}
-            idDokumen={selectedDokumenId}
-            fetchDokumen={fetchDokumen}
-        />
-    </div>);
+            <EditDokumen
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                isOpen={isOpenEdit}
+                onClose={() => setIsOpenEdit(!isOpenEdit)}
+                idDokumen={selectedDokumenId}
+                fetchDokumen={fetchDokumen}
+            />
+        </div>);
 }
 
 export default TableDokumen;

@@ -90,9 +90,11 @@ const Home = () => {
   useEffect(() => {
     if (!isInitLoaded) return;
     const username = localStorage.getItem("username");
+    const roleName = localStorage.getItem("roleName") ?? "guest";
     const query = new URLSearchParams({
       userId: username,
       username: username,
+      role: roleName
       // idCategory: idCategory === 0 ? "" : idCategory,
       // topic: idTopic === 0 ? "" : idTopic,
       // isFirst:isFirstRef.current
@@ -102,46 +104,144 @@ const Home = () => {
 
     ws.onopen = () => console.log("WS Connected");
 
+    // ws.onmessage = (msg) => {
+    //   try {
+    //     const data = JSON.parse(msg.data);
+    //     console.log(data)
+    //     const botMessage = {
+    //       role: "bot",
+    //       text: data.answer,
+    //     };
+    //     setMessages((prev) => [...prev, botMessage]);
+    //     if (isFirstRef.current && data.topic_id && data.category_id) {
+    //       navigate(
+    //         `?topic=${data.topic_id}&category=${data.category_id}`,
+    //         { replace: true }
+    //       );
+
+    //       setIdTopic(data.topic_id);
+    //       setIdCategory(data.category_id);
+    //       //setIsFirst(false);
+    //       isFirstRef.current = false;
+    //       window.dispatchEvent(
+    //         new CustomEvent("topic-updated", {
+    //           detail: {
+    //             topicId: data.topic_id,
+    //             categoryId: data.category_id,
+    //           },
+    //         })
+    //       );
+    //       window.dispatchEvent(
+    //         new CustomEvent("category-updated", {
+    //           detail: {
+    //             categoryId: data.category_id,
+    //           },
+    //         })
+    //       );
+    //     }
+    //     setIsLoading(false);
+    //   } catch (err) {
+    //     console.error("Invalid JSON from server:", msg.data);
+    //   }
+    // }
     ws.onmessage = (msg) => {
       try {
         const data = JSON.parse(msg.data);
-        console.log(data)
-        const botMessage = {
-          role: "bot",
-          text: data.answer,
-        };
-        setMessages((prev) => [...prev, botMessage]);
-        if (isFirstRef.current && data.topic_id && data.category_id) {
-          navigate(
-            `?topic=${data.topic_id}&category=${data.category_id}`,
-            { replace: true }
-          );
+        console.log("WS:", data);
 
-          setIdTopic(data.topic_id);
-          setIdCategory(data.category_id);
-          //setIsFirst(false);
-          isFirstRef.current = false;
-          window.dispatchEvent(
-            new CustomEvent("topic-updated", {
-              detail: {
-                topicId: data.topic_id,
-                categoryId: data.category_id,
-              },
-            })
-          );
-          window.dispatchEvent(
-            new CustomEvent("category-updated", {
-              detail: {
-                categoryId: data.category_id,
-              },
-            })
-          );
+        // === STREAM TOKEN ===
+        if (data.type === "chunk") {
+          setMessages((prev) => {
+            const last = prev[prev.length - 1];
+
+            // kalau belum ada bot message → buat
+            if (!last || last.role !== "bot" || last.isStreaming !== true) {
+              return [
+                ...prev,
+                {
+                  role: "bot",
+                  text: data.content,
+                  isStreaming: true,
+                },
+              ];
+            }
+
+            // append ke message terakhir
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              ...last,
+              text: last.text + data.content,
+            };
+
+            return updated;
+          });
+          return;
         }
-        setIsLoading(false);
+
+        // === STREAM SELESAI ===
+        if (data.type === "done") {
+          setMessages((prev) => {
+            const updated = [...prev];
+            const last = updated[updated.length - 1];
+
+            if (last?.role === "bot") {
+              updated[updated.length - 1] = {
+                ...last,
+                isStreaming: false,
+              };
+            }
+            return updated;
+          });
+
+          // topic & category hanya di first message
+          if (
+            isFirstRef.current &&
+            data.topic_id &&
+            data.category_id
+          ) {
+            navigate(
+              `?topic=${data.topic_id}&category=${data.category_id}`,
+              { replace: true }
+            );
+
+            setIdTopic(data.topic_id);
+            setIdCategory(data.category_id);
+            isFirstRef.current = false;
+
+            window.dispatchEvent(
+              new CustomEvent("topic-updated", {
+                detail: {
+                  topicId: data.topic_id,
+                  categoryId: data.category_id,
+                },
+              })
+            );
+
+            window.dispatchEvent(
+              new CustomEvent("category-updated", {
+                detail: {
+                  categoryId: data.category_id,
+                },
+              })
+            );
+          }
+
+          setIsLoading(false);
+          return;
+        }
+
+        // === ERROR ===
+        if (data.error) {
+          setMessages((prev) => [
+            ...prev,
+            { role: "bot", text: "❌ " + data.error },
+          ]);
+          setIsLoading(false);
+        }
       } catch (err) {
         console.error("Invalid JSON from server:", msg.data);
       }
-    }
+    };
 
 
     ws.onerror = (err) => console.error("WS Error:", err);
@@ -153,22 +253,48 @@ const Home = () => {
   }, [isInitLoaded]);
 
 
+  // const sendMessage = () => {
+  //   if (!input.trim() || !socket) return;
+  //   if (!socket || socket.readyState !== WebSocket.OPEN) {
+  //     console.warn("WS not ready");
+  //     return;
+  //   }
+  //   //isFirstRef.current = false;
+  //   const username = localStorage.getItem("username");
+  //   console.log("masukkk")
+  //   setIsLoading(true);
+  //   const userMsg = {
+  //     role: "user", text: input, username: username, isFirst: isFirstRef.current, idCategory: idCategory === 0 ? null : idCategory,
+  //     topic: idTopic === 0 ? null : idTopic,
+  //   };
+  //   setMessages((prev) => [...prev, userMsg]);
+  //   socket.send(JSON.stringify(userMsg));
+  //   setInput("");
+  // };
+
   const sendMessage = () => {
-    if (!input.trim() || !socket) return;
+    if (!input.trim()) return;
     if (!socket || socket.readyState !== WebSocket.OPEN) {
       console.warn("WS not ready");
       return;
     }
-    //isFirstRef.current = false;
-    const username = localStorage.getItem("username");
-    console.log("masukkk")
+
     setIsLoading(true);
-    const userMsg = {
-      role: "user", text: input, username: username, isFirst: isFirstRef.current, idCategory: idCategory === 0 ? null : idCategory,
-      topic: idTopic === 0 ? null : idTopic,
-    };
-    setMessages((prev) => [...prev, userMsg]);
-    socket.send(JSON.stringify(userMsg));
+
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: input },
+    ]);
+
+    socket.send(
+      JSON.stringify({
+        text: input,
+        isFirst: isFirstRef.current,
+        idCategory: idCategory || 0,
+        topic: idTopic || 0,
+      })
+    );
+
     setInput("");
   };
 

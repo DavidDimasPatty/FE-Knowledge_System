@@ -36,6 +36,7 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen }) => {
         formData.append("judul", docName);
         formData.append("updId", "David");
         try {
+            setIsLoading(true)
             const res = await fetch("http://localhost:8080/editDokumen", {
                 method: "POST",
                 body: formData,
@@ -50,7 +51,9 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen }) => {
             });
             fetchDokumen();
             onClose();
+            setIsLoading(false)
         } catch (err) {
+            setIsLoading(false)
             console.log("Backend error:", err.response.data);
             MySwal.fire({
                 title: "Error!",
