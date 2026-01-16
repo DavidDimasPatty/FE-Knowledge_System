@@ -4,6 +4,7 @@ import Error from "./components/error/error";
 import SharedLayout from "./components/shared/sharedLayout";
 import Dokumen from "./components/dokumen/dokumen";
 import UserManagement from "./components/userManagement/userManagement";
+import ResetPassword from "./components/resetPassword/resetPassword";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/dokumen" element={<Dokumen />} />
           <Route path="/userManagement" element={<UserManagement />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>

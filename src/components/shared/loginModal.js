@@ -3,17 +3,22 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 const LoginModal = (
-    { 
-    isOpen,
-    onClose,
-    onLogin,
-    setLogin,
-    login,
-        
+    {
+        isOpen,
+        onClose,
+        onLogin,
+        setLogin,
+        login,
+
     }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const MySwal = withReactContent(Swal);
+
+    const [mode, setMode] = useState("login"); // login | reset
+    const [email, setEmail] = useState("");
+
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -62,6 +67,43 @@ const LoginModal = (
         }
     };
 
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+
+        if (loading) return;
+
+        setLoading(true);
+
+        try {
+            const response = await axios.post("http://localhost:8080/sendEmailResetPassword", {
+                email: email,
+            });
+
+            MySwal.fire({
+                title: "Success!",
+                text: "Link reset password telah dikirim ke email.",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            setMode("login");
+            setEmail("");
+
+        } catch (error) {
+            MySwal.fire({
+                title: "Error!",
+                text: error.response?.data?.error || "Gagal reset password.",
+                icon: "error",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -79,37 +121,94 @@ const LoginModal = (
                 </div>
 
                 {/* TITLE */}
-                <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">
-                    Log in
-                </h2>
+                {mode === "login" && (
+                    <>
+                        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">
+                            Log In
+                        </h2>
+                    </>
+                )}
+
+                {mode === "reset" && (
+                    <>
+                        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">
+                            Reset Password
+                        </h2>
+                    </>
+                )}
 
                 {/* FORM */}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        placeholder="Email or Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
-                        required
-                    />
+                <form
+                    onSubmit={mode === "login" ? handleSubmit : handleResetPassword}
+                    className="space-y-4"
+                >
+                    {mode === "login" && (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white"
-                        required
-                    />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                        </>
+                    )}
+
+                    {mode === "reset" && (
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
+                    )}
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition"
+                        disabled={loading}
+                        className={`w-full py-3 rounded-lg font-semibold text-white transition
+                            ${mode === "login"
+                                ? "bg-blue-500 hover:bg-blue-600"
+                                : "bg-red-500 hover:bg-red-600"
+                            }
+                            ${loading ? "opacity-60 cursor-not-allowed" : ""}
+                        `}
                     >
-                        Log In
+                        {loading ? "Processing..." : mode === "login" ? "Log In" : "Reset Password"}
                     </button>
+
+
                 </form>
+
+                {mode === "login" && (
+                    <button
+                        onClick={() => setMode("reset")}
+                        className="mt-5 w-full text-red-500 hover:underline"
+                    >
+                        Forgot Password?
+                    </button>
+                )}
+
+                {mode === "reset" && (
+                    <button
+                        onClick={() => setMode("login")}
+                        className="mt-5 w-full text-blue-500 hover:underline"
+                    >
+                        Back to <b>Log In</b>
+                    </button>
+                )}
 
                 {/* FOOTER */}
                 <button
