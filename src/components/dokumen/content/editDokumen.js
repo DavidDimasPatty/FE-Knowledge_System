@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen }) => {
+const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsLoading }) => {
     const [docName, setDocName] = useState("");
     const [docLink, setDocLink] = useState("");
     const [file, setFile] = useState(null);

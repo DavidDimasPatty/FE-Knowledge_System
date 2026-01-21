@@ -17,8 +17,8 @@ const TopBar = ({
         <div
             className={
                 dark
-                    ? "w-full px-4 py-3 border-b  text-white border-gray-700 bg-gray-900 flex items-center justify-between"
-                    : "w-full px-4 py-3 border-b  text-black border-gray-300 bg-white flex items-center justify-between"
+                    ? "w-full px-4 py-3 bg-gray-900 text-white flex items-center justify-between"
+                    : "w-full px-4 py-3  bg-gray-100 text-black  flex items-center justify-between"
             }
         >
             <div
@@ -40,7 +40,7 @@ const TopBar = ({
                     onClick={() => setDark(!dark)}
                     className={
                         "w-16 h-8 flex items-center rounded-full p-1 transition-all duration-300 relative " +
-                        (dark ? "bg-gray-700" : "bg-blue-400")
+                        (dark ? "bg-gray-700" : " bg-gradient-to-r from-indigo-500 to-blue-500")
                     }
                 >
                     <span
@@ -69,10 +69,9 @@ const TopBar = ({
                     ></div>
                 </button>
 
-                {!localStorage.getItem("login") && (
-                    <div className="flex items-end space-x-3">
+                {/* <div className="flex items-end space-x-3">
 
-                        <button
+                       <button
                             onClick={() => setIsLoginOpen(true)}
                             className={
                                 "w-16 h-8  rounded-full p-1 transition-all duration-300 relative " +
@@ -80,8 +79,24 @@ const TopBar = ({
                             }
                         ><b>Log In</b></button>
 
-                    </div>
-                )}
+                    </div> */}
+                <div className="relative px-3">
+                    <button
+                        className="
+                                    w-full flex items-center justify-center gap-2
+                                    px-4 py-2.5 rounded-xl
+                                    bg-gradient-to-r from-indigo-500 to-blue-500
+                                    text-white text-sm font-semibold
+                                    shadow-md shadow-indigo-500/30
+                                    transition-all duration-200
+                                    hover:shadow-lg hover:scale-[1.02]
+                                    active:scale-[0.98]
+                                "  onClick={() => setIsLoginOpen(true)}
+                    >
+                        Login
+                    </button>
+                </div>
+
             </div>
             <LoginModal
                 isOpen={isLoginOpen}

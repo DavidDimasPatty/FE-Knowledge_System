@@ -28,31 +28,38 @@ const SharedLayout = () => {
     return (
 
         <div className="w-full h-screen flex flex-col">
-            <TopBar
-                setDark={setDark}
-                dark={dark}
-                login={login}
-                setLogin={setLogin}
-                handleLogin={handleLogin}
-                isLoginOpen={isLoginOpen}
-                setIsLoginOpen={setIsLoginOpen}
-            />
-            <div
-                className={`flex flex-1 ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
-            >
-                <SideBarLeft
+            {!login &&
+                <TopBar
+                    setDark={setDark}
                     dark={dark}
                     login={login}
                     setLogin={setLogin}
-                    openDropDown={openDropDown}
-                    isEditPasswordOpen={isEditPasswordOpen}
-                    setIsPasswordOpen={setIsPasswordOpen}
-                    setOpenDropdown={setOpenDropdown}
+                    handleLogin={handleLogin}
+                    isLoginOpen={isLoginOpen}
+                    setIsLoginOpen={setIsLoginOpen}
                 />
+            }
+            <div
+                className={` w-full h-screen flex gap-5 flex-row ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
+            >
 
+                {login &&
+                    <SideBarLeft
+                        dark={dark}
+                        login={login}
+                        setLogin={setLogin}
+                        openDropDown={openDropDown}
+                        isEditPasswordOpen={isEditPasswordOpen}
+                        setIsPasswordOpen={setIsPasswordOpen}
+                        setOpenDropdown={setOpenDropdown}
+                        handleLogin={handleLogin}
+                        isLoginOpen={isLoginOpen}
+                        setIsLoginOpen={setIsLoginOpen}
+                    />
+                }
                 <Outlet context={{ dark }} />
 
-                <SideBarRight dark={dark} />
+                {/* <SideBarRight dark={dark} />  */}
             </div>
         </div>
     );

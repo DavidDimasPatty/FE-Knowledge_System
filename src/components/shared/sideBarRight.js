@@ -20,6 +20,7 @@ const SideBarRight = ({ dark }) => {
     const [limit, setLimit] = useState(20);
     const navigate = useNavigate();
     const username = localStorage.getItem("username");
+    
 
     useEffect(() => {
         fetchFavorite(1);
