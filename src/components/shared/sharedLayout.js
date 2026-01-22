@@ -45,8 +45,8 @@ const SharedLayout = () => {
                 />
             }
             <div
-                className={` w-full h-screen flex gap-5 flex-row ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
-            >
+                className={`w-full flex-1 flex gap-5 overflow-hidden
+      ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}    >
 
                 {login &&
                     <SideBarLeft
@@ -67,7 +67,9 @@ const SharedLayout = () => {
                         setIsSettingOpen={setIsSettingOpen}
                     />
                 }
-                <Outlet context={{ dark }} />
+                <div className="flex-1 min-w-0 overflow-hidden">
+                    <Outlet context={{ dark }} />
+                </div>
 
                 {/* <SideBarRight dark={dark} />  */}
             </div>

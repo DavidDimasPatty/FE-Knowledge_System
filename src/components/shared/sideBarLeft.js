@@ -707,14 +707,24 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location })
     return (
         <div
             onClick={() => {
-                if (location.pathname != "userManagement" || location.pathname != "dokumen") {
+                console.log(location.pathname)
+                if (location.pathname == "/userManagement" || location.pathname == "/dokumen") {
+                    // navigate(
+                    //     `?topic=${idTopic}&category=${idCategory}`,
+                    //     { replace: true }
+                    // )
+                    //window.location.replace(`/?topic=${idTopic}&category=${idCategory}`)
                     navigate(
-                        `?topic=${idTopic}&category=${idCategory}`,
+                        `/?topic=${idTopic}&category=${idCategory}`,
                         { replace: true }
                     )
                 }
                 else {
-                    window.location.replace(`?topic=${idTopic}&category=${idCategory}`)
+                    //window.location.replace(`?topic=${idTopic}&category=${idCategory}`)
+                    navigate(
+                        `?topic=${idTopic}&category=${idCategory}`,
+                        { replace: true }
+                    )
                 }
             }
             }
