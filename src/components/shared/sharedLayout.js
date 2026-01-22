@@ -6,12 +6,14 @@ import TopBar from "./topBar";
 
 const SharedLayout = () => {
     const [dark, setDark] = useState(false);
+    const [lang, setLang] = useState(false);
     const [login, setLogin] = useState(false);
     const [nama, setNama] = useState("");
     const [roleName, setRoleName] = useState("");
     const [roleId, setRoleId] = useState(0);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isEditPasswordOpen, setIsPasswordOpen] = useState(false);
+    const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [openDropDown, setOpenDropdown] = useState(false);
 
     const handleLogin = (data) => {
@@ -25,6 +27,9 @@ const SharedLayout = () => {
         localStorage.setItem("login", true);
         setIsLoginOpen(false);
     };
+    useEffect(() => {
+        setLogin(localStorage.getItem("login"))
+    })
     return (
 
         <div className="w-full h-screen flex flex-col">
@@ -46,6 +51,9 @@ const SharedLayout = () => {
                 {login &&
                     <SideBarLeft
                         dark={dark}
+                        setDark={setDark}
+                        lang={lang}
+                        setLang={setLang}
                         login={login}
                         setLogin={setLogin}
                         openDropDown={openDropDown}
@@ -55,6 +63,8 @@ const SharedLayout = () => {
                         handleLogin={handleLogin}
                         isLoginOpen={isLoginOpen}
                         setIsLoginOpen={setIsLoginOpen}
+                        isSettingOpen={isSettingOpen}
+                        setIsSettingOpen={setIsSettingOpen}
                     />
                 }
                 <Outlet context={{ dark }} />

@@ -25,9 +25,13 @@ import axios from "axios";
 import EditPasswordModal from "./editPasswordModal";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import SettingModal from "./settingModal";
 const SideBarLeft =
     ({
         dark,
+        setDark,
+        lang,
+        setLang,
         login,
         setLogin,
         openDropDown,
@@ -36,7 +40,9 @@ const SideBarLeft =
         setIsPasswordOpen,
         setIsLoginOpen,
         isLoginOpen,
-        handleLogin
+        handleLogin,
+        isSettingOpen,
+        setIsSettingOpen
     }) => {
         const [isSearch, setIsSearch] = useState(false)
         const [categories, setCategories] = useState([]);
@@ -592,7 +598,7 @@ const SideBarLeft =
 
                                     <button
                                         onClick={() => {
-                                            setIsPasswordOpen(true)
+                                            setIsSettingOpen(true)
                                         }}
                                         className={
                                             "w-full flex items-center gap-3 text-left px-4 py-2 hover:bg-gray-100 " +
@@ -666,6 +672,14 @@ const SideBarLeft =
                     onLogin={handleLogin}
                     setLogin={setLogin}
                     login={login}
+                />
+                <SettingModal
+                    isOpen={isSettingOpen}
+                    onClose={() => setIsSettingOpen(false)}
+                    dark={dark}
+                    setDark={setDark}
+                    lang={lang}
+                    setLang={setLang}
                 />
             </div >
         );
