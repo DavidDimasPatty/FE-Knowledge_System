@@ -5,7 +5,10 @@ import remarkGfm from "remark-gfm";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, sendMessage, setInput, handleMic, listening, tick }) => {
+const ChatAreaHome = ({ messages, isLoading, bottomRef, 
+  dark, isFirst, input, 
+  sendMessage, setInput, handleMic, 
+  listening,setIsGenerate }) => {
   // const {
   //   transcript,
   //   listening,
@@ -156,6 +159,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
               onClick={() => {
                 sendMessage();
                 setInput("");
+                setIsGenerate(true)
               }}
               className="
           absolute bottom-3 right-2
@@ -231,7 +235,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
                   </div>
                 )}
                 <div
-                  key={tick}
                   className={
                     [
                       "break-words whitespace-pre-wrap text-base leading-relaxed text-justify",

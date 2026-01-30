@@ -24,7 +24,8 @@ const Home = () => {
   const [isInitLoaded, setIsInitLoaded] = useState(false);
   const streamBufferRef = useRef("");
   const streamIntervalRef = useRef(null);
-  const [tick, setTick] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isGenerate, setIsGenerate] = useState(false);
   const {
     transcript,
     listening,
@@ -179,6 +180,8 @@ const Home = () => {
                 isStreaming: false,
               };
             }
+
+            setIsGenerate(false)
             return updated;
           });
 
@@ -244,6 +247,7 @@ const Home = () => {
 
   useEffect(() => {
     streamIntervalRef.current = window.setInterval(() => {
+      if (!isLoading && isPaused) return;
       if (!streamBufferRef.current.length) return;
 
       const nextChar = streamBufferRef.current[0];
@@ -278,7 +282,7 @@ const Home = () => {
         clearInterval(streamIntervalRef.current);
       }
     };
-  }, []);
+  }, [isPaused]);
 
   // const sendMessage = () => {
   //   if (!input.trim() || !socket) return;
@@ -364,7 +368,7 @@ const Home = () => {
         sendMessage={sendMessage}
         handleMic={handleMic}
         listening={listening}
-        tick={tick}
+        setIsGenerate={setIsGenerate}
       />
 
       <InputAreaHome
@@ -376,6 +380,10 @@ const Home = () => {
         handleMic={handleMic}
         listening={listening}
         loading={isLoading}
+        isPaused={isPaused}
+        setIsPaused={setIsPaused}
+        isGenerate={isGenerate}
+        setIsGenerate={setIsGenerate}
       />
     </div>
 
