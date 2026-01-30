@@ -5,8 +5,15 @@ import SideBarRight from "./sideBarRight";
 import TopBar from "./topBar";
 
 const SharedLayout = () => {
-    const [dark, setDark] = useState(false);
-    const [lang, setLang] = useState(false);
+    const [dark, setDark] = useState(() => {
+        const saved = localStorage.getItem("ui_dark_mode");
+        return saved === "true";
+    });
+    const [lang, setLang] = useState(() => {
+        const saved = localStorage.getItem("ui_lang");
+        return saved === null ? true : saved === "true";
+    });
+
     const [login, setLogin] = useState(false);
     const [nama, setNama] = useState("");
     const [roleName, setRoleName] = useState("");
@@ -15,7 +22,10 @@ const SharedLayout = () => {
     const [isEditPasswordOpen, setIsPasswordOpen] = useState(false);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [openDropDown, setOpenDropdown] = useState(false);
-   const[valButtonSize,setValButtonSize]=useState("");
+    const [valButtonSize, setValButtonSize] = useState(() => {
+        return localStorage.getItem("ui_font_size") || "medium";
+    });
+
     const handleLogin = (data) => {
         setNama(data.user.nama);
         setRoleId(data.user.roleId);
@@ -30,6 +40,15 @@ const SharedLayout = () => {
     useEffect(() => {
         setLogin(localStorage.getItem("login"))
     })
+    useEffect(() => {
+        localStorage.setItem("ui_font_size", valButtonSize);
+    }, [valButtonSize]);
+    useEffect(() => {
+        localStorage.setItem("ui_dark_mode", dark.toString());
+    }, [dark]);
+    useEffect(() => {
+        localStorage.setItem("ui_lang", lang.toString());
+    }, [lang]);
     return (
 
         <div className="w-full h-screen flex flex-col">
@@ -45,8 +64,8 @@ const SharedLayout = () => {
                 />
             }
             <div
-                className={`w-full flex-1 flex gap-5 overflow-hidden
-      ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}    >
+                className={`w-full flex-1 flex gap-5 overflow-hidden 
+                ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
 
                 {login &&
                     <SideBarLeft
@@ -70,7 +89,7 @@ const SharedLayout = () => {
                     />
                 }
                 <div className="flex-1 min-w-0 overflow-hidden h-full ">
-                    <Outlet context={{ dark }} />
+                    <Outlet context={{ dark, valButtonSize, lang }} />
                 </div>
 
                 {/* <SideBarRight dark={dark} />  */}

@@ -6,7 +6,8 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 const EditPasswordModal = (
     {
         isOpen,
-        onClose
+        onClose,
+        valButtonSize
     }) => {
     const [newPassword, setNewPassword] = useState("");
     const [oldPassword, setOldPassword] = useState("");
@@ -104,6 +105,24 @@ const EditPasswordModal = (
         }
     };
 
+    const sizeText = {
+        small: "text-sm",
+        medium: "text-base",
+        large: "text-lg"
+    };
+
+    const sizeTextUp = {
+        small: "text-xl",
+        medium: "text-2xl",
+        large: "text-3xl"
+    };
+
+    const sizeTextDown = {
+        small: "text-xs",
+        medium: "text-sm",
+        large: "text-base"
+    };
+
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -121,7 +140,7 @@ const EditPasswordModal = (
                 </div> */}
 
                 {/* TITLE */}
-                <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">
+                <h2 className={`text-center font-semibold text-gray-800 mb-6 ${sizeTextUp[valButtonSize] || "text-base"}`}>
                     Edit Password
                 </h2>
 
@@ -142,7 +161,7 @@ const EditPasswordModal = (
                             placeholder="Password Lama"
                             value={oldPassword}
                             onChange={(e) => setOldPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white"
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
                             required
                         />
 
@@ -160,7 +179,7 @@ const EditPasswordModal = (
                             placeholder="Password Baru"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white"
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
                             required
                         />
 
@@ -178,7 +197,7 @@ const EditPasswordModal = (
                             placeholder="Ketik Ulang Password Baru"
                             value={retypeNewPassword}
                             onChange={(e) => setRetypeNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white"
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
                             required
                         />
 
@@ -192,7 +211,7 @@ const EditPasswordModal = (
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition"
+                        className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition ${sizeText[valButtonSize] || "text-base"}`}
                     >
                         Edit Password
                     </button>
@@ -201,7 +220,7 @@ const EditPasswordModal = (
                 {/* FOOTER */}
                 <button
                     onClick={onClose}
-                    className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
+                    className={`mt-4 w-full text-gray-500 hover:text-gray-700 ${sizeTextDown[valButtonSize] || "text-base"}`}
                 >
                     Cancel
                 </button>

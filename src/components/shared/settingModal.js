@@ -15,115 +15,213 @@ const SettingModal = (
         setValButtonSize
     }) => {
 
+    const getButtonClass = (size) => {
+        const base =
+            "box-border border font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none transition";
+
+        const active =
+            "bg-blue-600 text-white border-blue-600";
+
+        const inactive =
+            "bg-blue-100 text-blue-600 border-blue-300 hover:bg-blue-200";
+
+        return `${base} ${valButtonSize === size ? active : inactive
+            }`;
+    };
+
+
+    const sizeText = {
+        small: "text-sm",
+        medium: "text-base",
+        large: "text-lg"
+    };
+
+    const sizeTextUp = {
+        small: "text-xl",
+        medium: "text-2xl",
+        large: "text-3xl"
+    };
+
+    const sizeTextDown = {
+        small: "text-xs",
+        medium: "text-sm",
+        large: "text-base"
+    };
 
     if (!isOpen) return null;
+
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="relative bg-white rounded-xl shadow-xl w-[460px] pt-20 pb-10 px-10 flex flex-col gap-5">
+            <div
+                className={`
+                w-[480px] rounded-xl shadow-xl
+                ${dark ? "bg-gray-900 text-white" : "bg-white text-gray-800"}
+            `}
+            >
+                {/* HEADER */}
+                <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className={`font-semibold ${sizeTextUp[valButtonSize]}`}>
+                        Settings
+                    </h2>
+                    <p className="text-sm text-gray-400 mt-1">
+                        Customize your application preferences
+                    </p>
+                </div>
 
-                <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">
-                    Settings
-                </h2>
+                {/* CONTENT */}
+                <div className="px-8 py-6 space-y-6">
 
-                <div className="flex flex-row gap-5 items-center justify-center">
-                    <div>
-                        <span>Dark Mode</span>
-                    </div>
-                    <div>
+                    {/* DARK MODE */}
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <div className={`${sizeText[valButtonSize]} font-medium`}>
+                                Dark Mode
+                            </div>
+                            <div className="text-sm text-gray-400">
+                                Enable dark appearance
+                            </div>
+                        </div>
+
                         <button
                             onClick={() => setDark(!dark)}
-                            className={
-                                "w-16 h-8 flex items-center rounded-full p-1 transition-all duration-300 relative " +
-                                (dark ? "bg-gray-700" : " bg-gradient-to-r from-indigo-500 to-blue-500")
-                            }
+                            className={`relative w-16 h-8 rounded-full transition-colors duration-300 shadow-lg
+        ${dark
+                                    ? "bg-gray-700"
+                                    : "bg-gradient-to-r from-blue-500 to-sky-500"}
+    `}
                         >
+                            {/* Sun */}
                             <span
-                                className={
-                                    "absolute left-2 transition-opacity duration-300 text-black text-lg " +
-                                    (dark ? "opacity-0" : "opacity-100")
-                                }
+                                className={`
+            absolute left-2 top-1/2 -translate-y-1/2
+            transition-opacity duration-300
+            ${dark ? "opacity-0" : "opacity-100"}
+        `}
                             >
                                 ☀️
                             </span>
 
+                            {/* Moon */}
                             <span
-                                className={
-                                    "absolute right-2 transition-opacity duration-300 text-white text-lg " +
-                                    (dark ? "opacity-100" : "opacity-0")
-                                }
+                                className={`
+            absolute right-2 top-1/2 -translate-y-1/2
+            transition-opacity duration-300
+            ${dark ? "opacity-100" : "opacity-0"}
+        `}
                             >
                                 🌙
                             </span>
 
+                            {/* Toggle knob */}
                             <div
-                                className={
-                                    "w-7 h-7 rounded-full bg-white shadow-md transform transition-all duration-300 " +
-                                    (!dark ? "translate-x-8" : "translate-x-0")
-                                }
-                            ></div>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="flex flex-row gap-5 items-center justify-center">
-                    <div>
-                        <span>Language</span>
-                    </div>
-                    <div>
-                        <button
-                            onClick={() => setLang(!lang)}
-                            className={
-                                "w-16 h-8 overflow-hidden flex items-center rounded-full p-1 transition-all duration-300 relative " +
-                                (lang === true
-                                    ? "bg-gradient-to-r from-blue-500 to-sky-500"
-                                    : "bg-gradient-to-r from-indigo-500 to-blue-500")
-                            }
-                        >
-                            <span
-                                className={
-                                    "emoji absolute bottom-1 left-3 transition-opacity duration-300 text-lg text-white" +
-                                    (lang === false ? "opacity-100" : "opacity-0")
-                                }
-                            >
-                                <img src="idpng.png" width={40} style={{ zIndex: "10", height: "35px", right: "20px", top: "5px", position: "relative" }} />
-                            </span>
-
-                            <span
-                                className={
-                                    "emoji absolute right-2 bottom-1 transition-opacity duration-300 text-lg text-white" +
-                                    (lang === true ? "opacity-100" : "opacity-0")
-                                }
-                            >
-                                <img src="uspng.png" width={35} style={{ transform: "scaleX(-1)", height: "55px", right: "-7px", top: "15px", position: "relative" }} />
-                            </span>
-                            <div
-                                className={
-                                    "w-10  h-10 rounded-full bg-white shadow-md transform transition-all duration-300 " +
-                                    (lang === false ? "translate-x-6" : "-translate-x-2")
-                                }
-                                style={{ zIndex: "20" }}
+                                className={`
+            absolute top-1/2 left-1 -translate-y-1/2
+            w-6 h-6 bg-white rounded-full shadow-md
+            transition-transform duration-300 ease-in-out
+            ${dark ? "translate-x-0" : "translate-x-8"}
+        `}
                             />
                         </button>
+
                     </div>
-                </div>
-                <div className="flex flex-row gap-5 items-center justify-center">
-                    <div>
-                        Language
+
+                    <hr className="border-gray-200 dark:border-gray-700" />
+
+                    {/* LANGUAGE */}
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <div className={`${sizeText[valButtonSize]} font-medium`}>
+                                Language
+                            </div>
+                            <div className="text-sm text-gray-400">
+                                Interface language
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => setLang(!lang)}
+                            className={`
+                                relative w-16 h-8 rounded-full p-1
+                                overflow-hidden
+                                transition-colors duration-300
+                                bg-white shadow-lg
+                            `}
+                        >
+                            {/* BACKGROUND IMAGE */}
+                            <div
+                                className="absolute inset-0 rounded-full transition-all duration-300"
+                                style={{
+                                    backgroundImage: lang ? "url('/us.png')" : "url('/id.png')",
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                }}
+                            ></div>
+
+                            {/* TOGGLE KNOB */}
+                            <div
+                                className={`
+                                    absolute top-1 left-1
+                                    w-6 h-6 rounded-full bg-white shadow-md
+                                    transition-transform duration-300 ease-in-out
+                                    ${lang ? "translate-x-8" : "translate-x-0"}
+                                    `}
+                            ></div>
+                        </button>
+
                     </div>
-                </div>
-                <div className="flex flex-row gap-5 items-center justify-center">
-                    <div className="flex flex-row gap-3">
-                        <button value={valButtonSize} type="button" class="text-white bg-blue-500 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Small</button>
-                        <button value={valButtonSize} type="button" class="text-white bg-blue-500 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Medium</button>
-                        <button value={valButtonSize} type="button" class="text-white bg-blue-500 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Large</button>
+
+                    <hr className="border-gray-200 dark:border-gray-700" />
+
+                    {/* FONT SIZE */}
+                    <div className="flex items-center justify-between">
+                        {/* Label */}
+                        <div className="flex flex-col">
+                            <div className={`${sizeText[valButtonSize]} font-medium`}>
+                                Font Size
+                            </div>
+                            <div className="text-sm text-gray-400">Adjust interface font</div>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg">
+                            {["small", "medium", "large"].map(size => (
+                                <button
+                                    key={size}
+                                    onClick={() => setValButtonSize(size)}
+                                    className={`
+                                            px-4 py-2 text-sm font-medium transition-all duration-300
+                                            rounded-md
+                                            ${valButtonSize === size
+                                            ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg transform scale-105"
+                                            : dark
+                                                ? "bg-gray-800 hover:bg-gray-700 hover:shadow-md text-gray-200"
+                                                : "bg-gray-100 hover:bg-gray-200 hover:shadow-md text-gray-800"
+                                        }
+                                    `}
+                                >
+                                    {size.charAt(0).toUpperCase() + size.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+
                     </div>
+
                 </div>
-                <button
-                    onClick={onClose}
-                    className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
-                >
-                    Cancel
-                </button>
+
+                {/* FOOTER */}
+                <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className={`
+                        px-6 py-2 rounded-lg text-sm font-medium
+                        ${dark
+                                ? "text-gray-300 hover:bg-gray-800"
+                                : "text-gray-600 hover:bg-gray-100"}
+                    `}
+                    >
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     );

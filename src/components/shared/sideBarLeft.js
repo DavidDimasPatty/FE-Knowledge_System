@@ -305,7 +305,23 @@ const SideBarLeft =
             FiArchive: <FiArchive />,
         };
 
+        const sizeText = {
+            small: "text-sm",
+            medium: "text-base",
+            large: "text-lg"
+        };
 
+        const sizeTextUp = {
+            small: "text-xl",
+            medium: "text-2xl",
+            large: "text-3xl"
+        };
+
+        const sizeTextDown = {
+            small: "text-xs",
+            medium: "text-sm",
+            large: "text-base"
+        };
 
         return (
             <div
@@ -343,7 +359,7 @@ const SideBarLeft =
                     }
                 </div>
                 <div className="p-4 flex flex-col h-full">
-                    <div className={"flex mb-4 " + (isMinimized ? "justify-end" : "justify-between")}>
+                    <div className={"flex mb-4 " + (isMinimized ? "justify-center" : "justify-between")}>
                         {isMinimized ? <div className="flex flex-row gap-4">
                             <img
                                 src={dark ? "/WHITE-LOGO.png" : "/BLACK-LOGO.png"}
@@ -357,8 +373,8 @@ const SideBarLeft =
                                     alt="Ikodora Logo"
                                     className="w-8 h-8 object-contain transition-transform duration-300 hover:scale-105"
                                 />
-                                <h2 className="text-lg font-semibold tracking-wide mt-1">
-                                    Ikodora
+                                <h2 className="text-xl font-semibold tracking-wide mt-1">
+                                    iKodora
                                 </h2>
                             </div>}
                         {/* <button
@@ -400,8 +416,8 @@ const SideBarLeft =
                                 group-hover:opacity-100
                                 "
                                 />
-                                <span className="relative z-10 flex items-center gap-2">
-                                    <FiPlus className="text-lg transition-transform duration-300 group-hover:rotate-90" />
+                                <span className={`relative z-10 flex items-center gap-2 ${sizeText[valButtonSize] || "text-base"}`}>
+                                    <FiPlus className={`transition-transform duration-300 group-hover:rotate-90 ${sizeText[valButtonSize] || "text-base"}`} />
                                     Start Chat
                                 </span>
                             </button>
@@ -436,7 +452,7 @@ const SideBarLeft =
                                 "
                                 />
                                 <span className="relative z-10 flex items-center gap-2">
-                                    <FiPlus className="text-lg transition-transform duration-300 group-hover:rotate-90" />
+                                    <FiPlus className={`transition-transform duration-300 group-hover:rotate-90 ${sizeText[valButtonSize] || "text-base"}`} />
                                 </span>
                             </button>
                         )}
@@ -445,8 +461,8 @@ const SideBarLeft =
                     <div className="flex flex-col gap-3 flex-auto overflow-y-hidden custom-scroll">
                         {[1, 2].includes(roleId) && (
                             <button
-                                className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/dokumen")}
-                                onClick={() => navigate("/dokumen")}
+                                className={`flex items-center ${isMinimized ? "justify-center" : "justify-start"} gap-2 p-2 rounded-lg ${bgColor("/dokumen")} ${sizeText[valButtonSize] || "text-base"}`}
+                                onClick={() => navigate("/dokumen", { state: { valButtonSize: valButtonSize } })}
                             >
                                 <FiDownload />
                                 {!isMinimized && <span>List Dokumen</span>}
@@ -455,7 +471,7 @@ const SideBarLeft =
 
                         {[1, 2].includes(roleId) && (
                             <button
-                                className={"flex items-center gap-2 p-2 rounded-lg " + bgColor("/userManagement")}
+                                className={`flex items-center ${isMinimized ? "justify-center" : "justify-start"} gap-2 p-2 rounded-lg ${bgColor("/userManagement")} ${sizeText[valButtonSize] || "text-base"}`}
                                 onClick={() => navigate("/userManagement")}
                             >
                                 <FiUser />
@@ -467,7 +483,7 @@ const SideBarLeft =
                             <div className="mt-2">
                                 <div className="flex items-center gap-2 mb-2 w-full relative">
                                     <FiArchive />
-                                    <span className="font-semibold transition-all">Topics</span>
+                                    <span className={`font-semibold transition-all ${sizeText[valButtonSize] || "text-base"}`}>Topics</span>
 
                                     <div className="relative flex-1">
                                         {/* <input
@@ -483,7 +499,7 @@ const SideBarLeft =
                                             value={searchKeyword}
                                             onChange={(e) => setSearchKeyword(e.target.value)}
                                             className={`h-7 pl-2 pr-10 border rounded-md outline-none transition-all duration-500 ease-in-out text-black dark:text-black bg-white dark:bg-white
-                                   ${isSearch ? 'w-full opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
+                                   ${isSearch ? 'w-full opacity-100' : 'w-0 opacity-0 pointer-events-none'} ${sizeText[valButtonSize] || "text-base"}`}
                                             autoFocus={isSearch}
                                             style={{ float: 'right' }}
 
@@ -510,7 +526,7 @@ const SideBarLeft =
                                     ))}
                                 </div> */}
                                 <div className="flex items-center gap-2 mb-2 ml-2 p-1 border-b">
-                                    <span className="font-semibold">Saved Topics</span>
+                                    <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Saved Topics</span>
                                 </div>
                                 <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "200px", overflowY: "auto" }} onScroll={handleScrollFavorite}>
 
@@ -526,12 +542,13 @@ const SideBarLeft =
                                             location={location}
                                             activeCategory={activeCategory}
                                             activeTopic={activeTopic}
+                                            valButtonSize={valButtonSize}
                                         />
                                     ))}
                                 </div>
 
                                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
-                                    <span className="font-semibold">Recents</span>
+                                    <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Recents</span>
                                 </div>
                                 <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
                                     {nonFavoriteTopics.map((item) => (
@@ -546,6 +563,7 @@ const SideBarLeft =
                                             location={location}
                                             activeCategory={activeCategory}
                                             activeTopic={activeTopic}
+                                            valButtonSize={valButtonSize}
                                         />
                                     ))}
                                 </div>
@@ -556,16 +574,16 @@ const SideBarLeft =
                     {!localStorage.getItem("login") && !isMinimized && (
                         <div className="relative mt-6 mb-2 px-3">
                             <button
-                                className="
+                                className={`
                                     w-full flex items-center justify-center gap-2
                                     px-4 py-2.5 rounded-xl
                                     bg-gradient-to-r from-indigo-500 to-blue-500
-                                    text-white text-sm font-semibold
+                                    text-white font-semibold
                                     shadow-md shadow-indigo-500/30
                                     transition-all duration-200
                                     hover:shadow-lg hover:scale-[1.02]
-                                    active:scale-[0.98]
-                                "  onClick={() => setIsLoginOpen(true)}
+                                    active:scale-[0.98] ${sizeText[valButtonSize] || "text-base"}
+                                `} onClick={() => setIsLoginOpen(true)}
                             >
                                 Login
                             </button>
@@ -590,62 +608,24 @@ const SideBarLeft =
                             {openDropDown && (
                                 <div
                                     className={
-                                        "absolute left-0 w-48 rounded-lg shadow-lg z-50 bottom-14 " +
-                                        (dark ? "bg-gray-800 text-white" : "bg-white")
+                                        isMinimized
+                                            ? "absolute left-[16px] bottom-[63px]"
+                                            : "absolute left-0 bottom-14"
                                     }
-                                    style={{
-                                        // width: isMinimized ? "70px" : "360px",
-                                        // height: "calc(100vh - 40px)",
-                                        // top: "20px",
-                                        // left: "15px",
-                                        // position: "relative",
-                                        borderRadius: "10px",
-                                        boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
-                                        zIndex: 50,
-                                        backgroundColor: "white"
-                                    }}
                                 >
-                                    <button
-                                        onClick={() => {
-                                            setIsPasswordOpen(true)
-                                        }}
-                                        className={
-                                            "w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-gray-100 " +
-                                            (dark ? "hover:bg-gray-700" : "")
-                                        }
-                                    >
-                                        <FiKey /> Edit Password
-                                    </button>
-
-                                    <button
-                                        onClick={() => {
-                                            setIsSettingOpen(true)
-                                        }}
-                                        className={
-                                            "w-full flex items-center gap-3 text-left px-4 py-2 hover:bg-gray-100 " +
-                                            (dark ? "hover:bg-gray-700" : "")
-                                        }
-                                    >
-                                        <FiSettings /> Settings
-                                    </button>
-
-                                    <button
-                                        onClick={() => {
-                                            setLogin(!login)
+                                    <UserDropdown
+                                        dark={dark}
+                                        valButtonSize={valButtonSize}
+                                        onPassword={() => setIsPasswordOpen(true)}
+                                        onSetting={() => setIsSettingOpen(true)}
+                                        onLogout={() => {
+                                            setLogin(false);
                                             localStorage.clear();
                                             window.location.href = "/";
                                         }}
-                                        className={
-                                            "w-full text-left flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-gray-100 " +
-                                            (dark ? "hover:bg-gray-700" : "")
-                                        }
-                                    >
-                                        <FiLogOut /> Logout
-                                    </button>
+                                    />
                                 </div>
                             )}
-
-
 
                             <div className="flex items-center">
                                 <div
@@ -658,10 +638,10 @@ const SideBarLeft =
                                 </div>
 
                                 <div className="ml-3">
-                                    <div>
+                                    <div className={`${sizeText[valButtonSize] || "text-base"}`}>
                                         Halo, <b>{localStorage.getItem("nama")}</b>
                                     </div>
-                                    <div>
+                                    <div className={`${sizeText[valButtonSize] || "text-base"}`}>
                                         <b>{localStorage.getItem("roleName")}</b>
                                     </div>
                                 </div>
@@ -680,12 +660,35 @@ const SideBarLeft =
                             >
                                 {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
                             </div>
+
+                            {openDropDown && (
+                                <div
+                                    className={
+                                        isMinimized
+                                            ? "absolute left-[16px] bottom-[63px]"
+                                            : "absolute left-0 bottom-14"
+                                    }
+                                >
+                                    <UserDropdown
+                                        dark={dark}
+                                        valButtonSize={valButtonSize}
+                                        onPassword={() => setIsPasswordOpen(true)}
+                                        onSetting={() => setIsSettingOpen(true)}
+                                        onLogout={() => {
+                                            setLogin(false);
+                                            localStorage.clear();
+                                            window.location.href = "/";
+                                        }}
+                                    />
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
                 <EditPasswordModal
                     isOpen={isEditPasswordOpen}
                     onClose={() => setIsPasswordOpen(false)}
+                    valButtonSize={valButtonSize}
                 />
                 <LoginModal
                     isOpen={isLoginOpen}
@@ -725,8 +728,25 @@ const SideBarLeft =
 //     );
 // };
 
-const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, activeCategory, activeTopic }) => {
+const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, activeCategory, activeTopic, valButtonSize }) => {
     const navigate = useNavigate();
+    const sizeText = {
+        small: "text-sm",
+        medium: "text-base",
+        large: "text-lg"
+    };
+
+    const sizeTextUp = {
+        small: "text-xl",
+        medium: "text-2xl",
+        large: "text-3xl"
+    };
+
+    const sizeTextDown = {
+        small: "text-xs",
+        medium: "text-sm",
+        large: "text-base"
+    };
     return (
         <div
             onClick={() => {
@@ -766,13 +786,79 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, a
             <div className="row-auto">
                 <div className="flex items-center gap-2">
                     {icon}
-                    <span>{title}</span>
+                    <span className={`${sizeText[valButtonSize] || "text-base"}`}>{title}</span>
                 </div>
-                <div className={"ml-2  text-sm"}>
+                <div className={`ml-2 ${sizeTextDown[valButtonSize] || "text-base"}`}>
                     {desc}
                 </div>
             </div>
         </div >
     );
 };
+
+const UserDropdown = ({
+    dark,
+    valButtonSize,
+    onPassword,
+    onSetting,
+    onLogout
+}) => {
+    const sizeText = {
+        small: "text-sm",
+        medium: "text-base",
+        large: "text-lg"
+    };
+
+    const sizeTextUp = {
+        small: "text-xl",
+        medium: "text-2xl",
+        large: "text-3xl"
+    };
+
+    const sizeTextDown = {
+        small: "text-xs",
+        medium: "text-sm",
+        large: "text-base"
+    };
+
+    return (
+        <div
+            className={`w-48 rounded-lg shadow-lg z-[9999]
+            ${dark ? "bg-gray-800 text-white" : "bg-white"}`}
+            style={{
+                borderRadius: "10px",
+                boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
+            }}
+        >
+            <button
+                onClick={onPassword}
+                className={`w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-gray-100 
+                ${dark ? "hover:bg-gray-700" : ""}
+                ${sizeText[valButtonSize] || "text-base"}`}
+            >
+                <FiKey /> Edit Password
+            </button>
+
+            <button
+                onClick={onSetting}
+                className={`w-full flex items-center gap-3 text-left px-4 py-2 hover:bg-gray-100 
+                ${dark ? "hover:bg-gray-700" : ""}
+                ${sizeText[valButtonSize] || "text-base"}`}
+            >
+                <FiSettings /> Settings
+            </button>
+
+            <button
+                onClick={onLogout}
+                className={`w-full text-left flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-gray-100 
+                ${dark ? "hover:bg-gray-700" : ""}
+                ${sizeText[valButtonSize] || "text-base"}`}
+            >
+                <FiLogOut /> Logout
+            </button>
+        </div>
+    );
+};
+
+
 export default SideBarLeft;
