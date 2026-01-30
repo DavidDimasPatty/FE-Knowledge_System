@@ -15,7 +15,7 @@ const SharedLayout = () => {
     const [isEditPasswordOpen, setIsPasswordOpen] = useState(false);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [openDropDown, setOpenDropdown] = useState(false);
-
+   const[valButtonSize,setValButtonSize]=useState("");
     const handleLogin = (data) => {
         setNama(data.user.nama);
         setRoleId(data.user.roleId);
@@ -65,9 +65,11 @@ const SharedLayout = () => {
                         setIsLoginOpen={setIsLoginOpen}
                         isSettingOpen={isSettingOpen}
                         setIsSettingOpen={setIsSettingOpen}
+                        valButtonSize={valButtonSize}
+                        setValButtonSize={setValButtonSize}
                     />
                 }
-                <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex-1 min-w-0 overflow-hidden h-full ">
                     <Outlet context={{ dark }} />
                 </div>
 

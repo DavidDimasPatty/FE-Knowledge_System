@@ -4,6 +4,9 @@ import './style/home.css';
 import ChatAreaHome from "./contents/chatAreaHome";
 import InputAreaHome from "./contents/inputAreaHome";
 import { useOutletContext } from "react-router-dom";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 const Home = () => {
   const { dark } = useOutletContext();
   const [messages, setMessages] = useState([]);
@@ -19,6 +22,15 @@ const Home = () => {
   const urlCategory = searchParams.get("category");
   const isFirstRef = useRef(!urlTopic);
   const [isInitLoaded, setIsInitLoaded] = useState(false);
+  const streamBufferRef = useRef("");
+  const streamIntervalRef = useRef(null);
+  const [tick, setTick] = useState(0);
+  const {
+    transcript,
+    listening,
+    browserSupportsSpeechRecognition,
+    resetTranscript,
+  } = useSpeechRecognition();
 
   useEffect(() => {
     if (urlTopic && urlCategory) {
@@ -95,9 +107,6 @@ const Home = () => {
       userId: username,
       username: username,
       role: roleName
-      // idCategory: idCategory === 0 ? "" : idCategory,
-      // topic: idTopic === 0 ? "" : idTopic,
-      // isFirst:isFirstRef.current
     });
 
     const ws = new WebSocket("ws://localhost:8080/ws?" + query.toString());
@@ -148,37 +157,17 @@ const Home = () => {
       try {
         const data = JSON.parse(msg.data);
         console.log("WS:", data);
+        setIsLoading(false);
 
-        // === STREAM TOKEN ===
+        if (isFirstRef.current) {
+          isFirstRef.current = false;
+        }
+
         if (data.type === "chunk") {
-          setMessages((prev) => {
-            const last = prev[prev.length - 1];
-
-            // kalau belum ada bot message → buat
-            if (!last || last.role !== "bot" || last.isStreaming !== true) {
-              return [
-                ...prev,
-                {
-                  role: "bot",
-                  text: data.content,
-                  isStreaming: true,
-                },
-              ];
-            }
-
-            // append ke message terakhir
-            const updated = [...prev];
-            updated[updated.length - 1] = {
-              ...last,
-              text: last.text + data.content,
-            };
-
-            return updated;
-          });
+          streamBufferRef.current += data.content;
           return;
         }
 
-        // === STREAM SELESAI ===
         if (data.type === "done") {
           setMessages((prev) => {
             const updated = [...prev];
@@ -193,16 +182,17 @@ const Home = () => {
             return updated;
           });
 
+          streamBufferRef.current = "";
           // topic & category hanya di first message
           if (
             isFirstRef.current &&
             data.topic_id &&
             data.category_id
           ) {
-            navigate(
-              `?topic=${data.topic_id}&category=${data.category_id}`,
-              { replace: true }
-            );
+            // navigate(
+            //   `?topic=${data.topic_id}&category=${data.category_id}`,
+            //   { replace: true }
+            // );
 
             setIdTopic(data.topic_id);
             setIdCategory(data.category_id);
@@ -252,6 +242,43 @@ const Home = () => {
     return () => ws.close();
   }, [isInitLoaded]);
 
+  useEffect(() => {
+    streamIntervalRef.current = window.setInterval(() => {
+      if (!streamBufferRef.current.length) return;
+
+      const nextChar = streamBufferRef.current[0];
+      streamBufferRef.current = streamBufferRef.current.slice(1);
+
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+
+        if (!last || last.role !== "bot" || !last.isStreaming) {
+          return [
+            ...prev,
+            {
+              role: "bot",
+              text: nextChar,
+              isStreaming: true,
+            },
+          ];
+        }
+
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          ...last,
+          text: last.text + nextChar,
+        };
+
+        return updated;
+      });
+    }, 8);
+
+    return () => {
+      if (streamIntervalRef.current) {
+        clearInterval(streamIntervalRef.current);
+      }
+    };
+  }, []);
 
   // const sendMessage = () => {
   //   if (!input.trim() || !socket) return;
@@ -274,10 +301,10 @@ const Home = () => {
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    if (!socket || socket.readyState !== WebSocket.OPEN) {
-      console.warn("WS not ready");
-      return;
-    }
+    // if (!socket || socket.readyState !== WebSocket.OPEN) {
+    //   console.warn("WS not ready");
+    //   return;
+    // }
 
     setIsLoading(true);
 
@@ -298,9 +325,34 @@ const Home = () => {
     setInput("");
   };
 
+  const handleMic = () => {
+    if (!browserSupportsSpeechRecognition) {
+      alert("Browser tidak support voice input");
+      return;
+    }
+
+    if (!listening) {
+      resetTranscript();
+      SpeechRecognition.startListening({
+        language: "id-ID",
+        continuous: false,
+      });
+    } else {
+      SpeechRecognition.stopListening();
+    }
+  };
+
+  useEffect(() => {
+    if (!listening && transcript.trim()) {
+      setInput((prev) =>
+        prev ? prev + " " + transcript : transcript
+      );
+    }
+  }, [listening]);
+
   return (
 
-    <div className="flex-auto flex flex-col wrapperChat">
+    <div className="h-full flex-auto flex flex-col wrapperChat">
       <ChatAreaHome
         messages={messages}
         isLoading={isLoading}
@@ -310,6 +362,9 @@ const Home = () => {
         input={input}
         setInput={setInput}
         sendMessage={sendMessage}
+        handleMic={handleMic}
+        listening={listening}
+        tick={tick}
       />
 
       <InputAreaHome
@@ -318,6 +373,9 @@ const Home = () => {
         sendMessage={sendMessage}
         dark={dark}
         isFirst={isFirstRef.current}
+        handleMic={handleMic}
+        listening={listening}
+        loading={isLoading}
       />
     </div>
 

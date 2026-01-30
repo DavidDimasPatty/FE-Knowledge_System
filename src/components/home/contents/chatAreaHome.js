@@ -1,10 +1,27 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { FiSend, FiMic, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, sendMessage, setInput }) => {
-  const textareaRef = useRef(null);
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, sendMessage, setInput, handleMic, listening, tick }) => {
+  // const {
+  //   transcript,
+  //   listening,
+  //   browserSupportsSpeechRecognition,
+  //   resetTranscript,
+  // } = useSpeechRecognition();
+  const thinkingTexts = [
+    "AI is thinking…",
+    "Analyzing your question…",
+    "Generating best answer…",
+    "Almost there…",
+    "Reasoning deeply…",
+  ];
 
+  const [thinkingText, setThinkingText] = useState(thinkingTexts[0]);
+  const textareaRef = useRef(null);
   const autoResize = (e) => {
     const el = e.target;
     el.style.height = "auto";
@@ -16,6 +33,43 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
       textareaRef.current.style.height = "auto";
     }
   };
+
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const interval = setInterval(() => {
+      setThinkingText(
+        thinkingTexts[Math.floor(Math.random() * thinkingTexts.length)]
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isLoading]);
+  // const handleMic = () => {
+  //   if (!browserSupportsSpeechRecognition) {
+  //     alert("Browser tidak support voice input");
+  //     return;
+  //   }
+
+  //   if (!listening) {
+  //     resetTranscript();
+  //     SpeechRecognition.startListening({
+  //       language: "id-ID",
+  //       continuous: false,
+  //     });
+  //   } else {
+  //     SpeechRecognition.stopListening();
+  //   }
+  // };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [input]);
+
   return (messages.length === 0 && isFirst
     ?
     <div className={(dark
@@ -43,7 +97,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
               rows={1}
               className={
                 "overflow-y-hidden custom-scroll w-full resize-none px-4 py-3 pr-24 " +
-                "leading-relaxed text-sm " +
+                "leading-relaxed text-xl" +
                 "border rounded-2xl outline-none transition-all duration-200 " +
                 "focus:shadow-md focus:scale-[1.01] " +
                 (dark
@@ -84,18 +138,16 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
             </button> */}
 
             <button
-              onClick={() => {
-                sendMessage();
-                setInput("");
-              }}
-              className="
-          absolute bottom-3 right-14
-          p-2 rounded-full
-          bg-blue-600 hover:bg-blue-700
-          text-white shadow
-          transition-all
-          active:scale-95
-        "
+              onClick={handleMic}
+              className={`
+                             absolute bottom-3 right-14
+                            p-2 rounded-full text-white shadow
+                            transition-all active:scale-95
+                            ${listening
+                  ? "bg-red-500 animate-pulse"
+                  : "bg-blue-600 hover:bg-blue-700"}
+                          `}
+              title={listening ? "Stop recording" : "Voice input"}
             >
               <FiMic size={20} />
             </button>
@@ -126,7 +178,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
 
     :
 
-    <div className="flex-1 overflow-y-auto p-4 space-y-4 m-5" style={{ maxHeight: "calc(100vh - 170px)",overflow:"auto" }}>
+    <div className="flex-1 overflow-y-auto p-4 space-y-4 m-5" style={{ maxHeight: "calc(100vh - 170px)", overflow: "auto" }}>
       {
         messages.map((msg, idx) => (
           <div key={idx} className={
@@ -136,9 +188,9 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
 
 
 
-            <div className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"} gap-2`}>
+            <div className={`flex w-full ${msg.role === "user" ? "justify-start" : "justify-start"} gap-2`}>
 
-              {msg.role != "user" &&
+              {/* {msg.role != "user" &&
                 <div className="flex items-center">
                   <div
                     // onClick={() => setOpenDropdown(!openDropDown)}
@@ -149,32 +201,46 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
                     AI
                   </div>
                 </div>
+              } */}
+
+              {msg.role == "user" &&
+                <div className="flex items-center justify-center">
+                  <div
+                    // onClick={() => setOpenDropdown(!openDropDown)}
+                    className={
+                      "mb-6  w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+                    }
+                  >
+                    {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
+                  </div>
+                </div>
               }
 
               <div className="flex-col w-full">
                 {msg.role === "user" ? (
-                  <div className="flex justify-end mr-3 mb-1">
+                  <div className="flex justify-start ml-2 mt-4">
                     <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                       {localStorage.getItem("nama") ?? "Guest"}
                     </span>
                   </div>
                 ) : (
-                  <div className="flex justify-start ml-3 mb-1">
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <div className="flex justify-start ml-10 mb-1 ">
+                    <span className="text-base italic text-blue-600 dark:text-gray-400 ml-4">
                       AI Ikodora
                     </span>
                   </div>
                 )}
                 <div
+                  key={tick}
                   className={
                     [
-                      " w-fit max-w-[65%] break-words whitespace-pre-wrap text-sm leading-relaxed text-justify",
-                      "px-4 py-3 rounded-2xl shadow-sm transition-transform transform",
+                      "break-words whitespace-pre-wrap text-base leading-relaxed text-justify",
+                      " py-3  transition-transform transform",
                       msg.role === "user"
-                        ? "bg-blue-600 text-white rounded-br-[8px] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl hover:scale-[1.01]  ml-auto"
+                        ? " px-2 w-4/5  rounded-br-[8px] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl hover:scale-[1.01]  mr-auto"
                         : (dark
-                          ? "bg-gray-700 text-white hover:scale-[1.01]"
-                          : "bg-indigo-100 text-indigo-900 rounded-bl-[8px] hover:scale-[1.01]  mr-auto")
+                          ? "w-4/5 bg-gray-700 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
+                          : "ml-14 w-4/5 hover:scale-[1.01] pb-5 transition-all duration-200 ease-out will-change-contents")
                     ].join(" ")
                   }
                   style={{ wordBreak: "break-word" }}
@@ -193,9 +259,12 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
                     {msg.text}
                   </ReactMarkdown>
                 </div>
+                {msg.role != "user" &&
+                  <div className="w-full border-b border-gray-300"></div>
+                }
               </div>
 
-              {msg.role == "user" &&
+              {/* {msg.role == "user" &&
                 <div className="flex items-center justify-center mt-5">
                   <div
                     // onClick={() => setOpenDropdown(!openDropDown)}
@@ -206,7 +275,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
                     {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
                   </div>
                 </div>
-              }
+              } */}
 
             </div>
           </div>
@@ -214,17 +283,23 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef, dark, isFirst, input, se
       }
 
       {isLoading && (
-        <div className="text-left">
-          <div className={`px-4 py-2 rounded-2xl inline-flex items-center gap-2
-    ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-300 text-gray-700"}`}>
-
-            <div className="flex space-x-1">
-              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
-              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-150"></span>
-              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-300"></span>
+        <div className="flex justify-start mt-3 ml-12">
+          <div
+            className={`
+        px-4 py-3 rounded-2xl flex items-center gap-3
+        shadow-sm
+        ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-700"}
+      `}
+          >
+            <div className="flex items-center space-x-1">
+              <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:0ms]" />
+              <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:200ms]" />
+              <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:400ms]" />
             </div>
 
-            <span className="text-xs">AI is thinking</span>
+            <span className="text-xs opacity-80 transition-opacity duration-300">
+              {thinkingText}
+            </span>
           </div>
         </div>
       )}

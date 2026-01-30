@@ -10,7 +10,9 @@ const SettingModal = (
         dark,
         setDark,
         lang,
-        setLang
+        setLang,
+        valButtonSize,
+        setValButtonSize
     }) => {
 
 
@@ -104,7 +106,18 @@ const SettingModal = (
                         </button>
                     </div>
                 </div>
-
+                <div className="flex flex-row gap-5 items-center justify-center">
+                    <div>
+                        Language
+                    </div>
+                </div>
+                <div className="flex flex-row gap-5 items-center justify-center">
+                    <div className="flex flex-row gap-3">
+                        <button value={valButtonSize} type="button" class="text-white bg-blue-500 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Small</button>
+                        <button value={valButtonSize} type="button" class="text-white bg-blue-500 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Medium</button>
+                        <button value={valButtonSize} type="button" class="text-white bg-blue-500 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Large</button>
+                    </div>
+                </div>
                 <button
                     onClick={onClose}
                     className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"

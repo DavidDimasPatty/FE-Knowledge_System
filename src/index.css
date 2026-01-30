@@ -7,3 +7,33 @@
         "Segoe UI Emoji",
         "Noto Color Emoji";
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0.6;
+        transform: translateY(1px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@font-face {
+    font-family: 'HUM';
+    src: url('../public/hum777k.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ASAP';
+    src: url('../public/Asap_SemiCondensed-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: "ASAP";
+}

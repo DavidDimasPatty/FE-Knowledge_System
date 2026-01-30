@@ -42,7 +42,9 @@ const SideBarLeft =
         isLoginOpen,
         handleLogin,
         isSettingOpen,
-        setIsSettingOpen
+        setIsSettingOpen,
+        valButtonSize,
+        setValButtonSize
     }) => {
         const [isSearch, setIsSearch] = useState(false)
         const [categories, setCategories] = useState([]);
@@ -65,6 +67,9 @@ const SideBarLeft =
         const [loadingNonFavorite, setLoadingNonFavorite] = useState(false);
         const [loadingFavorite, setLoadingFavorite] = useState(false);
         const MySwal = withReactContent(Swal);
+        const params = new URLSearchParams(location.search);
+        const activeCategory = params.get("category");
+        const activeTopic = params.get("topic");
         const bgColor = (path) => {
             const isActive = location.pathname === path;
 
@@ -519,6 +524,8 @@ const SideBarLeft =
                                             idCategory={item.IdCategories}
                                             idTopic={item.ID}
                                             location={location}
+                                            activeCategory={activeCategory}
+                                            activeTopic={activeTopic}
                                         />
                                     ))}
                                 </div>
@@ -537,6 +544,8 @@ const SideBarLeft =
                                             idCategory={item.IdCategories}
                                             idTopic={item.ID}
                                             location={location}
+                                            activeCategory={activeCategory}
+                                            activeTopic={activeTopic}
                                         />
                                     ))}
                                 </div>
@@ -576,13 +585,25 @@ const SideBarLeft =
                     )}
 
                     {localStorage.getItem("login") && !isMinimized && (
-                        <div className="relative mt-6 mb-2">
+                        <div className="relative mt-6 mb-2"
+                        >
                             {openDropDown && (
                                 <div
                                     className={
                                         "absolute left-0 w-48 rounded-lg shadow-lg z-50 bottom-14 " +
                                         (dark ? "bg-gray-800 text-white" : "bg-white")
                                     }
+                                    style={{
+                                        // width: isMinimized ? "70px" : "360px",
+                                        // height: "calc(100vh - 40px)",
+                                        // top: "20px",
+                                        // left: "15px",
+                                        // position: "relative",
+                                        borderRadius: "10px",
+                                        boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+                                        zIndex: 50,
+                                        backgroundColor: "white"
+                                    }}
                                 >
                                     <button
                                         onClick={() => {
@@ -680,6 +701,8 @@ const SideBarLeft =
                     setDark={setDark}
                     lang={lang}
                     setLang={setLang}
+                    valButtonSize={valButtonSize}
+                    setValButtonSize={setValButtonSize}
                 />
             </div >
         );
@@ -702,7 +725,7 @@ const SideBarLeft =
 //     );
 // };
 
-const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location }) => {
+const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, activeCategory, activeTopic }) => {
     const navigate = useNavigate();
     return (
         <div
@@ -729,8 +752,15 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location })
             }
             }
             className={
-                "flex items-center justify-between p-2 rounded-lg cursor-pointer " +
-                (dark ? "hover:bg-gray-700" : "hover:bg-gray-100")
+                "flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors " +
+                (
+                    String(idCategory) === activeCategory &&
+                        String(idTopic) === activeTopic
+                        ? " bg-gradient-to-r from-blue-500/40 to-cyan-600/40 text-white "
+                        : dark
+                            ? "hover:bg-gray-700"
+                            : "hover:bg-gray-100"
+                )
             }
         >
             <div className="row-auto">
@@ -738,7 +768,7 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location })
                     {icon}
                     <span>{title}</span>
                 </div>
-                <div className="ml-2 text-gray-400 text-sm">
+                <div className={"ml-2  text-sm"}>
                     {desc}
                 </div>
             </div>
