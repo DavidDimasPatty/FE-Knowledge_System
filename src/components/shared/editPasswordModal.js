@@ -24,7 +24,7 @@ const EditPasswordModal = (
         if (retypeNewPassword != newPassword) {
             MySwal.fire({
                 title: "Error!",
-                text: `Password Baru Tidak Sama.`,
+                text: `New passwords do not match.`,
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
@@ -44,16 +44,16 @@ const EditPasswordModal = (
 
         if (!isValidPassword) {
             MySwal.fire({
-                title: "Password Tidak Valid",
+                title: "Invalid Password",
                 html: `
                         <div style="text-align:left;font-size:14px">
-                        <p>Pastikan password memenuhi syarat berikut:</p>
+                        <p>Make sure the password meets the following requirements:</p>
                         <ul>
-                            <li>${passwordRules.length ? "✅" : "❌"} Minimal 8 karakter</li>
-                            <li>${passwordRules.upper ? "✅" : "❌"} Mengandung huruf besar</li>
-                            <li>${passwordRules.lower ? "✅" : "❌"} Mengandung huruf kecil</li>
-                            <li>${passwordRules.number ? "✅" : "❌"} Mengandung angka</li>
-                            <li>${passwordRules.special ? "✅" : "❌"} Mengandung karakter spesial</li>
+                            <li>${passwordRules.length ? "✅" : "❌"} Minimum 8 characters</li>
+                            <li>${passwordRules.upper ? "✅" : "❌"} Uppercase letter</li>
+                            <li>${passwordRules.lower ? "✅" : "❌"} Lowercase letter</li>
+                            <li>${passwordRules.number ? "✅" : "❌"} Number</li>
+                            <li>${passwordRules.special ? "✅" : "❌"} Special character</li>
                         </ul>
                         </div>
                     `,
@@ -74,8 +74,8 @@ const EditPasswordModal = (
             const data = response.data;
 
             MySwal.fire({
-                title: "Edit Password Successs!",
-                text: `Berhasil Edit Password.`,
+                title: "Password Updated Successfully!",
+                text: `Password Updated Successfully.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -88,7 +88,7 @@ const EditPasswordModal = (
             if (error.response) {
                 MySwal.fire({
                     title: "Error!",
-                    text: `Error Edit Password : ${error.response.data.error}.`,
+                    text: `Failed to Edit Password : ${error.response.data.error}.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
@@ -96,7 +96,7 @@ const EditPasswordModal = (
             } else {
                 MySwal.fire({
                     title: "Error!",
-                    text: `Error Edit Password.`,
+                    text: `Failed to Edit Password.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,

@@ -55,8 +55,8 @@ const LoginModal = (
 
 
             MySwal.fire({
-                title: "Login Successs!",
-                text: `Berhasil Login.`,
+                title: "Login Successful!",
+                text: `Login Successful.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -103,7 +103,7 @@ const LoginModal = (
 
             MySwal.fire({
                 title: "Success!",
-                text: "Link reset password telah dikirim ke email.",
+                text: "Password reset link has been sent to your email.",
                 icon: "success",
                 timer: 2000,
                 showConfirmButton: false,
@@ -115,7 +115,7 @@ const LoginModal = (
         } catch (error) {
             MySwal.fire({
                 title: "Error!",
-                text: error.response?.data?.error || "Gagal reset password.",
+                text: error.response?.data?.error || "Failed to reset password.",
                 icon: "error",
                 timer: 2000,
                 showConfirmButton: false,

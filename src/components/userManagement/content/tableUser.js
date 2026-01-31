@@ -190,7 +190,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
             title: `Are you sure to delete "${user?.Nama ?? "this user"}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Hapus!",
+            confirmButtonText: "Delete!",
             cancelButtonText: "Cancel",
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -225,7 +225,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
             title: `Are you sure to activate "${user?.Nama ?? "this user"}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Hapus!",
+            confirmButtonText: "Activate!",
             cancelButtonText: "Cancel",
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -260,7 +260,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
             title: `Are you sure to block "${user?.Nama ?? "this user"}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Hapus!",
+            confirmButtonText: "Block!",
             cancelButtonText: "Cancel",
         }).then(async (result) => {
             if (result.isConfirmed) {

@@ -36,7 +36,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
         if (!token) {
             MySwal.fire({
                 title: "Error",
-                text: "Token tidak ditemukan",
+                text: "Token not found.",
                 icon: "error",
             }).then(() => navigate("/"));
             return;
@@ -49,7 +49,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
             .catch((error) => {
                 MySwal.fire({
                     title: "Error",
-                    text: error.response?.data?.error || "Link reset password tidak valid atau sudah digunakan",
+                    text: error.response?.data?.error || "The password reset link is invalid or has already been used.",
                     icon: "error",
                 }).then(() => navigate("/"));
             });
@@ -58,12 +58,12 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!token) return MySwal.fire("Error", "Token tidak valid", "error");
+        if (!token) return MySwal.fire("Error", "Invalid token.", "error");
 
         if (newPassword !== retypePassword) {
             return MySwal.fire({
                 title: "Error!",
-                text: "Password tidak sama",
+                text: "Passwords do not match.",
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
@@ -80,15 +80,15 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
 
         if (!Object.values(passwordRules).every(Boolean)) {
             return MySwal.fire({
-                title: "Password Tidak Valid",
+                title: "Invalid Password",
                 html: `
                     <div style="text-align:left;font-size:14px">
                         <ul>
-                            <li>${passwordRules.length ? "✅" : "❌"} Minimal 8 karakter</li>
-                            <li>${passwordRules.upper ? "✅" : "❌"} Huruf besar</li>
-                            <li>${passwordRules.lower ? "✅" : "❌"} Huruf kecil</li>
-                            <li>${passwordRules.number ? "✅" : "❌"} Angka</li>
-                            <li>${passwordRules.special ? "✅" : "❌"} Karakter spesial</li>
+                            <li>${passwordRules.length ? "✅" : "❌"} Minimum 8 characters</li>
+                            <li>${passwordRules.upper ? "✅" : "❌"} Uppercase letter</li>
+                            <li>${passwordRules.lower ? "✅" : "❌"} Lowercase letter</li>
+                            <li>${passwordRules.number ? "✅" : "❌"} Number</li>
+                            <li>${passwordRules.special ? "✅" : "❌"} Special character</li>
                         </ul>
                     </div>
                 `,
@@ -104,7 +104,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
 
             MySwal.fire({
                 title: "Success!",
-                text: "Password berhasil direset",
+                text: "Password has been successfully reset.",
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false,
@@ -114,7 +114,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
         } catch (error) {
             MySwal.fire({
                 title: "Error!",
-                text: error.response?.data?.error || "Reset password gagal",
+                text: error.response?.data?.error || "Failed to reset password.",
                 icon: "error",
             });
         } finally {
@@ -125,7 +125,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
     if (checkingToken) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-                <p className="text-gray-600">Memverifikasi token...</p>
+                <p className="text-gray-600">Verifying token...</p>
             </div>
         );
     }
@@ -133,7 +133,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
     return (
         <div className="fixed inset-0 bg-white/100 backdrop-blur-md flex items-center justify-center z-50 p-4">
             <div className={`w-[480px] rounded-xl shadow-xl ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}>
-                
+
                 {/* HEADER */}
                 <div className="px-8 py-6 pt-20 border-b border-gray-200 dark:border-gray-700 relative text-center">
                     {/* LOGO */}

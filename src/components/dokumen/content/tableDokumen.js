@@ -231,7 +231,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             title: `Are you sure to delete "${document.Judul}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Hapus!",
+            confirmButtonText: "Delete!",
             cancelButtonText: "Cancel",
         }).then(async (result) => {
             if (result.isConfirmed) {
