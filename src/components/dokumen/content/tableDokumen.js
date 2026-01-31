@@ -49,8 +49,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         large: "18px"
     };
 
-    function formatTanggal(isoDate) {
-        return new Intl.DateTimeFormat("id-ID", {
+    function formatTanggal(isoDate, locale = "en-US") {
+        return new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "long",
             year: "numeric",
@@ -59,15 +59,22 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
     }
 
     const customStyles = {
+        table: {
+            style: {
+                backgroundColor: dark ? "#111827" : "#ffffff"
+            }
+        },
+        headRow: {
+            style: {
+                backgroundColor: dark ? "#1f2937" : "#f9fafb",
+                borderBottom: dark ? "1px solid #374151" : "1px solid #e5e7eb"
+            }
+        },
         headCells: {
             style: {
                 fontSize: headerFontSizeMap[valButtonSize],
-                fontWeight: "600"
-            }
-        },
-        cells: {
-            style: {
-                fontSize: fontSizeMap[valButtonSize]
+                fontWeight: "600",
+                color: dark ? "#e5e7eb" : "#374151"
             }
         },
         rows: {
@@ -77,15 +84,105 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         ? "38px"
                         : valButtonSize === "medium"
                             ? "44px"
-                            : "52px"
+                            : "52px",
+
+                backgroundColor: dark ? "#111827" : "#ffffff",
+                color: dark ? "#e5e7eb" : "#374151",
+
+                borderTop: dark
+                    ? "1px solid rgba(255, 255, 255, 0.19)"
+                    : "1px solid #e5e7eb",
+
+                borderBottom: dark
+                    ? "1px solid rgba(255, 255, 255, 0.19)"
+                    : "1px solid #e5e7eb",
+
+                transition: "background-color 0.2s ease"
+            },
+
+            highlightOnHoverStyle: {
+                backgroundColor: dark ? "#283548" : "#f9fafb",
+                color: dark ? "#f9fafb" : "#374151",
+                borderLeft: "3px solid #6366f1"
+            }
+        },
+        cells: {
+            style: {
+                fontSize: fontSizeMap[valButtonSize]
             }
         },
         pagination: {
             style: {
-                fontSize: fontSizeMap[valButtonSize]
+                backgroundColor: dark ? "#111827" : "#ffffff",
+                color: dark ? "#e5e7eb" : "#374151",
+                borderTop: dark ? "1px solid #1f2937" : "1px solid #e5e7eb"
+            },
+            pageButtonsStyle: {
+                color: dark ? "#e5e7eb" : "#374151",
+                fill: dark ? "#e5e7eb" : "#374151",
+                backgroundColor: "transparent",
+                borderRadius: "6px",
+
+                "&:disabled": {
+                    color: dark ? "#6b7280" : "#9ca3af",
+                    fill: dark ? "#6b7280" : "#9ca3af"
+                },
+
+                "&:hover:not(:disabled)": {
+                    backgroundColor: dark ? "#1f2937" : "#f3f4f6"
+                },
+
+                "&:focus": {
+                    outline: "none",
+                    backgroundColor: dark ? "#283548" : "#e5e7eb"
+                }
             }
         }
     };
+
+    const CustomLoader = ({ dark }) => (
+        <div
+            className={`flex items-center justify-center py-10 w-full
+            ${dark ? "bg-gray-800" : "bg-white"}
+            `}
+        >
+            <div
+                className={`flex items-center gap-4 rounded-lg px-6 py-4
+                ${dark
+                    ? "text-gray-300 shadow-black/40"
+                    : "text-gray-600"
+                }`}
+            >
+                {/* Dots */}
+                <div className="flex items-center gap-1">
+                    <span
+                        className={`h-2 w-2 rounded-full animate-bounce
+                        ${dark ? "bg-blue-400" : "bg-blue-600"}`}
+                    />
+                    <span
+                        className={`h-2 w-2 rounded-full animate-bounce [animation-delay:150ms]
+                        ${dark ? "bg-blue-400" : "bg-blue-600"}`}
+                    />
+                    <span
+                        className={`h-2 w-2 rounded-full animate-bounce [animation-delay:300ms]
+                        ${dark ? "bg-blue-400" : "bg-blue-600"}`}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+
+    const NoData = ({ dark, valButtonSize }) => (
+        <div
+            className={`
+            w-full text-center py-6
+            ${dark ? "bg-gray-800 text-gray-400" : "text-gray-600"}
+            ${sizeText[valButtonSize] || "text-base"}
+        `}
+        >
+            There are no records to display
+        </div>
+    );
 
     const downloadDokumen = async (id) => {
         try {
@@ -165,6 +262,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         });
     };
 
+    const actionBtnBase = "px-3 py-1 rounded-md font-medium transition-all duration-200 " + (sizeTextDown[valButtonSize] || "text-sm");
+
     const columns = [
         {
             name: "ID",
@@ -180,7 +279,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         },
         {
             name: "Created At",
-            selector: row => formatTanggal(row.AddTime),
+            selector: row => formatTanggal(row.AddTime, "en-US"),
             sortable: true,
             maxWidth: "180px",
             wrap: true
@@ -189,21 +288,42 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             name: "Action",
             cell: row => (
                 <div className="flex gap-2">
+                    {/* Download */}
                     <button
                         onClick={() => downloadDokumen(row.ID)}
-                        className={`px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 ${sizeTextDown[valButtonSize] || "text-base"}`}
+                        className={`
+                    ${actionBtnBase}
+                    ${dark
+                                ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"}
+                `}
                     >
                         Download
                     </button>
+
+                    {/* Edit */}
                     <button
                         onClick={() => openEditPopUp(row.ID)}
-                        className={`px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 ${sizeTextDown[valButtonSize] || "text-base"}`}
+                        className={`
+                    ${actionBtnBase}
+                    text-white
+                    bg-gradient-to-r from-indigo-500 to-blue-500
+                    hover:from-indigo-600 hover:to-blue-600
+                    shadow-sm
+                `}
                     >
                         Edit
                     </button>
+
+                    {/* Delete */}
                     <button
                         onClick={() => handleDelete(row.ID)}
-                        className={`px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 ${sizeTextDown[valButtonSize] || "text-base"}`}
+                        className={`
+                    ${actionBtnBase}
+                    ${dark
+                                ? "border border-red-500/40 text-red-400 hover:bg-red-500/10"
+                                : "border border-red-500/30 text-red-600 hover:bg-red-50"}
+                `}
                     >
                         Delete
                     </button>
@@ -212,33 +332,93 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
-            width: "300px",
+            width: "320px"
         }
     ];
     return (
-        <div>
+        <div className="relative mt-5">
             {isLoading && (
-                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-                    <div className="w-12 h-12 border-4 border-white/50 border-t-white rounded-full animate-spin" />
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div
+                        className={`
+                        w-12 h-12 border-4 rounded-full animate-spin
+                        ${dark
+                                ? "border-white/30 border-t-white"
+                                : "border-gray-300 border-t-gray-800"}
+                    `}
+                    />
                 </div>
             )}
-            <div className="p-4">
-                <h1 className={`font-bold mb-4 ${sizeTextUp[valButtonSize] || "text-base"}`}>List Dokumen</h1>
-                <button
-                    onClick={() => setIsOpenAdd(true)}
-                    className={`px-3 py-1 w-30 mb-3 bg-blue-500 text-white rounded hover:bg-blue-600 ${sizeText[valButtonSize] || "text-base"}`}
+
+            <div
+                className={`
+                p-6 rounded-xl shadow-sm
+                ${dark ? "text-gray-100" : "text-gray-800"}
+            `}
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <h1
+                        className={`
+                        font-semibold
+                        ${sizeTextUp[valButtonSize] || "text-lg"}
+                        ${dark ? "text-gray-100" : "text-gray-800"}
+                    `}
+                    >
+                        Document List
+                    </h1>
+
+                    <button
+                        onClick={() => setIsOpenAdd(true)}
+                        className="
+                        group relative flex items-center gap-2
+                        px-4 py-2
+                        rounded-lg
+                        font-medium
+                        text-white
+                        bg-gradient-to-r from-indigo-500 to-blue-500
+                        shadow-md
+                        transition-all duration-300
+                        hover:shadow-lg
+                        active:scale-95
+                    "
+                    >
+                        <span
+                            className="
+                            absolute inset-0
+                            bg-gradient-to-r from-blue-500 to-indigo-500
+                            opacity-0
+                            transition-opacity duration-300
+                            group-hover:opacity-100
+                            rounded-lg
+                        "
+                        />
+                        <span className={`relative z-10 ${sizeText[valButtonSize] || "text-sm"}`}>
+                            Add Dokumen
+                        </span>
+                    </button>
+                </div>
+
+                <div
+                    className={`
+                    rounded-lg overflow-hidden border
+                    ${dark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"}
+                `}
                 >
-                    Add Dokumen
-                </button>
-                <DataTable
-                    columns={columns}
-                    data={dokumen}
-                    pagination
-                    highlightOnHover
-                    // selectableRows
-                    customStyles={customStyles}
-                />
+                    <DataTable
+                        columns={columns}
+                        data={dokumen}
+                        progressPending={loading}
+                        progressComponent={<CustomLoader dark={dark} />}
+                        pagination
+                        highlightOnHover
+                        customStyles={customStyles}
+                        noDataComponent={
+                            <NoData dark={dark} valButtonSize={valButtonSize} />
+                        }
+                    />
+                </div>
             </div>
+
             <AddDokumen
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
@@ -246,6 +426,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                 onClose={() => setIsOpenAdd(!isOpenAdd)}
                 fetchDokumen={fetchDokumen}
             />
+
             <EditDokumen
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
@@ -254,7 +435,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                 idDokumen={selectedDokumenId}
                 fetchDokumen={fetchDokumen}
             />
-        </div>);
+        </div>
+    );
 }
 
 export default TableDokumen;

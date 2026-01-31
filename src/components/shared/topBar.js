@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import LoginModal from "./loginModal";
+import SettingModal from "./settingModal"; // nanti kita buat modal ini
 import { useNavigate } from "react-router-dom";
+import { FiSettings } from "react-icons/fi";
 
 const TopBar = ({
     dark,
@@ -9,16 +11,39 @@ const TopBar = ({
     setLogin,
     setIsLoginOpen,
     isLoginOpen,
-    handleLogin }) => {
-
+    handleLogin,
+    lang,
+    setLang,
+    valButtonSize,
+    setValButtonSize
+}) => {
     const navigate = useNavigate();
+    const [isSettingOpen, setIsSettingOpen] = useState(false);
+
+    const sizeText = {
+        small: "text-sm",
+        medium: "text-base",
+        large: "text-lg"
+    };
+
+    const sizeTextUp = {
+        small: "text-xl",
+        medium: "text-2xl",
+        large: "text-3xl"
+    };
+
+    const sizeTextDown = {
+        small: "text-xs",
+        medium: "text-sm",
+        large: "text-base"
+    };
 
     return (
         <div
             className={
                 dark
                     ? "w-full px-4 py-3 bg-gray-900 text-white flex items-center justify-between"
-                    : "w-full px-4 py-3  bg-gray-100 text-black  flex items-center justify-between"
+                    : "w-full px-4 py-3 bg-gray-100 text-black flex items-center justify-between"
             }
         >
             <div
@@ -30,80 +55,78 @@ const TopBar = ({
                     alt="Ikodora Logo"
                     className="w-8 h-8 object-contain transition-transform duration-300 hover:scale-105"
                 />
-                <h2 className="text-lg font-semibold tracking-wide">
-                    Ikodora
-                </h2>
+                <h2 className="text-lg font-semibold tracking-wide">iKodora</h2>
             </div>
 
             <div className="flex items-center space-x-3">
+                {/* SETTING ICON */}
                 <button
-                    onClick={() => setDark(!dark)}
-                    className={
-                        "w-16 h-8 flex items-center rounded-full p-1 transition-all duration-300 relative " +
-                        (dark ? "bg-gray-700" : " bg-gradient-to-r from-indigo-500 to-blue-500")
-                    }
+                    onClick={() => setIsSettingOpen(true)}
+                    className={`p-2 rounded-lg transition ${sizeText[valButtonSize] || "text-base"}`}
+                    style={{
+                        backgroundColor: "transparent",
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = dark ? "#374151" : "#e5e7eb"; // dark:bg-gray-700 : bg-gray-200
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                    }}
                 >
-                    <span
-                        className={
-                            "absolute left-2 transition-opacity duration-300 text-black text-lg " +
-                            (dark ? "opacity-0" : "opacity-100")
+                    <FiSettings
+                        size={
+                            valButtonSize === "small" ? 19 :
+                                valButtonSize === "medium" ? 21 :
+                                    23
                         }
-                    >
-                        ☀️
-                    </span>
-
-                    <span
-                        className={
-                            "absolute right-2 transition-opacity duration-300 text-white text-lg " +
-                            (dark ? "opacity-100" : "opacity-0")
-                        }
-                    >
-                        🌙
-                    </span>
-
-                    <div
-                        className={
-                            "w-7 h-7 rounded-full bg-white shadow-md transform transition-all duration-300 " +
-                            (!dark ? "translate-x-8" : "translate-x-0")
-                        }
-                    ></div>
+                    />
                 </button>
 
-                {/* <div className="flex items-end space-x-3">
-
-                       <button
-                            onClick={() => setIsLoginOpen(true)}
-                            className={
-                                "w-16 h-8  rounded-full p-1 transition-all duration-300 relative " +
-                                (dark ? "bg-gray-700" : "bg-blue-400")
-                            }
-                        ><b>Log In</b></button>
-
-                    </div> */}
-                <div className="relative px-3">
-                    <button
-                        className="
-                                    w-full flex items-center justify-center gap-2
-                                    px-4 py-2.5 rounded-xl
-                                    bg-gradient-to-r from-indigo-500 to-blue-500
-                                    text-white text-sm font-semibold
-                                    shadow-md shadow-indigo-500/30
-                                    transition-all duration-200
-                                    hover:shadow-lg hover:scale-[1.02]
-                                    active:scale-[0.98]
-                                "  onClick={() => setIsLoginOpen(true)}
-                    >
-                        Login
-                    </button>
-                </div>
-
+                {/* LOGIN BUTTON */}
+                <button
+                    onClick={() => setIsLoginOpen(true)}
+                    className={`
+                        flex items-center justify-center gap-2
+                        px-4 py-2.5 rounded-xl
+                        bg-gradient-to-r from-indigo-500 to-blue-500
+                        text-white font-semibold
+                        shadow-md shadow-indigo-500/30
+                        transform
+                        transition duration-300 ease-in-out
+                        hover:scale-105 hover:shadow-xl
+                        active:scale-100
+                        ${sizeText[valButtonSize] || "text-base"}
+                    `}
+                    style={{
+                        backfaceVisibility: "hidden",
+                        transformStyle: "preserve-3d",
+                    }}
+                >
+                    Log In
+                </button>
             </div>
+
+            {/* MODALS */}
             <LoginModal
                 isOpen={isLoginOpen}
                 onClose={() => setIsLoginOpen(false)}
                 onLogin={handleLogin}
                 setLogin={setLogin}
                 login={login}
+                dark={dark}
+                lang={lang}
+                valButtonSize={valButtonSize}
+            />
+
+            <SettingModal
+                isOpen={isSettingOpen}
+                onClose={() => setIsSettingOpen(false)}
+                dark={dark}
+                setDark={setDark}
+                lang={lang}
+                setLang={setLang}
+                valButtonSize={valButtonSize}
+                setValButtonSize={setValButtonSize}
             />
         </div>
     );

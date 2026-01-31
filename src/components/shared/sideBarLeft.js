@@ -75,13 +75,13 @@ const SideBarLeft =
 
             if (isActive) {
                 return dark
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-blue-200 text-black hover:bg-blue-300";
+                    ? "bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-white"
+                    : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700";
             }
 
             return dark
-                ? "hover:bg-gray-700 text-gray-300"
-                : "hover:bg-gray-300 text-gray-800";
+                ? "text-gray-300 hover:bg-gray-700"
+                : "text-gray-800 hover:bg-gray-100";
         };
 
         useEffect(() => {
@@ -195,7 +195,6 @@ const SideBarLeft =
         };
 
         const handleFavoriteTopic = async (idTopic, like) => {
-            // e.preventDefault();
             try {
                 var res = await axios.post("http://localhost:8080/editFavTopic",
                     {
@@ -218,7 +217,6 @@ const SideBarLeft =
                 });
             }
         };
-
 
         const fetchNonFavorite = async (page = 1, search = "") => {
             if (username == null) return;
@@ -248,19 +246,6 @@ const SideBarLeft =
             setHasMoreNonFavorite(newData.length === limit);
         };
 
-        // const handleScroll = (e) => {
-        //     if (searchKeyword !== "") return;
-
-        //     const isBottom =
-        //         e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
-
-        //     if (isBottom && hasMoreNonFavorite && !loadingNonFavorite) {
-        //         const nextPage = pageNonFavorite + 1;
-        //         setPageNonFavorite(nextPage);
-        //         fetchNonFavorite(nextPage, searchKeyword);
-        //     }
-        // };
-
         const handleScrollFavorite = (e) => {
             if (searchKeyword !== "") return;
 
@@ -273,7 +258,6 @@ const SideBarLeft =
                 fetchFavorite(nextPage, searchKeyword);
             }
         };
-
 
         useEffect(() => {
             const delay = setTimeout(() => {
@@ -339,8 +323,7 @@ const SideBarLeft =
                     position: "relative",
                     borderRadius: "30px",
                     boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
-                    zIndex: 50,
-                    backgroundColor: "white"
+                    zIndex: 50
                 }}
             >
                 <div style={{
@@ -377,14 +360,6 @@ const SideBarLeft =
                                     iKodora
                                 </h2>
                             </div>}
-                        {/* <button
-                            onClick={() => setIsMinimized(!isMinimized)}
-                            className="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-                        >
-                            {isMinimized ? <FiChevronRight /> :
-                                <FiChevronLeft />
-                            }
-                        </button> */}
                     </div>
 
                     <div className="flex items-center justify-center">
@@ -392,7 +367,7 @@ const SideBarLeft =
                             <button
                                 onClick={() => window.location.replace("/")}
                                 className="
-                                m-3
+                                my-3
                                 w-full
                                 group relative flex items-center gap-2
                                 py-2
@@ -486,45 +461,37 @@ const SideBarLeft =
                                     <span className={`font-semibold transition-all ${sizeText[valButtonSize] || "text-base"}`}>Topics</span>
 
                                     <div className="relative flex-1">
-                                        {/* <input
-                                                           type="text"
-                                                           placeholder="Cari Topik..."
-                                                           className={`h-7 pl-2 pr-6 border rounded-md outline-none transition-all duration-500 ease-in-out
-                                     ${isSearch ? 'w-full  opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
-                                                           autoFocus={isSearch} style={{ float: 'right' }}
-                                                       /> */}
                                         <input
                                             type="text"
                                             placeholder="Cari Topik..."
                                             value={searchKeyword}
                                             onChange={(e) => setSearchKeyword(e.target.value)}
-                                            className={`h-7 pl-2 pr-10 border rounded-md outline-none transition-all duration-500 ease-in-out text-black dark:text-black bg-white dark:bg-white
-                                   ${isSearch ? 'w-full opacity-100' : 'w-0 opacity-0 pointer-events-none'} ${sizeText[valButtonSize] || "text-base"}`}
+                                            className={`
+                                                h-7 pl-2 pr-10 border rounded-md outline-none
+                                                transition-all duration-500 ease-in-out
+                                            ${dark
+                                                    ? "bg-gray-700 text-white border-gray-600"
+                                                    : "bg-white text-black border-gray-300"}
+                                                ${isSearch ? "w-full opacity-100" : "w-0 opacity-0 pointer-events-none"}
+                                                ${sizeText[valButtonSize] || "text-base"}
+                                            `}
                                             autoFocus={isSearch}
-                                            style={{ float: 'right' }}
-
+                                            style={{ float: "right" }}
                                         />
 
                                         <FiSearch
                                             onClick={() => setIsSearch(!isSearch)}
-                                            className="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700 text-black dark:text-black bg-white dark:bg-white"
+                                            className={`
+                                                absolute right-5 top-1/2 -translate-y-1/2
+                                                cursor-pointer transition-colors duration-300
+                                                ${dark
+                                                    ? "text-gray-300 hover:text-white"
+                                                    : "text-gray-800 hover:text-gray-400"}
+                                                `}
                                         />
-                                        {/* <FiPlus
-                                            onClick={() => window.location.replace("/")}
-                                            className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-300 hover:text-gray-700 text-black dark:text-black bg-white dark:bg-white"
-                                        /> */}
                                     </div>
+
                                 </div>
-                                {/* <div className="ml-1 mr-2 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto", overflowX: "hidden" }} onScroll={handleScroll}>
-                                    {categories.map((item) => (
-                                        <SidebarItem
-                                            key={item.ID}
-                                            dark={dark}
-                                            // icon={iconMap[item.NamaIcon] || <FiStar />}
-                                            title={item.Category}
-                                            time={formatDate(item.AddTime)} />
-                                    ))}
-                                </div> */}
                                 <div className="flex items-center gap-2 mb-2 ml-2 p-1 border-b">
                                     <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Saved Topics</span>
                                 </div>
@@ -550,7 +517,7 @@ const SideBarLeft =
                                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
                                     <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Recents</span>
                                 </div>
-                                <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 430px)", overflowY: "auto" }} onScroll={handleScroll}>
+                                <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 710px)", overflowY: "auto" }} onScroll={handleScroll}>
                                     {nonFavoriteTopics.map((item) => (
                                         <SidebarItem
                                             key={item.ID}
@@ -619,8 +586,21 @@ const SideBarLeft =
                                         onPassword={() => setIsPasswordOpen(true)}
                                         onSetting={() => setIsSettingOpen(true)}
                                         onLogout={() => {
-                                            setLogin(false);
+                                            // Simpan item yang ingin dipertahankan
+                                            const uiDarkMode = localStorage.getItem("ui_dark_mode");
+                                            const uiLang = localStorage.getItem("ui_lang");
+                                            const uiFontSize = localStorage.getItem("ui_font_size");
+
+                                            // Hapus semua localStorage
                                             localStorage.clear();
+
+                                            // Kembalikan item yang dipertahankan
+                                            if (uiDarkMode) localStorage.setItem("ui_dark_mode", uiDarkMode);
+                                            if (uiLang) localStorage.setItem("ui_lang", uiLang);
+                                            if (uiFontSize) localStorage.setItem("ui_font_size", uiFontSize);
+
+                                            // Logout state
+                                            setLogin(false);
                                             window.location.href = "/";
                                         }}
                                     />
@@ -675,8 +655,21 @@ const SideBarLeft =
                                         onPassword={() => setIsPasswordOpen(true)}
                                         onSetting={() => setIsSettingOpen(true)}
                                         onLogout={() => {
-                                            setLogin(false);
+                                            // Simpan item yang ingin dipertahankan
+                                            const uiDarkMode = localStorage.getItem("ui_dark_mode");
+                                            const uiLang = localStorage.getItem("ui_lang");
+                                            const uiFontSize = localStorage.getItem("ui_font_size");
+
+                                            // Hapus semua localStorage
                                             localStorage.clear();
+
+                                            // Kembalikan item yang dipertahankan
+                                            if (uiDarkMode) localStorage.setItem("ui_dark_mode", uiDarkMode);
+                                            if (uiLang) localStorage.setItem("ui_lang", uiLang);
+                                            if (uiFontSize) localStorage.setItem("ui_font_size", uiFontSize);
+
+                                            // Logout state
+                                            setLogin(false);
                                             window.location.href = "/";
                                         }}
                                     />
@@ -689,6 +682,7 @@ const SideBarLeft =
                     isOpen={isEditPasswordOpen}
                     onClose={() => setIsPasswordOpen(false)}
                     valButtonSize={valButtonSize}
+                    dark={dark}
                 />
                 <LoginModal
                     isOpen={isLoginOpen}
@@ -696,6 +690,9 @@ const SideBarLeft =
                     onLogin={handleLogin}
                     setLogin={setLogin}
                     login={login}
+                    dark={dark}
+                    lang={lang}
+                    valButtonSize={valButtonSize}
                 />
                 <SettingModal
                     isOpen={isSettingOpen}
@@ -710,23 +707,6 @@ const SideBarLeft =
             </div >
         );
     };
-
-// const SidebarItem = ({ dark, icon, title, time }) => {
-//     return (
-//         <div
-//             className={
-//                 "flex items-center justify-between p-2 rounded-lg cursor-pointer " +
-//                 (dark ? "hover:bg-gray-700" : "hover:bg-gray-100")
-//             }
-//         >
-//             <div className="flex items-center gap-2">
-//                 {icon}
-//                 <span >{title}</span>
-//             </div>
-//             <span className="text-xs opacity-70 me-1">{time}</span>
-//         </div>
-//     );
-// };
 
 const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, activeCategory, activeTopic, valButtonSize }) => {
     const navigate = useNavigate();
@@ -752,18 +732,12 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, a
             onClick={() => {
                 console.log(location.pathname)
                 if (location.pathname == "/userManagement" || location.pathname == "/dokumen") {
-                    // navigate(
-                    //     `?topic=${idTopic}&category=${idCategory}`,
-                    //     { replace: true }
-                    // )
-                    //window.location.replace(`/?topic=${idTopic}&category=${idCategory}`)
                     navigate(
                         `/?topic=${idTopic}&category=${idCategory}`,
                         { replace: true }
                     )
                 }
                 else {
-                    //window.location.replace(`?topic=${idTopic}&category=${idCategory}`)
                     navigate(
                         `?topic=${idTopic}&category=${idCategory}`,
                         { replace: true }
@@ -776,10 +750,12 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, a
                 (
                     String(idCategory) === activeCategory &&
                         String(idTopic) === activeTopic
-                        ? " bg-gradient-to-r from-blue-500/40 to-cyan-600/40 text-white "
+                        ? dark
+                            ? "bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-white"
+                            : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700"
                         : dark
-                            ? "hover:bg-gray-700"
-                            : "hover:bg-gray-100"
+                            ? "hover:bg-gray-700 text-gray-300"
+                            : "hover:bg-gray-100 text-gray-800"
                 )
             }
         >
@@ -823,8 +799,8 @@ const UserDropdown = ({
 
     return (
         <div
-            className={`w-48 rounded-lg shadow-lg z-[9999]
-            ${dark ? "bg-gray-800 text-white" : "bg-white"}`}
+            className={`w-48 rounded-lg shadow-lg z-[9999] overflow-hidden
+            ${dark ? "bg-gray-700 text-white" : "bg-white"}`}
             style={{
                 borderRadius: "10px",
                 boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
@@ -833,7 +809,7 @@ const UserDropdown = ({
             <button
                 onClick={onPassword}
                 className={`w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-gray-100 
-                ${dark ? "hover:bg-gray-700" : ""}
+                ${dark ? "hover:bg-gray-600" : ""}
                 ${sizeText[valButtonSize] || "text-base"}`}
             >
                 <FiKey /> Edit Password
@@ -842,7 +818,7 @@ const UserDropdown = ({
             <button
                 onClick={onSetting}
                 className={`w-full flex items-center gap-3 text-left px-4 py-2 hover:bg-gray-100 
-                ${dark ? "hover:bg-gray-700" : ""}
+                ${dark ? "hover:bg-gray-600" : ""}
                 ${sizeText[valButtonSize] || "text-base"}`}
             >
                 <FiSettings /> Settings
@@ -851,10 +827,10 @@ const UserDropdown = ({
             <button
                 onClick={onLogout}
                 className={`w-full text-left flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-gray-100 
-                ${dark ? "hover:bg-gray-700" : ""}
+                ${dark ? "hover:bg-gray-600" : ""}
                 ${sizeText[valButtonSize] || "text-base"}`}
             >
-                <FiLogOut /> Logout
+                <FiLogOut /> Log Out
             </button>
         </div>
     );

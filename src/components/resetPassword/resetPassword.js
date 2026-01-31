@@ -5,7 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
-const ResetPassword = () => {
+const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
     const MySwal = withReactContent(Swal);
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -20,6 +20,18 @@ const ResetPassword = () => {
     const [checkingToken, setCheckingToken] = useState(true);
     const [loading, setLoading] = useState(false);
 
+    const sizeText = {
+        small: "text-sm",
+        medium: "text-base",
+        large: "text-lg"
+    };
+
+    const sizeTextUp = {
+        small: "text-xl",
+        medium: "text-2xl",
+        large: "text-3xl"
+    };
+
     useEffect(() => {
         if (!token) {
             MySwal.fire({
@@ -33,9 +45,7 @@ const ResetPassword = () => {
         axios.get("http://localhost:8080/validateResetToken", {
             params: { token }
         })
-            .then(() => {
-                setCheckingToken(false);
-            })
+            .then(() => setCheckingToken(false))
             .catch((error) => {
                 MySwal.fire({
                     title: "Error",
@@ -48,20 +58,16 @@ const ResetPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!token) {
-            MySwal.fire("Error", "Token tidak valid", "error");
-            return;
-        }
+        if (!token) return MySwal.fire("Error", "Token tidak valid", "error");
 
         if (newPassword !== retypePassword) {
-            MySwal.fire({
+            return MySwal.fire({
                 title: "Error!",
                 text: "Password tidak sama",
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
             });
-            return;
         }
 
         const passwordRules = {
@@ -72,10 +78,8 @@ const ResetPassword = () => {
             special: /[^A-Za-z0-9]/.test(newPassword),
         };
 
-        const isValidPassword = Object.values(passwordRules).every(Boolean);
-
-        if (!isValidPassword) {
-            MySwal.fire({
+        if (!Object.values(passwordRules).every(Boolean)) {
+            return MySwal.fire({
                 title: "Password Tidak Valid",
                 html: `
                     <div style="text-align:left;font-size:14px">
@@ -92,15 +96,11 @@ const ResetPassword = () => {
                 timer: 2000,
                 showConfirmButton: false,
             });
-            return;
         }
 
         try {
             setLoading(true);
-            await axios.post("http://localhost:8080/resetPassword", {
-                token: token,
-                newPassword: newPassword,
-            });
+            await axios.post("http://localhost:8080/resetPassword", { token, newPassword });
 
             MySwal.fire({
                 title: "Success!",
@@ -131,73 +131,84 @@ const ResetPassword = () => {
     }
 
     return (
-        <div className="fixed inset-0 bg-white/100 backdrop-blur-md flex items-center justify-center z-50">
-            <div className="relative bg-white rounded-xl shadow-xl w-[460px] pt-20 pb-10 px-10">
-
-                {/* LOGO */}
-                <div className="absolute -top-14 left-1/2 -translate-x-1/2">
-                    <div className="w-28 h-28 rounded-full bg-white shadow-md flex items-center justify-center">
-                        <img
-                            src="/BLACK-LOGO.png"
-                            alt="logo"
-                            className="w-14 h-14 object-contain"
-                        />
+        <div className="fixed inset-0 bg-white/100 backdrop-blur-md flex items-center justify-center z-50 p-4">
+            <div className={`w-[480px] rounded-xl shadow-xl ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}>
+                
+                {/* HEADER */}
+                <div className="px-8 py-6 pt-20 border-b border-gray-200 dark:border-gray-700 relative text-center">
+                    {/* LOGO */}
+                    <div className="absolute -top-14 left-1/2 -translate-x-1/2">
+                        <div className={`w-28 h-28 rounded-full ${dark ? "bg-gray-700" : "bg-white"} shadow-md flex items-center justify-center`}>
+                            <img src={dark ? "/WHITE-LOGO.png" : "/BLACK-LOGO.png"} alt="logo" className="w-14 h-14 object-contain" />
+                        </div>
                     </div>
+                    <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-2xl"}`}>Reset Password</h2>
                 </div>
 
-
-                <h2 className="text-center text-2xl font-semibold mb-6">
-                    Reset Password
-                </h2>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="relative">
+                {/* FORM */}
+                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
+                    {/* NEW PASSWORD */}
+                    <div className="relative shadow-lg">
                         <input
                             type={showNew ? "text" : "password"}
-                            placeholder="Password Baru"
+                            placeholder="New Password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg pr-12"
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12
+                                ${dark ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400" : "bg-white text-black border-gray-300 placeholder-gray-500"}
+                                ${sizeText[valButtonSize] || "text-base"}`}
                             required
                         />
                         <span
                             onClick={() => setShowNew(!showNew)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer ${dark ? "text-white" : "text-gray-500"}`}
                         >
                             {showNew ? <FiEyeOff /> : <FiEye />}
                         </span>
                     </div>
 
-                    <div className="relative">
+                    {/* RETYPE PASSWORD */}
+                    <div className="relative shadow-lg">
                         <input
                             type={showRetype ? "text" : "password"}
-                            placeholder="Ketik Ulang Password"
+                            placeholder="Retype Password"
                             value={retypePassword}
                             onChange={(e) => setRetypePassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg pr-12"
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12
+                                ${dark ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400" : "bg-white text-black border-gray-300 placeholder-gray-500"}
+                                ${sizeText[valButtonSize] || "text-base"}`}
                             required
                         />
                         <span
                             onClick={() => setShowRetype(!showRetype)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer ${dark ? "text-white" : "text-gray-500"}`}
                         >
                             {showRetype ? <FiEyeOff /> : <FiEye />}
                         </span>
                     </div>
 
-                    <button disabled={loading} className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-semibold">
+                    {/* SUBMIT */}
+                    <button
+                        disabled={loading}
+                        className={`w-full py-3 rounded-lg font-semibold text-white shadow-lg transition 
+                            ${dark ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700" : "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"}
+                            ${sizeText[valButtonSize] || "text-base"}`}
+                    >
                         {loading ? "Processing..." : "Reset Password"}
                     </button>
-
                 </form>
 
                 {/* FOOTER */}
-                <button
-                    onClick={() => navigate("/")}
-                    className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
-                >
-                    Back to Login
-                </button>
+                <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 text-center">
+                    <button
+                        onClick={() => navigate("/")}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition 
+                            ${dark ? "text-gray-300 hover:bg-gray-700" : "text-gray-600 hover:bg-gray-100"}`}
+                    >
+                        Back to Login
+                    </button>
+                </div>
+
             </div>
         </div>
     );

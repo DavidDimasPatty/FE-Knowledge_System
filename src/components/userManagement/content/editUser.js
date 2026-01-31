@@ -91,69 +91,172 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 shadow-lg">
-                <h2 className={`font-bold mb-4 text-center text-gray-800 dark:text-white ${sizeTextUp[valButtonSize] || "text-base"}`}>Edit User</h2>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                    <input
-                        type="text"
-                        placeholder="Enter Username..."
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        required
-                        readOnly={true}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Enter Name..."
-                        value={nama}
-                        onChange={(e) => setNama(e.target.value)}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Enter Email..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        required
-                        readOnly={true}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Enter Phone Number..."
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        required
-                        readOnly={true}
-                    />
-
-                    <select className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        onChange={(e) => setRole(Number(e.target.value))}
-                        value={role}
-                        required
-                    >
-                        <option value={1}>Super Admin</option>
-                        <option value={2}>Admin</option>
-                        <option value={3}>Staff</option>
-                    </select>
-
-                    <button
-                        type="submit"
-                        className={`bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition ${sizeText[valButtonSize] || "text-base"}`}
-                    >
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div
+                className={`
+                w-[480px] rounded-xl shadow-xl
+                ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"}
+            `}
+            >
+                {/* HEADER */}
+                <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-lg"}`}>
                         Edit User
-                    </button>
+                    </h2>
+                    <p className="text-sm text-gray-400 mt-1">
+                        Update user information and role
+                    </p>
+                </div>
+
+                {/* CONTENT */}
+                <form onSubmit={handleSubmit}>
+                    <div className="px-8 py-6 space-y-5">
+
+                        {/* USERNAME (READ ONLY) */}
+                        <div className="relative shadow-lg">
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                readOnly
+                                className={`
+                                w-full h-[52px] px-4 border rounded-lg
+                                focus:outline-none focus:ring-2 focus:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700/70 text-gray-300 border-gray-600 cursor-not-allowed"
+                                        : "bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                                required
+                            />
+                        </div>
+
+                        {/* NAME */}
+                        <div className="relative shadow-lg">
+                            <input
+                                type="text"
+                                placeholder="Full Name"
+                                value={nama}
+                                onChange={(e) => setNama(e.target.value)}
+                                className={`
+                                w-full h-[52px] px-4 border rounded-lg
+                                focus:outline-none focus:ring-2 focus:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400"
+                                        : "bg-white text-black border-gray-300 placeholder-gray-500"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                                required
+                            />
+                        </div>
+
+                        {/* EMAIL (READ ONLY) */}
+                        <div className="relative shadow-lg">
+                            <input
+                                type="text"
+                                placeholder="Email Address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                readOnly
+                                className={`
+                                w-full h-[52px] px-4 border rounded-lg
+                                focus:outline-none focus:ring-2 focus:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700/70 text-gray-300 border-gray-600 cursor-not-allowed"
+                                        : "bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                                required
+                            />
+                        </div>
+
+                        {/* PHONE (READ ONLY) */}
+                        <div className="relative shadow-lg">
+                            <input
+                                type="text"
+                                placeholder="Phone Number"
+                                value={phoneNumber}
+                                readOnly
+                                className={`
+                                w-full h-[52px] px-4 border rounded-lg
+                                focus:outline-none focus:ring-2 focus:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700/70 text-gray-300 border-gray-600 cursor-not-allowed"
+                                        : "bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                                required
+                            />
+                        </div>
+
+                        {/* ROLE */}
+                        <div className="relative shadow-lg">
+                            <select
+                                className={`
+                                w-full h-[52px] px-4 pr-12
+                                border rounded-lg
+                                appearance-none
+                                focus:outline-none focus:ring-2 focus:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700 text-white border-gray-600"
+                                        : "bg-white text-black border-gray-300"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                                value={role}
+                                onChange={(e) => setRole(Number(e.target.value))}
+                                required
+                            >
+                                <option value={1}>Super Admin</option>
+                                <option value={2}>Admin</option>
+                                <option value={3}>Staff</option>
+                            </select>
+
+                            {/* Custom Arrow */}
+                            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                                <svg
+                                    className={`w-4 h-4 ${dark ? "text-gray-300" : "text-gray-500"}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </div>
+
+                        {/* SUBMIT */}
+                        <button
+                            type="submit"
+                            className={`
+                            shadow-lg w-full
+                            bg-gradient-to-r from-blue-500 to-indigo-500
+                            hover:from-blue-600 hover:to-indigo-600
+                            text-white py-3 rounded-lg font-semibold
+                            transition
+                            ${sizeText[valButtonSize] || "text-base"}
+                        `}
+                        >
+                            Edit User
+                        </button>
+                    </div>
                 </form>
-                <button
-                    onClick={onClose}
-                    className={`mt-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-full ${sizeTextDown[valButtonSize] || "text-base"}`}
-                >
-                    Cancel
-                </button>
+
+                {/* FOOTER */}
+                <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className={`
+                        px-6 py-2 rounded-lg text-sm font-medium
+                        ${dark
+                                ? "text-gray-300 hover:bg-gray-700"
+                                : "text-gray-600 hover:bg-gray-100"}
+                    `}
+                    >
+                        Cancel
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -55,7 +55,7 @@ const SettingModal = (
             <div
                 className={`
                 w-[480px] rounded-xl shadow-xl
-                ${dark ? "bg-gray-900 text-white" : "bg-white text-gray-800"}
+                ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"}
             `}
             >
                 {/* HEADER */}
@@ -131,7 +131,7 @@ const SettingModal = (
                     <div className="flex items-center justify-between">
                         <div>
                             <div className={`${sizeText[valButtonSize]} font-medium`}>
-                                Language
+                                Language <span style={{ fontSize: '10px' }}>(ID/EN)</span>
                             </div>
                             <div className="text-sm text-gray-400">
                                 Interface language
@@ -215,7 +215,7 @@ const SettingModal = (
                         className={`
                         px-6 py-2 rounded-lg text-sm font-medium
                         ${dark
-                                ? "text-gray-300 hover:bg-gray-800"
+                                ? "text-gray-300 hover:bg-gray-700"
                                 : "text-gray-600 hover:bg-gray-100"}
                     `}
                     >

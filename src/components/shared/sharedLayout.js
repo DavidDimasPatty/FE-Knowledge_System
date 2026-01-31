@@ -61,6 +61,14 @@ const SharedLayout = () => {
                     handleLogin={handleLogin}
                     isLoginOpen={isLoginOpen}
                     setIsLoginOpen={setIsLoginOpen}
+                    lang={lang}
+                    setLang={setLang}
+                    openDropDown={openDropDown}
+                    isEditPasswordOpen={isEditPasswordOpen}
+                    isSettingOpen={isSettingOpen}
+                    setIsSettingOpen={setIsSettingOpen}
+                    valButtonSize={valButtonSize}
+                    setValButtonSize={setValButtonSize}
                 />
             }
             <div

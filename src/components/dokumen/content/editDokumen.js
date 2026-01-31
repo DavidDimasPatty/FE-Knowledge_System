@@ -95,46 +95,125 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
 
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 shadow-lg">
-                <h2 className={`font-bold mb-4 text-center text-gray-800 dark:text-white ${sizeTextUp[valButtonSize] || "text-base"}`}>Edit Dokumen</h2>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                    <input
-                        type="text"
-                        placeholder="Enter Document Name..."
-                        value={docName}
-                        onChange={(e) => setDocName(e.target.value)}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Submit File"
-                        value={docLink}
-                        onChange={(e) => setDocLink(e.target.value)}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-                        readOnly={true}
-                    />
-                    <input
-                        type="file"
-                        placeholder="Submit File"
-                        onChange={(e) => setFile(e.target.files[0])}
-                        className={`p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-black bg-white dark:bg-white ${sizeText[valButtonSize] || "text-base"}`}
-
-                    />
-                    <button
-                        type="submit"
-                        className={`bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition ${sizeText[valButtonSize] || "text-base"}`}
-                    >
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div
+                className={`w-[480px] rounded-xl shadow-xl ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+                    }`}
+            >
+                {/* HEADER */}
+                <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-lg"}`}>
                         Edit Dokumen
-                    </button>
+                    </h2>
+                    <p className="text-sm text-gray-400 mt-1">
+                        Update document information or replace file
+                    </p>
+                </div>
+
+                {/* CONTENT */}
+                <form onSubmit={handleSubmit}>
+                    <div className="px-8 py-6 space-y-6">
+
+                        {/* DOCUMENT NAME */}
+                        <div className="relative shadow-lg">
+                            <input
+                                type="text"
+                                placeholder="Document Name"
+                                value={docName}
+                                onChange={(e) => setDocName(e.target.value)}
+                                className={`
+                                w-full h-[52px] px-4 border rounded-lg
+                                focus:outline-none focus:ring-2 focus:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400"
+                                        : "bg-white text-black border-gray-300 placeholder-gray-500"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                                required
+                            />
+                        </div>
+
+                        {/* CURRENT FILE (READ ONLY) */}
+                        <div className="relative shadow-lg">
+                            <input
+                                type="text"
+                                value={docLink}
+                                readOnly
+                                className={`
+                                w-full h-[52px] px-4 border rounded-lg
+                                cursor-not-allowed opacity-80
+                                ${dark
+                                        ? "bg-gray-700 text-gray-300 border-gray-600"
+                                        : "bg-gray-100 text-gray-600 border-gray-300"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
+                            />
+                        </div>
+
+                        {/* FILE UPLOAD */}
+                        <div className="relative shadow-lg">
+                            <label
+                                className={`
+                                w-full h-[52px] px-4
+                                flex items-center gap-4
+                                border rounded-lg cursor-pointer
+                                focus-within:ring-2 focus-within:ring-blue-500
+                                ${dark
+                                        ? "bg-gray-700 border-gray-600 text-white"
+                                        : "bg-white border-gray-300 text-gray-700"}
+                            `}
+                            >
+                                {/* BUTTON */}
+                                <span
+                                    className="
+                                    px-4 py-2 rounded-md font-semibold text-sm
+                                    bg-gradient-to-r from-blue-500 to-indigo-500
+                                    text-white
+                                "
+                                >
+                                    Choose File
+                                </span>
+
+                                {/* TEXT */}
+                                <span className="truncate opacity-80 text-sm">
+                                    {file ? file.name : "No file chosen"}
+                                </span>
+
+                                {/* REAL INPUT */}
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    onChange={(e) => setFile(e.target.files[0])}
+                                />
+                            </label>
+                        </div>
+
+                        {/* SUBMIT */}
+                        <button
+                            type="submit"
+                            className={`shadow-lg w-full bg-gradient-to-r from-blue-500 to-indigo-500 
+                        hover:from-blue-600 hover:to-indigo-600
+                        text-white py-3 rounded-lg font-semibold transition
+                        ${sizeText[valButtonSize] || "text-base"}`}
+                        >
+                            Update Dokumen
+                        </button>
+                    </div>
                 </form>
-                <button
-                    onClick={onClose}
-                    className={`mt-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-full ${sizeTextDown[valButtonSize] || "text-base"}`}
-                >
-                    Cancel
-                </button>
+
+                {/* FOOTER */}
+                <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium ${dark
+                                ? "text-gray-300 hover:bg-gray-700"
+                                : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                    >
+                        Cancel
+                    </button>
+                </div>
+
             </div>
         </div>
     );
