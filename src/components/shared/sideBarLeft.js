@@ -517,7 +517,18 @@ const SideBarLeft =
                                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
                                     <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Recents</span>
                                 </div>
-                                <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "calc(100vh - 710px)", overflowY: "auto" }} onScroll={handleScroll}>
+                                    <div
+                                        className="m-2 space-y-2 custom-scroll"
+                                        style={{
+                                            maxHeight: `calc(100vh - ${
+                                                valButtonSize === "small" ? 680 :
+                                                valButtonSize === "medium" ? 710 :
+                                                valButtonSize === "large" ? 735 : 710
+                                            }px)`,
+                                            overflowY: "auto"
+                                        }}
+                                        onScroll={handleScroll}
+                                    >
                                     {nonFavoriteTopics.map((item) => (
                                         <SidebarItem
                                             key={item.ID}
