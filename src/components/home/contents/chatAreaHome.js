@@ -5,10 +5,10 @@ import remarkGfm from "remark-gfm";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-const ChatAreaHome = ({ messages, isLoading, bottomRef, 
-  dark, isFirst, input, 
-  sendMessage, setInput, handleMic, 
-  listening,setIsGenerate }) => {
+const ChatAreaHome = ({ messages, isLoading, bottomRef,
+  dark, isFirst, input,
+  sendMessage, setInput, handleMic,
+  listening, setIsGenerate }) => {
   // const {
   //   transcript,
   //   listening,
@@ -22,7 +22,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     "Almost there…",
     "Reasoning deeply…",
   ];
-
+  const DATATABLE_REGEX = /```datatable\s*([\s\S]*?)```/g;
   const [thinkingText, setThinkingText] = useState(thinkingTexts[0]);
   const textareaRef = useRef(null);
   const autoResize = (e) => {
@@ -36,6 +36,28 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
       textareaRef.current.style.height = "auto";
     }
   };
+
+  function extractDataTables(text) {
+    const tables = [];
+    let cleanedText = text;
+
+    cleanedText = cleanedText.replace(DATATABLE_REGEX, (match, json) => {
+      try {
+        const parsed = JSON.parse(json.trim());
+        if (parsed.type === "datatable") {
+          tables.push(parsed);
+        }
+      } catch (e) {
+        console.error("Invalid datatable JSON:", e);
+      }
+      return ""; // hapus dari markdown
+    });
+
+    return {
+      text: cleanedText.trim(),
+      tables,
+    };
+  }
 
   useEffect(() => {
     if (!isLoading) return;
@@ -248,7 +270,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                   }
                   style={{ wordBreak: "break-word" }}
                 >
-                  <ReactMarkdown
+                  {/* <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
                       strong: ({ children }) => (
@@ -260,7 +282,34 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                     }}
                   >
                     {msg.text}
-                  </ReactMarkdown>
+                  </ReactMarkdown> */}
+                  {(() => {
+                    const { text, tables } = extractDataTables(msg.text);
+
+                    return (
+                      <>
+                        {text && (
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              strong: ({ children }) => (
+                                <strong className="font-semibold">{children}</strong>
+                              ),
+                              em: ({ children }) => (
+                                <em className="italic">{children}</em>
+                              ),
+                            }}
+                          >
+                            {text}
+                          </ReactMarkdown>
+                        )}
+
+                        {tables.map((table, i) => (
+                          <DataTable key={i} table={table} />
+                        ))}
+                      </>
+                    );
+                  })()}
                 </div>
                 {msg.role != "user" &&
                   <div className="w-full border-b border-gray-300"></div>
@@ -313,5 +362,49 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
   )
 }
 
+function DataTable({ table }) {
+  return (
+    <div className="my-4 overflow-x-auto">
+      {table.title && (
+        <div className="mb-2 font-semibold text-sm text-gray-700 dark:text-gray-300">
+          {table.title}
+        </div>
+      )}
+
+      <table className="min-w-full border border-gray-300 dark:border-gray-600 text-sm">
+        <thead className="bg-gray-100 dark:bg-gray-700">
+          <tr>
+            {table.columns.map((col, i) => (
+              <th
+                key={i}
+                className="px-3 py-2 border-b text-left font-medium"
+              >
+                {col}
+              </th>
+            ))}
+          </tr>
+        </thead>
+
+        <tbody>
+          {table.data.map((row, i) => (
+            <tr
+              key={i}
+              className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-700"
+            >
+              {row.map((cell, j) => (
+                <td
+                  key={j}
+                  className="px-3 py-2 border-b"
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 export default ChatAreaHome;

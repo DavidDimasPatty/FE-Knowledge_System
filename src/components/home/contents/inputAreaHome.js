@@ -18,19 +18,22 @@ const InputAreaHome = ({ dark, input,
   const textareaRef = useRef(null);
 
   const handleSendButton = () => {
-    if (!isGenerate && !isPaused) {
-      sendMessage();
-      setInput("");
-      setIsGenerate(true)
-      return
-    }
-    if (isGenerate && !isPaused) {
-      setIsPaused(true)
-    }
-    if (isGenerate && isPaused) {
-      setIsPaused(false)
-    }
-
+    // if (!isGenerate && !isPaused) {
+    //   sendMessage();
+    //   setInput("");
+    //   setIsGenerate(true)
+    //   return
+    // }
+    // if (isGenerate && !isPaused) {
+    //   setIsPaused(true)
+    // }
+    // if (isGenerate && isPaused) {
+    //   setIsPaused(false)
+    // }
+    sendMessage();
+    setInput("");
+    // setIsGenerate(true)
+    return
   };
 
   const autoResize = (e) => {
@@ -153,12 +156,13 @@ const InputAreaHome = ({ dark, input,
               `}
               >
                 {
-                  !isGenerate && !isPaused ? (
-                    <FiSend size={18} />
-                  ) : isGenerate && isPaused ?
-                    (<FiPlay size={18} />) : (
-                      <FiPause size={18} />
-                    )
+                  // !isGenerate && !isPaused ? (
+                  //   <FiSend size={18} />
+                  // ) : isGenerate && isPaused ?
+                  //   (<FiPlay size={18} />) : (
+                  //     <FiPause size={18} />
+                  //   )
+                  <FiSend size={18} />
                 }
               </button>
 

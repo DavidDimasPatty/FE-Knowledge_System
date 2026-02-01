@@ -26,6 +26,7 @@ const Home = () => {
   const streamIntervalRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [isGenerate, setIsGenerate] = useState(false);
+  const isStreamDoneRef = useRef(false);
   const {
     transcript,
     listening,
@@ -160,9 +161,9 @@ const Home = () => {
         console.log("WS:", data);
         setIsLoading(false);
 
-        if (isFirstRef.current) {
-          isFirstRef.current = false;
-        }
+        // if (isFirstRef.current) {
+        //   isFirstRef.current = false;
+        // }
 
         if (data.type === "chunk") {
           streamBufferRef.current += data.content;
@@ -181,21 +182,22 @@ const Home = () => {
               };
             }
 
-            setIsGenerate(false)
+            // setIsGenerate(false)
             return updated;
           });
 
-          streamBufferRef.current = "";
+          isStreamDoneRef.current = true;
+          // streamBufferRef.current = "";
           // topic & category hanya di first message
           if (
             isFirstRef.current &&
             data.topic_id &&
             data.category_id
           ) {
-            // navigate(
-            //   `?topic=${data.topic_id}&category=${data.category_id}`,
-            //   { replace: true }
-            // );
+            navigate(
+              `?topic=${data.topic_id}&category=${data.category_id}`,
+              { replace: true }
+            );
 
             setIdTopic(data.topic_id);
             setIdCategory(data.category_id);
@@ -219,7 +221,6 @@ const Home = () => {
             );
           }
 
-          setIsLoading(false);
           return;
         }
 
@@ -229,10 +230,12 @@ const Home = () => {
             ...prev,
             { role: "bot", text: "❌ " + data.error },
           ]);
-          setIsLoading(false);
         }
       } catch (err) {
         console.error("Invalid JSON from server:", msg.data);
+      }
+      finally {
+        setIsLoading(false);
       }
     };
 
@@ -245,25 +248,19 @@ const Home = () => {
     return () => ws.close();
   }, [isInitLoaded]);
 
-  useEffect(() => {
-    streamIntervalRef.current = window.setInterval(() => {
-      if (!isLoading && isPaused) return;
-      if (!streamBufferRef.current.length) return;
-
+useEffect(() => {
+  streamIntervalRef.current = window.setInterval(() => {
+    if (streamBufferRef.current.length) {
       const nextChar = streamBufferRef.current[0];
       streamBufferRef.current = streamBufferRef.current.slice(1);
 
       setMessages((prev) => {
         const last = prev[prev.length - 1];
 
-        if (!last || last.role !== "bot" || !last.isStreaming) {
+        if (!last || last.role !== "bot") {
           return [
             ...prev,
-            {
-              role: "bot",
-              text: nextChar,
-              isStreaming: true,
-            },
+            { role: "bot", text: nextChar, isStreaming: true },
           ];
         }
 
@@ -275,14 +272,37 @@ const Home = () => {
 
         return updated;
       });
-    }, 8);
 
-    return () => {
-      if (streamIntervalRef.current) {
-        clearInterval(streamIntervalRef.current);
-      }
-    };
-  }, [isPaused]);
+      return;
+    }
+
+    // ⬇️ buffer habis + server DONE
+    if (isStreamDoneRef.current) {
+      setMessages((prev) => {
+        const updated = [...prev];
+        const last = updated[updated.length - 1];
+
+        if (last?.role === "bot") {
+          updated[updated.length - 1] = {
+            ...last,
+            isStreaming: false,
+          };
+        }
+        return updated;
+      });
+
+      isStreamDoneRef.current = false;
+      clearInterval(streamIntervalRef.current);
+      streamIntervalRef.current = null;
+    }
+  }, 8);
+
+  return () => {
+    if (streamIntervalRef.current) {
+      clearInterval(streamIntervalRef.current);
+    }
+  };
+}, []);
 
   // const sendMessage = () => {
   //   if (!input.trim() || !socket) return;
