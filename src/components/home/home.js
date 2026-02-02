@@ -8,11 +8,11 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 const Home = () => {
-  const { dark } = useOutletContext();
+  const { dark, valButtonSize, lang } = useOutletContext();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   const bottomRef = useRef(null);
   const [idCategory, setIdCategory] = useState(0);
   const [idTopic, setIdTopic] = useState(0);
@@ -24,15 +24,25 @@ const Home = () => {
   const [isInitLoaded, setIsInitLoaded] = useState(false);
   const streamBufferRef = useRef("");
   const streamIntervalRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const isStopRef = useRef(false);
   const [isGenerate, setIsGenerate] = useState(false);
   const isStreamDoneRef = useRef(false);
+  const isStoppedManuallyRef = useRef(false);
+  const socketRef = useRef(null);
   const {
     transcript,
     listening,
     browserSupportsSpeechRecognition,
     resetTranscript,
   } = useSpeechRecognition();
+
+  useEffect(() => {
+    streamBufferRef.current = "";
+    isStreamDoneRef.current = false;
+    isStopRef.current = false;
+    isStoppedManuallyRef.current = false;
+    setIsGenerate(false);
+  }, []);
 
   useEffect(() => {
     if (urlTopic && urlCategory) {
@@ -112,83 +122,26 @@ const Home = () => {
     });
 
     const ws = new WebSocket("ws://localhost:8080/ws?" + query.toString());
-
+    socketRef.current = ws;
     ws.onopen = () => console.log("WS Connected");
 
-    // ws.onmessage = (msg) => {
-    //   try {
-    //     const data = JSON.parse(msg.data);
-    //     console.log(data)
-    //     const botMessage = {
-    //       role: "bot",
-    //       text: data.answer,
-    //     };
-    //     setMessages((prev) => [...prev, botMessage]);
-    //     if (isFirstRef.current && data.topic_id && data.category_id) {
-    //       navigate(
-    //         `?topic=${data.topic_id}&category=${data.category_id}`,
-    //         { replace: true }
-    //       );
-
-    //       setIdTopic(data.topic_id);
-    //       setIdCategory(data.category_id);
-    //       //setIsFirst(false);
-    //       isFirstRef.current = false;
-    //       window.dispatchEvent(
-    //         new CustomEvent("topic-updated", {
-    //           detail: {
-    //             topicId: data.topic_id,
-    //             categoryId: data.category_id,
-    //           },
-    //         })
-    //       );
-    //       window.dispatchEvent(
-    //         new CustomEvent("category-updated", {
-    //           detail: {
-    //             categoryId: data.category_id,
-    //           },
-    //         })
-    //       );
-    //     }
-    //     setIsLoading(false);
-    //   } catch (err) {
-    //     console.error("Invalid JSON from server:", msg.data);
-    //   }
-    // }
     ws.onmessage = (msg) => {
       try {
         const data = JSON.parse(msg.data);
         console.log("WS:", data);
         setIsLoading(false);
 
-        // if (isFirstRef.current) {
-        //   isFirstRef.current = false;
-        // }
 
         if (data.type === "chunk") {
           streamBufferRef.current += data.content;
+          startStreamInterval();
           return;
         }
 
         if (data.type === "done") {
-          setMessages((prev) => {
-            const updated = [...prev];
-            const last = updated[updated.length - 1];
-
-            if (last?.role === "bot") {
-              updated[updated.length - 1] = {
-                ...last,
-                isStreaming: false,
-              };
-            }
-
-            // setIsGenerate(false)
-            return updated;
-          });
 
           isStreamDoneRef.current = true;
-          // streamBufferRef.current = "";
-          // topic & category hanya di first message
+
           if (
             isFirstRef.current &&
             data.topic_id &&
@@ -224,7 +177,7 @@ const Home = () => {
           return;
         }
 
-        // === ERROR ===
+
         if (data.error) {
           setMessages((prev) => [
             ...prev,
@@ -235,116 +188,197 @@ const Home = () => {
         console.error("Invalid JSON from server:", msg.data);
       }
       finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
 
-    ws.onerror = (err) => console.error("WS Error:", err);
-    ws.onclose = () => console.log("WS closed");
+    ws.onerror = (err) => {
+      socketRef.current = null;
+    };
+    ws.onclose = () => {
+      socketRef.current = null;
+      console.log("WS closed");
+    };
 
-    setSocket(ws);
+    // setSocket(ws);
 
-    return () => ws.close();
+    return () => {
+      ws.close();
+      socketRef.current = null;
+    };
   }, [isInitLoaded]);
 
-useEffect(() => {
-  streamIntervalRef.current = window.setInterval(() => {
-    if (streamBufferRef.current.length) {
-      const nextChar = streamBufferRef.current[0];
-      streamBufferRef.current = streamBufferRef.current.slice(1);
+  const startStreamInterval = () => {
+    if (streamIntervalRef.current) return;
+    if (isStoppedManuallyRef.current) return;
+    isStoppedManuallyRef.current = false;
+    setIsGenerate(true);
 
-      setMessages((prev) => {
-        const last = prev[prev.length - 1];
+    streamIntervalRef.current = setInterval(() => {
+      if (isStopRef.current) {
+        stopStream();
+        return;
+      }
 
-        if (!last || last.role !== "bot") {
-          return [
-            ...prev,
-            { role: "bot", text: nextChar, isStreaming: true },
-          ];
-        }
+      if (streamBufferRef.current.length) {
+        const nextChar = streamBufferRef.current[0];
+        streamBufferRef.current = streamBufferRef.current.slice(1);
 
-        const updated = [...prev];
-        updated[updated.length - 1] = {
-          ...last,
-          text: last.text + nextChar,
-        };
+        setMessages(prev => {
+          const last = prev[prev.length - 1];
+          if (!last || last.role !== "bot") {
+            return [...prev, { role: "bot", text: nextChar, isStreaming: true }];
+          }
 
-        return updated;
-      });
-
-      return;
-    }
-
-    // ⬇️ buffer habis + server DONE
-    if (isStreamDoneRef.current) {
-      setMessages((prev) => {
-        const updated = [...prev];
-        const last = updated[updated.length - 1];
-
-        if (last?.role === "bot") {
+          const updated = [...prev];
           updated[updated.length - 1] = {
             ...last,
-            isStreaming: false,
+            text: last.text + nextChar,
+            isStreaming: true,
           };
-        }
-        return updated;
-      });
+          return updated;
+        });
+        return;
+      }
 
-      isStreamDoneRef.current = false;
+      // === STREAM DONE ===
+      if (isStreamDoneRef.current) {
+        stopStream();
+      }
+    }, 1); // 1ms terlalu agresif
+  };
+
+  const stopStream = () => {
+    const ws = socketRef.current;
+
+    // === WAJIB: cek EXISTENCE dulu ===
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: "stop" }));
+    }
+
+    // === SISANYA UI CLEANUP ===
+    isStoppedManuallyRef.current = true;
+    isStopRef.current = true;
+
+    streamBufferRef.current = "";
+    isStreamDoneRef.current = false;
+
+    if (streamIntervalRef.current) {
       clearInterval(streamIntervalRef.current);
       streamIntervalRef.current = null;
     }
-  }, 8);
 
-  return () => {
-    if (streamIntervalRef.current) {
-      clearInterval(streamIntervalRef.current);
-    }
+    setMessages(prev => {
+      const updated = [...prev];
+      const last = updated[updated.length - 1];
+      if (last?.role === "bot") {
+        updated[updated.length - 1] = {
+          ...last,
+          isStreaming: false,
+        };
+      }
+      return updated;
+    });
+
+    setIsGenerate(false);
   };
-}, []);
 
-  // const sendMessage = () => {
-  //   if (!input.trim() || !socket) return;
-  //   if (!socket || socket.readyState !== WebSocket.OPEN) {
-  //     console.warn("WS not ready");
+  // useEffect(() => {
+  //   if (!isGenerate) {
+  //     if (streamIntervalRef.current) {
+  //       clearInterval(streamIntervalRef.current);
+  //       streamIntervalRef.current = null;
+  //     }
   //     return;
   //   }
-  //   //isFirstRef.current = false;
-  //   const username = localStorage.getItem("username");
-  //   console.log("masukkk")
-  //   setIsLoading(true);
-  //   const userMsg = {
-  //     role: "user", text: input, username: username, isFirst: isFirstRef.current, idCategory: idCategory === 0 ? null : idCategory,
-  //     topic: idTopic === 0 ? null : idTopic,
+
+  //   if (streamIntervalRef.current) return;
+
+  //   streamIntervalRef.current = window.setInterval(() => {
+  //     if (isStop) {
+  //       clearInterval(streamIntervalRef.current);
+  //       streamIntervalRef.current = null;
+  //       return;
+  //     }
+  //     if (streamBufferRef.current.length) {
+  //       const nextChar = streamBufferRef.current[0];
+  //       streamBufferRef.current = streamBufferRef.current.slice(1);
+  //       setMessages((prev) => {
+  //         const last = prev[prev.length - 1];
+
+  //         if (!last || last.role !== "bot") {
+  //           return [
+  //             ...prev,
+  //             { role: "bot", text: nextChar, isStreaming: true },
+  //           ];
+  //         }
+
+  //         const updated = [...prev];
+  //         updated[updated.length - 1] = {
+  //           ...last,
+  //           text: last.text + nextChar,
+  //         };
+
+  //         return updated;
+  //       });
+
+  //       return;
+  //     }
+
+  //     if (isStreamDoneRef.current) {
+  //       setMessages((prev) => {
+  //         const updated = [...prev];
+  //         const last = updated[updated.length - 1];
+
+  //         if (last?.role === "bot") {
+  //           updated[updated.length - 1] = {
+  //             ...last,
+  //             isStreaming: false,
+  //           };
+  //         }
+  //         return updated;
+  //       });
+
+  //       isStreamDoneRef.current = false;
+  //       clearInterval(streamIntervalRef.current);
+  //       streamIntervalRef.current = null;
+  //     }
+  //   }, 1);
+
+  //   return () => {
+  //     if (streamIntervalRef.current) {
+  //       clearInterval(streamIntervalRef.current);
+  //     }
   //   };
-  //   setMessages((prev) => [...prev, userMsg]);
-  //   socket.send(JSON.stringify(userMsg));
-  //   setInput("");
-  // };
+  // }, []);
+
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    // if (!socket || socket.readyState !== WebSocket.OPEN) {
-    //   console.warn("WS not ready");
-    //   return;
-    // }
+
+    const ws = socketRef.current;
+
+    // 🔒 GUARD WAJIB
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      console.warn("WS not ready");
+      return;
+    }
 
     setIsLoading(true);
 
-    setMessages((prev) => [
+    setMessages(prev => [
       ...prev,
       { role: "user", text: input },
     ]);
 
-    socket.send(
-      JSON.stringify({
-        text: input,
-        isFirst: isFirstRef.current,
-        idCategory: idCategory || 0,
-        topic: idTopic || 0,
-      })
-    );
+    ws.send(JSON.stringify({
+      type: "ask",
+      text: input,
+      isFirst: isFirstRef.current,
+      idCategory: idCategory || 0,
+      topic: idTopic || 0,
+    }));
 
     setInput("");
   };
@@ -389,6 +423,11 @@ useEffect(() => {
         handleMic={handleMic}
         listening={listening}
         setIsGenerate={setIsGenerate}
+        streamBufferRef={streamBufferRef}
+        isStreamDoneRef={isStreamDoneRef}
+        isStopRef={isStopRef}
+        valButtonSize={valButtonSize}
+        lang={lang}
       />
 
       <InputAreaHome
@@ -400,10 +439,13 @@ useEffect(() => {
         handleMic={handleMic}
         listening={listening}
         loading={isLoading}
-        isPaused={isPaused}
-        setIsPaused={setIsPaused}
+        isStopRef={isStopRef}
         isGenerate={isGenerate}
         setIsGenerate={setIsGenerate}
+        streamBufferRef={streamBufferRef}
+        isStreamDoneRef={isStreamDoneRef}
+        valButtonSize={valButtonSize}
+        lang={lang}
       />
     </div>
 

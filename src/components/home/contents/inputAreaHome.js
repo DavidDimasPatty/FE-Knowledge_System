@@ -7,8 +7,9 @@ import SpeechRecognition, {
 const InputAreaHome = ({ dark, input,
   sendMessage, setInput, isFirst,
   handleMic, listening, loading,
-  isPaused, setIsPaused,
-  isGenerate, setIsGenerate }) => {
+  isStopRef, isGenerate,
+  setIsGenerate, streamBufferRef, isStreamDoneRef, valButtonSize, lang
+}) => {
   // const {
   //   transcript,
   //   listening,
@@ -18,22 +19,20 @@ const InputAreaHome = ({ dark, input,
   const textareaRef = useRef(null);
 
   const handleSendButton = () => {
-    // if (!isGenerate && !isPaused) {
-    //   sendMessage();
-    //   setInput("");
-    //   setIsGenerate(true)
-    //   return
-    // }
-    // if (isGenerate && !isPaused) {
-    //   setIsPaused(true)
-    // }
-    // if (isGenerate && isPaused) {
-    //   setIsPaused(false)
-    // }
-    sendMessage();
-    setInput("");
-    // setIsGenerate(true)
-    return
+
+    if (!isGenerate) {
+      if (input == "" || input == null) return
+      isStopRef.current = false;
+      setIsGenerate(true);
+      streamBufferRef.current = "";
+      isStreamDoneRef.current = false;
+      sendMessage();
+      setInput("");
+      return;
+    }
+
+    streamBufferRef.current = "";
+    isStopRef.current = true;
   };
 
   const autoResize = (e) => {
@@ -75,7 +74,12 @@ const InputAreaHome = ({ dark, input,
   }, [input]);
 
   return (
-    isFirst || loading ? null :
+    isFirst || loading ?
+      (
+        <div className={isFirst || loading ? "opacity-0 pointer-events-none" : ""}>
+          ...
+        </div>
+      ) :
       <div
         className={
           "flex items-center gap-3 bg-transparent h-fit"
@@ -155,15 +159,7 @@ const InputAreaHome = ({ dark, input,
                     bg-blue-600 hover:bg-blue-700
               `}
               >
-                {
-                  // !isGenerate && !isPaused ? (
-                  //   <FiSend size={18} />
-                  // ) : isGenerate && isPaused ?
-                  //   (<FiPlay size={18} />) : (
-                  //     <FiPause size={18} />
-                  //   )
-                  <FiSend size={18} />
-                }
+                {!isGenerate ? <FiSend size={18} /> : <FiPause size={18} />}
               </button>
 
 
