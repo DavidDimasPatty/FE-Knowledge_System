@@ -13,7 +13,9 @@ const SharedLayout = () => {
         const saved = localStorage.getItem("ui_lang");
         return saved === null ? true : saved === "true";
     });
-
+    const [showWelcome, setShowWelcome] = useState(() => {
+        return localStorage.getItem("welcome_shown") !== "true";
+    });
     const [login, setLogin] = useState(false);
     const [nama, setNama] = useState("");
     const [roleName, setRoleName] = useState("");
@@ -22,6 +24,9 @@ const SharedLayout = () => {
     const [isEditPasswordOpen, setIsPasswordOpen] = useState(false);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [openDropDown, setOpenDropdown] = useState(false);
+    const fullText = "Halo Selamat datang, di Web AI IKODORA";
+    const [displayText, setDisplayText] = useState("");
+    const [index, setIndex] = useState(0);
     const [valButtonSize, setValButtonSize] = useState(() => {
         return localStorage.getItem("ui_font_size") || "medium";
     });
@@ -49,60 +54,107 @@ const SharedLayout = () => {
     useEffect(() => {
         localStorage.setItem("ui_lang", lang.toString());
     }, [lang]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowWelcome(false);
+            localStorage.setItem("welcome_shown", "true");
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [showWelcome]);
+
+    useEffect(() => {
+        if (!showWelcome) return;
+
+        if (index < fullText.length) {
+            const timeout = setTimeout(() => {
+                setDisplayText((prev) => prev + fullText[index]);
+                setIndex((prev) => prev + 1);
+            }, 70);
+            return () => clearTimeout(timeout);
+        }
+    }, [index, showWelcome]);
+
     return (
 
-        <div className="w-full h-screen flex flex-col">
-            {!login &&
-                <TopBar
-                    setDark={setDark}
-                    dark={dark}
-                    login={login}
-                    setLogin={setLogin}
-                    handleLogin={handleLogin}
-                    isLoginOpen={isLoginOpen}
-                    setIsLoginOpen={setIsLoginOpen}
-                    lang={lang}
-                    setLang={setLang}
-                    openDropDown={openDropDown}
-                    isEditPasswordOpen={isEditPasswordOpen}
-                    isSettingOpen={isSettingOpen}
-                    setIsSettingOpen={setIsSettingOpen}
-                    valButtonSize={valButtonSize}
-                    setValButtonSize={setValButtonSize}
-                />
-            }
-            <div
-                className={`w-full flex-1 flex gap-5 overflow-hidden 
-                ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
 
-                {login &&
-                    <SideBarLeft
-                        dark={dark}
+        <div className="relative w-full h-screen overflow-hidden">
+
+            <div
+                className={`
+        fixed inset-0 z-50 flex items-center justify-center
+        transition-opacity duration-1000
+        ${showWelcome ? "opacity-100" : "opacity-0 pointer-events-none"}
+       bg-gray-200
+      `}
+            >
+                <div className="text-center px-6">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                        {displayText}
+                        <span className="animate-pulse">|</span>
+                    </h1>
+
+                    <p className="text-lg opacity-80 animate-fade-in">
+                        Coba cara baru menggunakan AI ✨
+                    </p>
+                </div>
+            </div>
+
+            <div className="w-full h-screen flex flex-col">
+                {!login && (
+                    <TopBar
                         setDark={setDark}
-                        lang={lang}
-                        setLang={setLang}
+                        dark={dark}
                         login={login}
                         setLogin={setLogin}
-                        openDropDown={openDropDown}
-                        isEditPasswordOpen={isEditPasswordOpen}
-                        setIsPasswordOpen={setIsPasswordOpen}
-                        setOpenDropdown={setOpenDropdown}
                         handleLogin={handleLogin}
                         isLoginOpen={isLoginOpen}
                         setIsLoginOpen={setIsLoginOpen}
+                        lang={lang}
+                        setLang={setLang}
+                        openDropDown={openDropDown}
+                        isEditPasswordOpen={isEditPasswordOpen}
                         isSettingOpen={isSettingOpen}
                         setIsSettingOpen={setIsSettingOpen}
                         valButtonSize={valButtonSize}
                         setValButtonSize={setValButtonSize}
                     />
-                }
-                <div className="flex-1 min-w-0 overflow-hidden h-full ">
-                    <Outlet context={{ dark, valButtonSize, lang }} />
-                </div>
+                )}
 
-                {/* <SideBarRight dark={dark} />  */}
+                <div
+                    className={`w-full flex-1 flex gap-5 overflow-hidden 
+        ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
+                >
+                    {login && (
+                        <SideBarLeft
+                            dark={dark}
+                            setDark={setDark}
+                            lang={lang}
+                            setLang={setLang}
+                            login={login}
+                            setLogin={setLogin}
+                            openDropDown={openDropDown}
+                            isEditPasswordOpen={isEditPasswordOpen}
+                            setIsPasswordOpen={setIsPasswordOpen}
+                            setOpenDropdown={setOpenDropdown}
+                            handleLogin={handleLogin}
+                            isLoginOpen={isLoginOpen}
+                            setIsLoginOpen={setIsLoginOpen}
+                            isSettingOpen={isSettingOpen}
+                            setIsSettingOpen={setIsSettingOpen}
+                            valButtonSize={valButtonSize}
+                            setValButtonSize={setValButtonSize}
+                        />
+                    )}
+
+                    <div className="flex-1 min-w-0 overflow-hidden h-full">
+                        <Outlet context={{ dark, valButtonSize, lang }} />
+                    </div>
+                </div>
             </div>
         </div>
+
     );
 }
 

@@ -339,7 +339,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                 </div>
               }
 
-              <div className="flex-col w-full">
+              <div className="flex-col w-full ">
                 {msg.role === "user" ? (
                   // <div className="flex justify-start ml-2 mt-4 ">
                   //   <span className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${sizeTextDown[valButtonSize] || "text-base"}`}>
@@ -358,7 +358,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                   className={
                     [
                       "break-words whitespace-pre-wrap  leading-relaxed text-justify",
-                      " py-3  transition-transform transform",
+                      " py-3  transition-transform transform prose prose-sm [&>p]:-my-2",
                       sizeText[valButtonSize] || "text-base",
                       msg.role === "user"
                         ? " w-4/5  rounded-br-[8px] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl hover:scale-[1.01]  mr-auto mb-4"
@@ -369,49 +369,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                   }
                   style={{ wordBreak: "break-word" }}
                 >
-                  {/* <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      strong: ({ children }) => (
-                        <strong className="font-semibold">{children}</strong>
-                      ),
-                      em: ({ children }) => (
-                        <em className="italic">{children}</em>
-                      ),
-                    }}
-                  >
-                    {msg.text}
-                  </ReactMarkdown> */}
-                  {/* {parseMessageSegments(msg.text).map((seg, i) => {
-                    if (seg.type === "text") {
-                      return (
-                        <ReactMarkdown
-                          key={i}
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            strong: ({ children }) => (
-                              <strong className="font-semibold">{children}</strong>
-                            ),
-                            em: ({ children }) => (
-                              <em className="italic">{children}</em>
-                            ),
-                          }}
-                        >
-                          {seg.content}
-                        </ReactMarkdown>
-                      );
-                    }
-
-                    if (seg.type === "table") {
-                      return <DataTable key={i} table={seg.content} />;
-                    }
-
-                    if (seg.type === "table-loading") {
-                      return <TableSkeleton key={i} dark={dark} />;
-                    }
-
-                    return null;
-                  })} */}
+                
                   {parseMessageSegments(msg.text).map((seg, i) => {
                     if (seg.type === "text") {
                       return (
