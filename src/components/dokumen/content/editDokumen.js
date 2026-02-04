@@ -91,6 +91,22 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
         }
     }, [isOpen, idDokumen]);
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleEsc = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
 
@@ -165,11 +181,13 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
                             >
                                 {/* BUTTON */}
                                 <span
-                                    className="
+                                    className={`
                                     px-4 py-2 rounded-md font-semibold text-sm
-                                    bg-gradient-to-r from-blue-500 to-indigo-500
                                     text-white
-                                "
+                                    ${dark
+                                            ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                            : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
+                                `}
                                 >
                                     Choose File
                                 </span>
@@ -191,10 +209,11 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
                         {/* SUBMIT */}
                         <button
                             type="submit"
-                            className={`shadow-lg w-full bg-gradient-to-r from-blue-500 to-indigo-500 
-                        hover:from-blue-600 hover:to-indigo-600
-                        text-white py-3 rounded-lg font-semibold transition
-                        ${sizeText[valButtonSize] || "text-base"}`}
+                            className={`shadow-lg w-full text-white py-3 rounded-lg font-semibold transition
+                                ${dark
+                                    ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                    : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
+                                ${sizeText[valButtonSize] || "text-base"}`}
                         >
                             Update Dokumen
                         </button>
@@ -205,10 +224,12 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
                 <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
                     <button
                         onClick={onClose}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium ${dark
-                                ? "text-gray-300 hover:bg-gray-700"
-                                : "text-gray-600 hover:bg-gray-100"
-                            }`}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition shadow-md
+                                border
+                                ${dark
+                                ? "text-gray-300 border-gray-600 hover:border-gray-500 hover:bg-gray-700"
+                                : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
+                            `}
                     >
                         Cancel
                     </button>

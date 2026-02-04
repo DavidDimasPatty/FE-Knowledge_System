@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -65,6 +65,22 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
         }
     };
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleEsc = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     return (
@@ -122,8 +138,10 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                                 <span
                                     className={`
                                         px-4 py-2 rounded-md font-semibold
-                                        bg-gradient-to-r from-blue-500 to-indigo-500
                                         text-white text-sm
+                                        ${dark
+                                            ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                            : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                                 `}
                                 >
                                     Choose File
@@ -148,7 +166,11 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                         {/* SUBMIT */}
                         <button
                             type="submit"
-                            className={`shadow-lg w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-3 rounded-lg font-semibold transition ${sizeText[valButtonSize] || "text-base"}`}
+                            className={`shadow-lg w-full text-white py-3 rounded-lg font-semibold transition 
+                                ${dark
+                                    ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                    : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
+                                ${sizeText[valButtonSize] || "text-base"}`}
                         >
                             Add Dokumen
                         </button>
@@ -159,9 +181,12 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                 <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
                     <button
                         onClick={onClose}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium ${dark
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-600 hover:bg-gray-100"}`}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition shadow-md
+                                border
+                                ${dark
+                                ? "text-gray-300 border-gray-600 hover:border-gray-500 hover:bg-gray-700"
+                                : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
+                            `}
                     >
                         Cancel
                     </button>

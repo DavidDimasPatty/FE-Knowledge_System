@@ -8,7 +8,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [nama, setNama] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
+    // const [phoneNumber, setPhoneNumber] = useState("");
     const [role, setRole] = useState(0);
     const MySwal = withReactContent(Swal);
     const { valButtonSize, dark } = useOutletContext();
@@ -46,7 +46,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                     "id": idUser,
                     "nama": nama,
                     "email": email,
-                    "noTelp": phoneNumber,
+                    // "noTelp": phoneNumber,
                     "roleId": Number(role),
                     "updId": "David"
                 }
@@ -79,7 +79,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
             setUsername(res.data.data.Username);
             setEmail(res.data.data.Email);
             setNama(res.data.data.Nama);
-            setPhoneNumber(res.data.data.NoTelp);
+            // setPhoneNumber(res.data.data.NoTelp);
             setRole(res.data.data.Roles);
         } catch (err) {
             console.error("Fetch dokumen error:", err);
@@ -87,6 +87,22 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
             // setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleEsc = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -172,7 +188,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                         </div>
 
                         {/* PHONE (READ ONLY) */}
-                        <div className="relative shadow-lg">
+                        {/* <div className="relative shadow-lg">
                             <input
                                 type="text"
                                 placeholder="Phone Number"
@@ -188,7 +204,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                             `}
                                 required
                             />
-                        </div>
+                        </div> */}
 
                         {/* ROLE */}
                         <div className="relative shadow-lg">
@@ -230,13 +246,12 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                         <button
                             type="submit"
                             className={`
-                            shadow-lg w-full
-                            bg-gradient-to-r from-blue-500 to-indigo-500
-                            hover:from-blue-600 hover:to-indigo-600
-                            text-white py-3 rounded-lg font-semibold
-                            transition
-                            ${sizeText[valButtonSize] || "text-base"}
-                        `}
+                                shadow-lg w-full text-white py-3 rounded-lg font-semibold transition
+                                ${dark
+                                    ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                    : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
+                                ${sizeText[valButtonSize] || "text-base"}
+                            `}
                         >
                             Edit User
                         </button>
@@ -247,12 +262,12 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                 <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
                     <button
                         onClick={onClose}
-                        className={`
-                        px-6 py-2 rounded-lg text-sm font-medium
-                        ${dark
-                                ? "text-gray-300 hover:bg-gray-700"
-                                : "text-gray-600 hover:bg-gray-100"}
-                    `}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition shadow-md
+                                border
+                                ${dark
+                                ? "text-gray-300 border-gray-600 hover:border-gray-500 hover:bg-gray-700"
+                                : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
+                            `}
                     >
                         Cancel
                     </button>

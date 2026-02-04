@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
@@ -125,11 +125,26 @@ const LoginModal = (
         }
     };
 
+    useEffect(() => {
+            if (!isOpen) return;
+    
+            const handleEsc = (e) => {
+                if (e.key === "Escape") {
+                    onClose();
+                }
+            };
+    
+            window.addEventListener("keydown", handleEsc);
+    
+            return () => {
+                window.removeEventListener("keydown", handleEsc);
+            };
+        }, [isOpen, onClose]);
 
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className={`w-[480px] rounded-xl shadow-xl ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}>
+            <div className={`w-[480px] min-h-[470px] flex flex-col rounded-xl shadow-xl ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`}>
 
                 {/* HEADER */}
                 <div className="px-8 pt-20 pb-6 border-b border-gray-200 dark:border-gray-700 relative">
@@ -154,8 +169,8 @@ const LoginModal = (
                 </div>
 
                 {/* CONTENT / FORM */}
-                <form onSubmit={mode === "login" ? handleSubmit : handleResetPassword}>
-                    <div className="px-8 py-6 space-y-6">
+                <form onSubmit={mode === "login" ? handleSubmit : handleResetPassword} className="flex-1 flex items-center">
+                    <div className="px-8 py-6 space-y-6 w-full">
                         {mode === "login" && (
                             <>
                                 <div className="relative shadow-lg">
@@ -213,46 +228,57 @@ const LoginModal = (
                             disabled={loading}
                             className={`shadow-lg w-full py-3 rounded-lg font-semibold text-white transition
                                 ${mode === "login"
-                                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
-                                    : "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"}
+                                    ? dark
+                                        ? "bg-gradient-to-r from-blue-800 to-indigo-800 hover:from-blue-700 hover:to-indigo-700"
+                                        : "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
+                                    : dark
+                                        ? "bg-gradient-to-r from-red-800 to-pink-800 hover:from-red-700 hover:to-pink-700"
+                                        : "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"}
                                 ${loading ? "opacity-60 cursor-not-allowed" : ""}
                                 ${sizeText[valButtonSize] || "text-base"}`}
                         >
                             {loading ? "Processing..." : mode === "login" ? "Log In" : "Reset Password"}
                         </button>
-
-                        {/* MODE SWITCH */}
-                        {mode === "login" && (
-                            <button
-                                type="button"
-                                onClick={() => setMode("reset")}
-                                className="mt-2 w-full text-red-500 hover:underline text-sm"
-                            >
-                                Forgot Password?
-                            </button>
-                        )}
-                        {mode === "reset" && (
-                            <button
-                                type="button"
-                                onClick={() => setMode("login")}
-                                className="mt-2 w-full text-blue-500 hover:underline text-sm"
-                            >
-                                Back to <b>Log In</b>
-                            </button>
-                        )}
                     </div>
                 </form>
 
                 {/* FOOTER */}
-                <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
-                    <button
-                        onClick={onClose}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium ${dark ? "text-gray-300 hover:bg-gray-700" : "text-gray-600 hover:bg-gray-100"}`}
-                    >
-                        Cancel
-                    </button>
-                </div>
+                <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
 
+                        {/* LEFT */}
+                        {mode === "login" ? (
+                            <button
+                                type="button"
+                                onClick={() => setMode("reset")}
+                                className="text-sm text-red-500 hover:underline"
+                            >
+                                Forgot Password?
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => setMode("login")}
+                                className="text-sm text-blue-500 hover:underline"
+                            >
+                                Back to <b>Log In</b>
+                            </button>
+                        )}
+
+                        {/* RIGHT */}
+                        <button
+                            onClick={onClose}
+                            className={`px-6 py-2 rounded-lg text-sm font-medium transition shadow-md
+                                border
+                                ${dark
+                                    ? "text-gray-300 border-gray-600 hover:border-gray-500 hover:bg-gray-700"
+                                    : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
+                            `}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

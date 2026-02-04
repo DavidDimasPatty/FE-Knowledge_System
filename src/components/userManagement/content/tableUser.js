@@ -43,6 +43,12 @@ const TableUser = ({ users, loading, fetchUser }) => {
         large: "18px"
     };
 
+    const sizeButtonAcDeac = {
+        small: "77px",
+        medium: "86px",
+        large: "94px"
+    };
+
     function formatTanggal(isoDate, locale = "en-US") {
         return new Intl.DateTimeFormat(locale, {
             day: "2-digit",
@@ -305,7 +311,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
         },
         {
             name: "Role",
-            selector: row => row.Roles,
+            selector: row => row.RoleName,
             sortable: true,
         },
         {
@@ -325,8 +331,9 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         className={`
                             ${actionBtnBase}
                             text-white
-                            bg-gradient-to-r from-indigo-500 to-blue-500
-                            hover:from-indigo-600 hover:to-blue-600
+                            ${dark
+                                ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                             shadow-sm
                         `}
                     >
@@ -338,9 +345,11 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         onClick={() => handleDelete(row.ID)}
                         className={`
                             ${actionBtnBase}
+                            text-white
                             ${dark
-                                ? "border border-red-500/40 text-red-400 hover:bg-red-500/10"
-                                : "border border-red-500/30 text-red-600 hover:bg-red-50"}
+                                ? "bg-gradient-to-r from-red-800 to-rose-800 hover:from-red-700 hover:to-rose-700"
+                                : "bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600"}
+                            shadow-sm
                         `}
                     >
                         Delete
@@ -350,11 +359,14 @@ const TableUser = ({ users, loading, fetchUser }) => {
                     {row.Status === "Active" ? (
                         <button
                             onClick={() => handleDeactivate(row.ID)}
+                            style={{ width: sizeButtonAcDeac[valButtonSize] }}
                             className={`
                                 ${actionBtnBase}
+                                text-white
                                 ${dark
-                                    ? "w-24 border border-blue-500/40 text-blue-400 hover:bg-blue-500/10"
-                                    : "w-24 border border-blue-500/40 text-blue-600 hover:bg-blue-50"}
+                                    ? "bg-gradient-to-r from-amber-800 to-orange-800 hover:from-amber-700 hover:to-orange-700"
+                                    : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"}
+                                shadow-sm
                             `}
                         >
                             Deactivate
@@ -362,11 +374,14 @@ const TableUser = ({ users, loading, fetchUser }) => {
                     ) : (
                         <button
                             onClick={() => handleActivate(row.ID)}
+                            style={{ width: sizeButtonAcDeac[valButtonSize] }}
                             className={`
                                 ${actionBtnBase}
+                                text-white
                                 ${dark
-                                    ? "w-24 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
-                                    : "w-24 border border-emerald-500/40 text-emerald-600 hover:bg-emerald-50"}
+                                    ? "bg-gradient-to-r from-emerald-800 to-teal-800 hover:from-emerald-700 hover:to-teal-700"
+                                    : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"}
+                                shadow-sm
                             `}
                         >
                             Activate
@@ -403,32 +418,20 @@ const TableUser = ({ users, loading, fetchUser }) => {
 
                     <button
                         onClick={() => setIsOpenAdd(true)}
-                        className="
+                        className={`
                         group relative flex items-center gap-2
                         px-4 py-2
                         rounded-lg
                         font-medium
                         text-white
-                        bg-gradient-to-r from-indigo-500 to-blue-500
+                        ${dark
+                                ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                         shadow-md
-                        transition-all duration-300
-                        hover:shadow-lg
-                        active:scale-95
-                    "
+                        ${sizeText[valButtonSize] || "text-sm"}
+                    `}
                     >
-                        <span
-                            className="
-                            absolute inset-0
-                            bg-gradient-to-r from-blue-500 to-indigo-500
-                            opacity-0
-                            transition-opacity duration-300
-                            group-hover:opacity-100
-                            rounded-lg
-                        "
-                        />
-                        <span className={`relative z-10 ${sizeText[valButtonSize] || "text-sm"}`}>
-                            Add User
-                        </span>
+                        Add User
                     </button>
                 </div>
 

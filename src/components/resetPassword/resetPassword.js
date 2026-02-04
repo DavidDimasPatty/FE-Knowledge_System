@@ -154,7 +154,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                             placeholder="New Password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 pr-12
                                 ${dark ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400" : "bg-white text-black border-gray-300 placeholder-gray-500"}
                                 ${sizeText[valButtonSize] || "text-base"}`}
                             required
@@ -174,7 +174,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                             placeholder="Retype Password"
                             value={retypePassword}
                             onChange={(e) => setRetypePassword(e.target.value)}
-                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12
+                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 pr-12
                                 ${dark ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400" : "bg-white text-black border-gray-300 placeholder-gray-500"}
                                 ${sizeText[valButtonSize] || "text-base"}`}
                             required
@@ -200,15 +200,16 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
 
                 {/* FOOTER */}
                 <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 text-center">
-                    <button
-                        onClick={() => navigate("/")}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium transition 
-                            ${dark ? "text-gray-300 hover:bg-gray-700" : "text-gray-600 hover:bg-gray-100"}`}
-                    >
-                        Back to Login
-                    </button>
+                    <div className="flex items-center justify-center">
+                        <button
+                                type="button"
+                                onClick={() => navigate("/")}
+                                className="text-sm text-blue-500 hover:underline"
+                            >
+                                Back to <b>Log In</b>
+                            </button>
+                    </div>
                 </div>
-
             </div>
         </div>
     );

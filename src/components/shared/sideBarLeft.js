@@ -334,7 +334,10 @@ const SideBarLeft =
                     right: "-30px",
                     top: "45%",
                     zIndex: 40
-                }} className={"flex items-center justify-center shadow-md cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"}
+                }} className={`flex items-center justify-center shadow-md cursor-pointer text-white
+                    ${dark
+                        ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                        : "bg-gradient-to-r from-indigo-500 to-blue-500"}`}
                     onClick={() => setIsMinimized(!isMinimized)}
                 >
                     {isMinimized ? <FiChevronRight size={25} /> :
@@ -366,7 +369,7 @@ const SideBarLeft =
                         {localStorage.getItem("login") && !isMinimized && (
                             <button
                                 onClick={() => window.location.replace("/")}
-                                className="
+                                className={`
                                 my-3
                                 w-full
                                 group relative flex items-center gap-2
@@ -375,21 +378,25 @@ const SideBarLeft =
                                 font-medium
                                 text-white
                                 overflow-hidden
-                                bg-gradient-to-r from-indigo-500 to-blue-500
+                                ${dark
+                                        ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                                        : "bg-gradient-to-r from-indigo-500 to-blue-500"}
                                 shadow-md
                                 transition-all duration-300
                                 hover:shadow-lg
                                 active:scale-95 justify-center
-                            "
+                            `}
                             >
                                 <span
-                                    className="
-                                absolute inset-0
-                                bg-gradient-to-r from-blue-500 to-indigo-500
-                                opacity-0
-                                transition-opacity duration-300
-                                group-hover:opacity-100
-                                "
+                                    className={`
+                                        absolute inset-0
+                                        ${dark
+                                            ? "bg-gradient-to-r from-blue-700 to-indigo-700"
+                                            : "bg-gradient-to-r from-blue-500 to-indigo-500"}
+                                        opacity-0
+                                        transition-opacity duration-300
+                                        group-hover:opacity-100
+                                    `}
                                 />
                                 <span className={`relative z-10 flex items-center gap-2 ${sizeText[valButtonSize] || "text-base"}`}>
                                     <FiPlus className={`transition-transform duration-300 group-hover:rotate-90 ${sizeText[valButtonSize] || "text-base"}`} />
@@ -400,31 +407,35 @@ const SideBarLeft =
                         {localStorage.getItem("login") && isMinimized && (
                             <button
                                 onClick={() => navigate("/")}
-                                className="
-                                w-8
-                                mb-3
-                                mt-3
-                                group relative flex items-center
-                                py-2
-                                rounded-lg
-                                font-medium
-                                text-white
-                                overflow-hidden
-                                bg-gradient-to-r from-indigo-500 to-blue-500
-                                shadow-md
-                                transition-all duration-300
-                                hover:shadow-lg
-                                active:scale-95 justify-center
-                            "
+                                className={`
+                                    w-8
+                                    mb-3
+                                    mt-3
+                                    group relative flex items-center
+                                    py-2
+                                    rounded-lg
+                                    font-medium
+                                    text-white
+                                    overflow-hidden
+                                    ${dark
+                                        ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                                        : "bg-gradient-to-r from-indigo-500 to-blue-500"}
+                                    shadow-md
+                                    transition-all duration-300
+                                    hover:shadow-lg
+                                    active:scale-95 justify-center
+                                `}
                             >
                                 <span
-                                    className="
-                                absolute inset-0
-                                bg-gradient-to-r from-blue-500 to-indigo-500
-                                opacity-0
-                                transition-opacity duration-300
-                                group-hover:opacity-100
-                                "
+                                    className={`
+                                        absolute inset-0
+                                        ${dark
+                                            ? "bg-gradient-to-r from-blue-700 to-indigo-700"
+                                            : "bg-gradient-to-r from-blue-500 to-indigo-500"}
+                                        opacity-0
+                                        transition-opacity duration-300
+                                        group-hover:opacity-100
+                                    `}
                                 />
                                 <span className="relative z-10 flex items-center gap-2">
                                     <FiPlus className={`transition-transform duration-300 group-hover:rotate-90 ${sizeText[valButtonSize] || "text-base"}`} />
@@ -440,7 +451,7 @@ const SideBarLeft =
                                 onClick={() => navigate("/dokumen", { state: { valButtonSize: valButtonSize } })}
                             >
                                 <FiDownload />
-                                {!isMinimized && <span>List Dokumen</span>}
+                                {!isMinimized && <span>Document Management</span>}
                             </button>
                         )}
 
@@ -495,7 +506,7 @@ const SideBarLeft =
                                 <div className="flex items-center gap-2 mb-2 ml-2 p-1 border-b">
                                     <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Saved Topics</span>
                                 </div>
-                                <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "200px", overflowY: "auto" }} onScroll={handleScrollFavorite}>
+                                <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "150px", overflowY: "auto" }} onScroll={handleScrollFavorite}>
 
                                     {favoriteTopics.map((item) => (
                                         <SidebarItem
@@ -517,18 +528,17 @@ const SideBarLeft =
                                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
                                     <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Recents</span>
                                 </div>
-                                    <div
-                                        className="m-2 space-y-2 custom-scroll"
-                                        style={{
-                                            maxHeight: `calc(100vh - ${
-                                                valButtonSize === "small" ? 680 :
-                                                valButtonSize === "medium" ? 710 :
-                                                valButtonSize === "large" ? 735 : 710
+                                <div
+                                    className="m-2 space-y-2 custom-scroll"
+                                    style={{
+                                        maxHeight: `calc(100vh - ${valButtonSize === "small" ? 630 :
+                                            valButtonSize === "medium" ? 660 :
+                                                valButtonSize === "large" ? 685 : 680
                                             }px)`,
-                                            overflowY: "auto"
-                                        }}
-                                        onScroll={handleScroll}
-                                    >
+                                        overflowY: "auto"
+                                    }}
+                                    onScroll={handleScroll}
+                                >
                                     {nonFavoriteTopics.map((item) => (
                                         <SidebarItem
                                             key={item.ID}
@@ -622,7 +632,11 @@ const SideBarLeft =
                                 <div
                                     onClick={() => setOpenDropdown(!openDropDown)}
                                     className={
-                                        "w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+                                        `w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer text-white
+                                        bg-gradient-to-r from-indigo-500 to-blue-500
+                                        ${dark
+                                            ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                                            : "bg-gradient-to-r from-indigo-500 to-blue-500"}`
                                     }
                                 >
                                     {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
@@ -646,7 +660,10 @@ const SideBarLeft =
                             <div
                                 onClick={() => setOpenDropdown(!openDropDown)}
                                 className={
-                                    "w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+                                    `w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer text-white
+                                    ${dark
+                                            ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                                            : "bg-gradient-to-r from-indigo-500 to-blue-500"}`
                                 }
                             >
                                 {localStorage.getItem("nama")?.charAt(0).toUpperCase()}

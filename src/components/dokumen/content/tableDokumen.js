@@ -149,9 +149,9 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             <div
                 className={`flex items-center gap-4 rounded-lg px-6 py-4
                 ${dark
-                    ? "text-gray-300 shadow-black/40"
-                    : "text-gray-600"
-                }`}
+                        ? "text-gray-300 shadow-black/40"
+                        : "text-gray-600"
+                    }`}
             >
                 {/* Dots */}
                 <div className="flex items-center gap-1">
@@ -285,6 +285,13 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             wrap: true
         },
         {
+            name: "Created By",
+            selector: row => row.AddId,
+            sortable: true,
+            maxWidth: "150px",
+            wrap: true
+        },
+        {
             name: "Action",
             cell: row => (
                 <div className="flex gap-2">
@@ -292,11 +299,13 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                     <button
                         onClick={() => downloadDokumen(row.ID)}
                         className={`
-                    ${actionBtnBase}
-                    ${dark
-                                ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"}
-                `}
+                            ${actionBtnBase}
+                            text-white
+                            ${dark
+                                ? "bg-gradient-to-r from-emerald-800 to-teal-800 hover:from-emerald-700 hover:to-teal-700"
+                                : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"}
+                            shadow-sm
+                        `}
                     >
                         Download
                     </button>
@@ -305,12 +314,13 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                     <button
                         onClick={() => openEditPopUp(row.ID)}
                         className={`
-                    ${actionBtnBase}
-                    text-white
-                    bg-gradient-to-r from-indigo-500 to-blue-500
-                    hover:from-indigo-600 hover:to-blue-600
-                    shadow-sm
-                `}
+                            ${actionBtnBase}
+                            text-white
+                            ${dark
+                                ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
+                            shadow-sm
+                        `}
                     >
                         Edit
                     </button>
@@ -319,14 +329,17 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                     <button
                         onClick={() => handleDelete(row.ID)}
                         className={`
-                    ${actionBtnBase}
-                    ${dark
-                                ? "border border-red-500/40 text-red-400 hover:bg-red-500/10"
-                                : "border border-red-500/30 text-red-600 hover:bg-red-50"}
-                `}
+                            ${actionBtnBase}
+                            text-white
+                            ${dark
+                                ? "bg-gradient-to-r from-red-800 to-rose-800 hover:from-red-700 hover:to-rose-700"
+                                : "bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600"}
+                            shadow-sm
+                        `}
                     >
                         Delete
                     </button>
+
                 </div>
             ),
             ignoreRowClick: true,
@@ -369,32 +382,20 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
 
                     <button
                         onClick={() => setIsOpenAdd(true)}
-                        className="
+                        className={`
                         group relative flex items-center gap-2
                         px-4 py-2
                         rounded-lg
                         font-medium
                         text-white
-                        bg-gradient-to-r from-indigo-500 to-blue-500
+                        ${dark
+                                ? "bg-gradient-to-r from-indigo-800 to-blue-800 hover:from-indigo-700 hover:to-blue-700"
+                                : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                         shadow-md
-                        transition-all duration-300
-                        hover:shadow-lg
-                        active:scale-95
-                    "
+                        ${sizeText[valButtonSize] || "text-sm"}
+                    `}
                     >
-                        <span
-                            className="
-                            absolute inset-0
-                            bg-gradient-to-r from-blue-500 to-indigo-500
-                            opacity-0
-                            transition-opacity duration-300
-                            group-hover:opacity-100
-                            rounded-lg
-                        "
-                        />
-                        <span className={`relative z-10 ${sizeText[valButtonSize] || "text-sm"}`}>
-                            Add Dokumen
-                        </span>
+                        Add Dokumen
                     </button>
                 </div>
 

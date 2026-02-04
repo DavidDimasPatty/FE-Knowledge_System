@@ -88,13 +88,15 @@ const TopBar = ({
                     className={`
                         flex items-center justify-center gap-2
                         px-4 py-2.5 rounded-xl
-                        bg-gradient-to-r from-indigo-500 to-blue-500
                         text-white font-semibold
                         shadow-md shadow-indigo-500/30
                         transform
                         transition duration-300 ease-in-out
                         hover:scale-105 hover:shadow-xl
                         active:scale-100
+                        ${dark
+                            ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                            : "bg-gradient-to-r from-indigo-500 to-blue-500"}
                         ${sizeText[valButtonSize] || "text-base"}
                     `}
                     style={{

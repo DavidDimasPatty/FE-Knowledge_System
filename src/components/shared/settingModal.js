@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
@@ -47,6 +47,23 @@ const SettingModal = (
         medium: "text-sm",
         large: "text-base"
     };
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleEsc = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [isOpen, onClose]);
+
 
     if (!isOpen) return null;
 
@@ -189,19 +206,22 @@ const SettingModal = (
                                     key={size}
                                     onClick={() => setValButtonSize(size)}
                                     className={`
-                                            px-4 py-2 text-sm font-medium transition-all duration-300
-                                            rounded-md
-                                            ${valButtonSize === size
-                                            ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg transform scale-105"
+                                    px-4 py-2 text-sm font-medium transition-all duration-300
+                                    rounded-md
+                                    ${valButtonSize === size
+                                            ? dark
+                                                ? "bg-gradient-to-r from-indigo-600 to-blue-800 text-white shadow-lg scale-105"
+                                                : "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg scale-105"
                                             : dark
                                                 ? "bg-gray-800 hover:bg-gray-700 hover:shadow-md text-gray-200"
                                                 : "bg-gray-100 hover:bg-gray-200 hover:shadow-md text-gray-800"
                                         }
-                                    `}
+                                `}
                                 >
                                     {size.charAt(0).toUpperCase() + size.slice(1)}
                                 </button>
                             ))}
+
                         </div>
 
                     </div>
@@ -212,12 +232,12 @@ const SettingModal = (
                 <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex justify-end">
                     <button
                         onClick={onClose}
-                        className={`
-                        px-6 py-2 rounded-lg text-sm font-medium
-                        ${dark
-                                ? "text-gray-300 hover:bg-gray-700"
-                                : "text-gray-600 hover:bg-gray-100"}
-                    `}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition shadow-md
+                                border
+                                ${dark
+                                ? "text-gray-300 border-gray-600 hover:border-gray-500 hover:bg-gray-700"
+                                : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
+                            `}
                     >
                         Close
                     </button>
