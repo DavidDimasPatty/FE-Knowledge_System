@@ -110,7 +110,7 @@ const InputAreaHome = ({ dark, input,
                 onChange={(e) => {
                   const value = e.target.value;
                   setInput(autoCapitalizeFirst(value));
-                  setInput(e.target.value);
+                  //setInput(e.target.value);
                   autoResize(e);
                 }}
                 onKeyDown={(e) => {

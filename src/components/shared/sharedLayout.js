@@ -82,7 +82,9 @@ const SharedLayout = () => {
     return (
 
 
-        <div className="relative w-full h-screen overflow-hidden">
+        <div className="relative w-full h-screen overflow-y-auto"
+            onScroll={() => { setOpenDropdown(false); console.log("masuk"); }}
+        >
 
             <div
                 className={`
@@ -126,7 +128,7 @@ const SharedLayout = () => {
                 )}
 
                 <div
-                    className={`w-full flex-1 flex gap-5 overflow-hidden 
+                    className={`w-full flex-1 flex gap-5 
         ${dark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
                 >
                     {login && (
@@ -151,7 +153,7 @@ const SharedLayout = () => {
                         />
                     )}
 
-                    <div className="flex-1 min-w-0 overflow-hidden h-full">
+                    <div className="flex-1 min-w-0  h-full">
                         <Outlet context={{ dark, valButtonSize, lang, login }} />
                     </div>
                 </div>

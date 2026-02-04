@@ -59,6 +59,11 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     "Almost there…",
     "Reasoning deeply…",
   ];
+
+  const renderedMessages = isLoading
+    ? [...messages, { role: "bot", isLoading: true }]
+    : messages;
+
   const [thinkingText, setThinkingText] = useState(thinkingTexts[0]);
   const textareaRef = useRef(null);
   const autoResize = (e) => {
@@ -194,7 +199,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                 ref={textareaRef}
                 rows={1}
                 className={
-                  "overflow-y-hidden custom-scroll w-full resize-none px-4 py-3 pr-24 " +
+                  "overflow-y-auto custom-scroll w-full resize-none px-4 py-3 pr-24 " +
                   "leading-relaxed text-xl" +
                   "border rounded-2xl outline-none transition-all duration-200 " +
                   "focus:shadow-md focus:scale-[1.01] " +
@@ -280,32 +285,34 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
 
       <div className="flex  flex-col overflow-y-auto  m-5 custom-scroll" style={{ maxHeight: "calc(100vh - 170px)", overflow: "auto" }}>
         <div className="flex flex-col items-center">
-          {
-            messages.map((msg, idx) => (
-              <div key={idx} className={
+          {renderedMessages.map((msg, idx) => (
+            // messages.map((msg, idx) => (
+            <div key={idx}
+              className={
                 "w-9/12 flex flex-col " +
                 (msg.role === "user" ? "items-end" : "items-start")
               } >
 
 
 
-                <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-3`}>
+              <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-3`}>
 
-                  {msg.role == "user" &&
-                    <div className="flex items-end justify-center mr-1">
-                      <div
-                        // onClick={() => setOpenDropdown(!openDropDown)}
-                        className={
-                          " w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
-                        }
-                      >
-                        {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
-                      </div>
+                {msg.role == "user" &&
+                  <div className="flex items-end justify-center mr-1">
+                    <div
+                      // onClick={() => setOpenDropdown(!openDropDown)}
+                      className={
+                        " w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+                      }
+                    >
+                      {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
                     </div>
-                  }
+                  </div>
+                }
 
-                  <div className="flex-col w-full">
-                    {msg.role === "user" ? (
+                <div className="flex-col w-full">
+                  {/* {
+                    msg.role === "user" ? (
                       <></>
                     ) : (
                       <div className="flex justify-start ml-10">
@@ -315,99 +322,135 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                           AI Ikodora
                         </span>
                       </div>
-                    )}
+                    )
+                  } */}
+
+                  {msg.isLoading ? (
                     <div
-                      className={
-                        [
-                          "break-words whitespace-pre-wrap  leading-relaxed text-justify",
-                          "py-3  transition-transform transform prose prose-sm [&>p]:-my-3",
-
-                          sizeText[valButtonSize] || "text-base",
-                          msg.role === "user"
-                            ? " w-4/5  rounded-br-[8px] "
-                            + " rounded-bl-2xl hover:scale-[1.01]  mr-auto self-start"
-                            : (dark
-                              ? "ml-14 w-4/5 bg-gray-900 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
-                              : "ml-14 w-4/5 hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents")
-                        ].join(" ")
-                      }
-                      style={{ wordBreak: "break-word" }}
+                      className={`
+              ml-12 w-fit px-4 py-3 rounded-2xl flex items-center gap-3
+              ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-700"}
+            `}
                     >
-
-                      {parseMessageSegments(msg.text).map((seg, i) => {
-                        if (seg.type === "text") {
-                          return (
-                            <ReactMarkdown
-                              remarkPlugins={[remarkGfm]}
-                              components={{
-                                p: ({ children }) => (
-                                  <p className="my-1 leading-snug">
-                                    {children}
-                                  </p>
-                                ),
-
-                                ol: ({ children }) => (
-                                  <ol className="list-decimal pl-5 -my-7 space-y-1">
-                                    {children}
-                                  </ol>
-                                ),
-
-                                ul: ({ children }) => (
-                                  <ul className="list-disc pl-5 -my-7 space-y-1">
-                                    {children}
-                                  </ul>
-                                ),
-
-                                li: ({ children }) => (
-                                  <li className="leading-snug">
-                                    {children}
-                                  </li>
-                                ),
-                              }}
-                            >
-                              {seg.content}
-                            </ReactMarkdown>
-                          );
-                        }
-
-                        if (seg.type === "table") {
-                          return <DataTable key={i} table={seg.content} dark={dark} />;
-                        }
-
-                        if (seg.type === "table-loading") {
-                          return <TableSkeleton key={i} dark={dark} />;
-                        }
-
-                        if (seg.type === "chartjs") {
-                          return <ChartBlock key={i} chart={seg.content} dark={dark} />;
-                        }
-
-                        if (seg.type === "chart-loading") {
-                          return <ChartSkeleton key={i} />;
-                        }
-
-                        if (seg.type === "latex") {
-                          return <LatexBlock key={i} latex={seg.content} />;
-                        }
-
-                        if (seg.type === "latex-loading") {
-                          return <LatexSkeleton key={i} />;
-                        }
-
-                        return null;
-                      })}
+                      <div className="flex space-x-1">
+                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" />
+                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-150" />
+                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-300" />
+                      </div>
+                      <span className="text-xs">{thinkingText}</span>
                     </div>
-                    {msg.role != "user" &&
-                      <div className="w-full border-b border-gray-300 mt-5" ></div>
-                    }
-                  </div>
+                  ) : (
+                    <>
+                      {
+                        msg.role === "user" ? (
+                          <></>
+                        ) : (
+                          <div className="flex justify-start ml-10">
+                            <span className={`text-base italic 
+                         text-blue-600 dark:text-gray-400 
+                         ml-2 mb-2 ${sizeText[valButtonSize] || "text-base"}`} style={{ letterSpacing: "2px" }}>
+                              AI Ikodora
+                            </span>
+                          </div>
+                        )
+                      }
+                      < div
+                        className={
+                          [
+                            "break-words whitespace-pre-wrap  leading-relaxed text-justify",
+                            "py-3  transition-transform transform prose prose-sm [&>p]:-my-3",
 
+                            sizeText[valButtonSize] || "text-base",
+                            msg.role === "user"
+                              ? " w-4/5  rounded-br-[8px] "
+                              + " rounded-bl-2xl hover:scale-[1.01]  mr-auto self-start"
+                              : (dark
+                                ? "ml-12 w-4/5 bg-gray-900 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
+                                : "ml-12 w-4/5 hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents")
+                          ].join(" ")
+                        }
+                        style={{ wordBreak: "break-word" }}
+                      >
+
+                        {parseMessageSegments(msg.text).map((seg, i) => {
+                          if (seg.type === "text") {
+                            return (
+                              <ReactMarkdown
+                                key={i}
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                  p: ({ children }) => (
+                                    <p className="my-1 leading-snug">
+                                      {children}
+                                    </p>
+                                  ),
+
+                                  ol: ({ children }) => (
+                                    <ol className="list-decimal pl-5 -my-7 space-y-1">
+                                      {children}
+                                    </ol>
+                                  ),
+
+                                  ul: ({ children }) => (
+                                    <ul className="list-disc pl-5 -my-7 space-y-1">
+                                      {children}
+                                    </ul>
+                                  ),
+
+                                  li: ({ children }) => (
+                                    <li className="leading-snug">
+                                      {children}
+                                    </li>
+                                  ),
+                                }}
+                              >
+                                {seg.content}
+                              </ReactMarkdown>
+                            );
+                          }
+
+                          if (seg.type === "table") {
+                            return <DataTable key={i} table={seg.content} dark={dark} />;
+                          }
+
+                          if (seg.type === "table-loading") {
+                            return <TableSkeleton key={i} dark={dark} />;
+                          }
+
+                          if (seg.type === "chartjs") {
+                            return <ChartBlock key={i} chart={seg.content} dark={dark} />;
+                          }
+
+                          if (seg.type === "chart-loading") {
+                            return <ChartSkeleton key={i} />;
+                          }
+
+                          if (seg.type === "latex") {
+                            return <LatexBlock key={i} latex={seg.content} />;
+                          }
+
+                          if (seg.type === "latex-loading") {
+                            return <LatexSkeleton key={i} />;
+                          }
+
+                          return null;
+
+                        })}
+                      </div>
+                    </>
+                  )}
+                  {msg.role != "user" &&
+                    <div className="w-full border-b border-gray-300 mt-5" ></div>
+                  }
                 </div>
+
               </div>
-            ))
+            </div>
+            // ))
+          ))
           }
         </div>
-        {isLoading && (
+        {/* {isLoading && (
           <div className="w-9/12 flex flex-col items-start mt-2">
             <div className="
                 ml-8
@@ -437,10 +480,10 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         <div ref={bottomRef}></div>
-      </div>
+      </div >
 
   )
 }

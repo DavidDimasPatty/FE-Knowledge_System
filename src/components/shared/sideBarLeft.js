@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import LoginModal from "./loginModal";
 import { BsFillStarFill } from "react-icons/bs";
 import {
@@ -44,7 +44,7 @@ const SideBarLeft =
         isSettingOpen,
         setIsSettingOpen,
         valButtonSize,
-        setValButtonSize
+        setValButtonSize,
     }) => {
         const [isSearch, setIsSearch] = useState(false)
         const [categories, setCategories] = useState([]);
@@ -70,6 +70,7 @@ const SideBarLeft =
         const params = new URLSearchParams(location.search);
         const activeCategory = params.get("category");
         const activeTopic = params.get("topic");
+        const dropdownRef = useRef(false);
         const bgColor = (path) => {
             const isActive = location.pathname === path;
 
@@ -174,6 +175,61 @@ const SideBarLeft =
                 year: "numeric",
             }).format(new Date(dateStr));
         };
+
+        useEffect(() => {
+            if (!openDropDown) return;
+
+            const handleClickOutside = (e) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                    setOpenDropdown(false);
+                }
+            };
+
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }, [openDropDown]);
+
+        useEffect(() => {
+            if (!openDropDown) return;
+
+            const handleEsc = (e) => {
+                if (e.key === "Escape") {
+                    setOpenDropdown(false);
+                }
+            };
+
+            window.addEventListener("keydown", handleEsc);
+            return () => window.removeEventListener("keydown", handleEsc);
+        }, [openDropDown]);
+
+        useEffect(() => {
+            const onScroll = () => {
+                console.log("BODY SCROLL");
+                setOpenDropdown(false);
+            };
+
+            window.addEventListener("scroll", onScroll, { passive: true });
+            return () => window.removeEventListener("scroll", onScroll);
+        }, []);
+
+        useEffect(() => {
+            if (!openDropDown) return;
+
+            const closeDropdown = () => {
+                console.log("SCROLL / WHEEL DETECTED");
+                setOpenDropdown(false);
+            };
+
+            window.addEventListener("wheel", closeDropdown, { passive: true });
+            window.addEventListener("touchmove", closeDropdown, { passive: true });
+
+            return () => {
+                window.removeEventListener("wheel", closeDropdown);
+                window.removeEventListener("touchmove", closeDropdown);
+            };
+        }, [openDropDown]);
+
+ 
 
         const fetchFavorite = async (page = 1, search = "") => {
             if (username == null) return;
@@ -592,6 +648,7 @@ const SideBarLeft =
 
                     {localStorage.getItem("login") && !isMinimized && (
                         <div className="relative mt-6 mb-2"
+                            ref={dropdownRef}
                         >
                             {openDropDown && (
                                 <div
@@ -662,8 +719,8 @@ const SideBarLeft =
                                 className={
                                     `w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer text-white
                                     ${dark
-                                            ? "bg-gradient-to-r from-indigo-800 to-blue-800"
-                                            : "bg-gradient-to-r from-indigo-500 to-blue-500"}`
+                                        ? "bg-gradient-to-r from-indigo-800 to-blue-800"
+                                        : "bg-gradient-to-r from-indigo-500 to-blue-500"}`
                                 }
                             >
                                 {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
@@ -671,6 +728,7 @@ const SideBarLeft =
 
                             {openDropDown && (
                                 <div
+
                                     className={
                                         isMinimized
                                             ? "absolute left-[16px] bottom-[63px]"
