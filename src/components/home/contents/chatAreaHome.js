@@ -24,12 +24,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
   sendMessage, setInput, handleMic,
   listening, setIsGenerate, streamBufferRef,
   isStreamDoneRef, isStopRef, valButtonSize, lang }) => {
-  // const {
-  //   transcript,
-  //   listening,
-  //   browserSupportsSpeechRecognition,
-  //   resetTranscript,
-  // } = useSpeechRecognition();
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -65,8 +59,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     "Almost there…",
     "Reasoning deeply…",
   ];
-  const DATATABLE_START = "```datatable";
-  const DATATABLE_END = "```";
   const [thinkingText, setThinkingText] = useState(thinkingTexts[0]);
   const textareaRef = useRef(null);
   const autoResize = (e) => {
@@ -79,6 +71,16 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
+  };
+
+  const autoCapitalizeFirst = (text) => {
+    if (!text) return text;
+
+    if (text.length === 1) {
+      return text.toUpperCase();
+    }
+
+    return text;
   };
 
   function parseMessageSegments(message) {
@@ -102,7 +104,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
         }
       }
 
-      // tidak ada block lagi → sisa text
       if (!found) {
         const tail = message.slice(cursor);
         if (tail.trim()) {
@@ -111,7 +112,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
         break;
       }
 
-      // text sebelum block
       if (found.start > cursor) {
         segments.push({
           type: "text",
@@ -122,7 +122,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
       const blockStart = found.start + ("```" + found.type).length;
       const blockEnd = message.indexOf("```", blockStart);
 
-      // block belum selesai (streaming)
       if (blockEnd === -1) {
         segments.push({ type: found.loading });
         break;
@@ -159,22 +158,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
 
     return () => clearInterval(interval);
   }, [isLoading]);
-  // const handleMic = () => {
-  //   if (!browserSupportsSpeechRecognition) {
-  //     alert("Browser tidak support voice input");
-  //     return;
-  //   }
 
-  //   if (!listening) {
-  //     resetTranscript();
-  //     SpeechRecognition.startListening({
-  //       language: "id-ID",
-  //       continuous: false,
-  //     });
-  //   } else {
-  //     SpeechRecognition.stopListening();
-  //   }
-  // };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -184,103 +168,96 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     }
   }, [input]);
 
-  return (messages.length === 0 && isFirst
-    ?
-    <div className={(dark
-      ? " text-white"
-      : " text-gray-900") + " flex flex-col items-center justify-center h-full"}>
+  return (
+    messages.length === 0 && isFirst ?
+      <div className={(dark
+        ? " text-white"
+        : " text-gray-900") + " flex flex-col items-center justify-center h-full"}>
 
-      <div className={`flex items-center justify-center text-3xl ${sizeTextUp[valButtonSize] || "text-base"} `}>
-        Pertanyaan Apa Hari Ini?
-      </div>
+        <div className={`flex items-center justify-center text-3xl ${sizeTextUp[valButtonSize] || "text-base"} `}>
+          Pertanyaan Apa Hari Ini?
+        </div>
 
-      <div className="flex items-center justify-center w-full mt-4">
-        <div
-          className={
-            (dark
-              ? "bg-gray-900 border-gray-700"
-              : "bg-gray-100 border-gray-300") +
-            " p-2 flex items-center rounded-xl w-full max-w-[600px]"
-          }
+        <div className="flex items-center justify-center w-full mt-4">
+          <div
+            className={
+              (dark
+                ? "bg-gray-900 border-gray-700"
+                : "bg-gray-100 border-gray-300") +
+              " p-2 flex items-center rounded-xl w-full max-w-[600px]"
+            }
 
-        >
+          >
 
-          <div className="relative flex-1" >
-            <textarea
-              ref={textareaRef}
-              rows={1}
-              className={
-                "overflow-y-hidden custom-scroll w-full resize-none px-4 py-3 pr-24 " +
-                "leading-relaxed text-xl" +
-                "border rounded-2xl outline-none transition-all duration-200 " +
-                "focus:shadow-md focus:scale-[1.01] " +
-                (dark
-                  ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
-                  : "bg-white border-gray-300 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400")
-              }
-              style={{
-                boxShadow: "0 0px 20px rgba(0,0,0,0.2)",
-                zIndex: 50,
-              }}
-              placeholder="Ketik pesan atau gunakan voice..."
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                autoResize(e);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  if (input == "" || input == null) return
-                  isStopRef.current = false;
-                  setIsGenerate(true);
-                  streamBufferRef.current = "";
-                  isStreamDoneRef.current = false;
-                  sendMessage();
-                  setInput("");
-                  return;
+            <div className="relative flex-1" >
+              <textarea
+                ref={textareaRef}
+                rows={1}
+                className={
+                  "overflow-y-hidden custom-scroll w-full resize-none px-4 py-3 pr-24 " +
+                  "leading-relaxed text-xl" +
+                  "border rounded-2xl outline-none transition-all duration-200 " +
+                  "focus:shadow-md focus:scale-[1.01] " +
+                  (dark
+                    ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                    : "bg-white border-gray-300 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400")
                 }
-              }}
-            />
+                style={{
+                  boxShadow: "0 0px 20px rgba(0,0,0,0.2)",
+                  zIndex: 50,
+                }}
+                placeholder="Ketik pesan atau gunakan voice..."
+                value={input}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setInput(autoCapitalizeFirst(value));
+                  //setInput(e.target.value);
+                  autoResize(e);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (input == "" || input == null) return
+                    input = input.charAt(0).toUpperCase() + input.slice(1);
+                    isStopRef.current = false;
+                    setIsGenerate(true);
+                    streamBufferRef.current = "";
+                    isStreamDoneRef.current = false;
+                    sendMessage(input);
+                    setInput("");
+                    return;
+                  }
+                }}
+              />
 
-            {/* <button
-              className={
-                "p-3 rounded-full shadow flex items-center justify-center transition-all " +
-                (dark
-                  ? "bg-gray-800 hover:bg-gray-700 text-white"
-                  : "bg-white hover:bg-gray-200 text-gray-700")
-              }
-            >
-              <FiMic size={20} />
-            </button> */}
-
-            <button
-              onClick={handleMic}
-              className={`
+              <button
+                onClick={handleMic}
+                className={`
                              absolute bottom-3 right-14
                             p-2 rounded-full text-white shadow
                             transition-all active:scale-95
                             ${listening
-                  ? "bg-red-500 animate-pulse"
-                  : "bg-blue-600 hover:bg-blue-700"}
+                    ? "bg-red-500 animate-pulse"
+                    : "bg-blue-600 hover:bg-blue-700"}
                           `}
-              title={listening ? "Stop recording" : "Voice input"}
-            >
-              <FiMic size={20} />
-            </button>
+                title={listening ? "Stop recording" : "Voice input"}
+              >
+                <FiMic size={20} />
+              </button>
 
-            <button
-              onClick={() => {
-                if (input == "" || input == null) return
-                isStopRef.current = false;
-                setIsGenerate(true);
-                streamBufferRef.current = "";
-                isStreamDoneRef.current = false;
-                sendMessage();
-                setInput("");
-                return;
-              }}
-              className="
+              <button
+                onClick={() => {
+                  if (input == "" || input == null) return
+                  input = input.charAt(0).toUpperCase() + input.slice(1);
+                  isStopRef.current = false;
+                  setIsGenerate(true);
+                  streamBufferRef.current = "";
+                  isStreamDoneRef.current = false;
+                  sendMessage(input);
+                  setInput("");
+                  return;
+                }}
+                className="
           absolute bottom-3 right-2
           p-2 rounded-full
           bg-blue-600 hover:bg-blue-700
@@ -288,174 +265,182 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
           transition-all
           active:scale-95
         "
-            >
-              <FiSend size={18} />
-            </button>
+              >
+                <FiSend size={18} />
+              </button>
 
+
+            </div>
 
           </div>
-
         </div>
       </div>
-    </div>
 
-    :
+      :
 
-    <div className="flex items-center flex-col overflow-y-auto  m-5 custom-scroll" style={{ maxHeight: "calc(100vh - 170px)", overflow: "auto" }}>
-      {
-        messages.map((msg, idx) => (
-          <div key={idx} className={
-            "w-9/12 flex flex-col " +
-            (msg.role === "user" ? "items-end" : "items-start")
-          } >
+      <div className="flex  flex-col overflow-y-auto  m-5 custom-scroll" style={{ maxHeight: "calc(100vh - 170px)", overflow: "auto" }}>
+        <div className="flex flex-col items-center">
+          {
+            messages.map((msg, idx) => (
+              <div key={idx} className={
+                "w-9/12 flex flex-col " +
+                (msg.role === "user" ? "items-end" : "items-start")
+              } >
 
 
 
-            <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-3`}>
+                <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-3`}>
 
-              {/* {msg.role != "user" &&
-                <div className="flex items-center">
-                  <div
-                    // onClick={() => setOpenDropdown(!openDropDown)}
-                    className={
-                      "w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
-                    }
-                  >
-                    AI
-                  </div>
-                </div>
-              } */}
-
-              {msg.role == "user" &&
-                <div className="flex items-center justify-center mr-1">
-                  <div
-                    // onClick={() => setOpenDropdown(!openDropDown)}
-                    className={
-                      "mb-2  w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
-                    }
-                  >
-                    {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
-                  </div>
-                </div>
-              }
-
-              <div className="flex-col w-full ">
-                {msg.role === "user" ? (
-                  // <div className="flex justify-start ml-2 mt-4 ">
-                  //   <span className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${sizeTextDown[valButtonSize] || "text-base"}`}>
-                  //     {localStorage.getItem("nama") ?? "Guest"}
-                  //   </span>
-                  // </div>
-                  <></>
-                ) : (
-                  <div className="flex justify-start ml-10">
-                    <span className={`text-base italic text-blue-600 dark:text-gray-400 ml-4 ${sizeTextDown[valButtonSize] || "text-base"}`}>
-                      AI Ikodora
-                    </span>
-                  </div>
-                )}
-                <div
-                  className={
-                    [
-                      "break-words whitespace-pre-wrap  leading-relaxed text-justify",
-                      " py-3  transition-transform transform prose prose-sm [&>p]:-my-2",
-                      sizeText[valButtonSize] || "text-base",
-                      msg.role === "user"
-                        ? " w-4/5  rounded-br-[8px] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl hover:scale-[1.01]  mr-auto mb-4"
-                        : (dark
-                          ? "ml-14 w-4/5 bg-gray-900 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
-                          : "ml-14 w-4/5 hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents")
-                    ].join(" ")
+                  {msg.role == "user" &&
+                    <div className="flex items-end justify-center mr-1">
+                      <div
+                        // onClick={() => setOpenDropdown(!openDropDown)}
+                        className={
+                          " w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+                        }
+                      >
+                        {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
                   }
-                  style={{ wordBreak: "break-word" }}
-                >
-                
-                  {parseMessageSegments(msg.text).map((seg, i) => {
-                    if (seg.type === "text") {
-                      return (
-                        <ReactMarkdown
-                          key={i}
-                          remarkPlugins={[remarkGfm]}
-                        >
-                          {seg.content}
-                        </ReactMarkdown>
-                      );
-                    }
 
-                    if (seg.type === "table") {
-                      return <DataTable key={i} table={seg.content} dark={dark} />;
-                    }
+                  <div className="flex-col w-full">
+                    {msg.role === "user" ? (
+                      <></>
+                    ) : (
+                      <div className="flex justify-start ml-10">
+                        <span className={`text-base italic 
+                         text-blue-600 dark:text-gray-400 
+                         ml-4 mb-2 ${sizeText[valButtonSize] || "text-base"}`} style={{ letterSpacing: "2px" }}>
+                          AI Ikodora
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      className={
+                        [
+                          "break-words whitespace-pre-wrap  leading-relaxed text-justify",
+                          "py-3  transition-transform transform prose prose-sm [&>p]:-my-3",
 
-                    if (seg.type === "table-loading") {
-                      return <TableSkeleton key={i} dark={dark} />;
-                    }
+                          sizeText[valButtonSize] || "text-base",
+                          msg.role === "user"
+                            ? " w-4/5  rounded-br-[8px] "
+                            + " rounded-bl-2xl hover:scale-[1.01]  mr-auto self-start"
+                            : (dark
+                              ? "ml-14 w-4/5 bg-gray-900 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
+                              : "ml-14 w-4/5 hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents")
+                        ].join(" ")
+                      }
+                      style={{ wordBreak: "break-word" }}
+                    >
 
-                    if (seg.type === "chartjs") {
-                      return <ChartBlock key={i} chart={seg.content} dark={dark} />;
-                    }
+                      {parseMessageSegments(msg.text).map((seg, i) => {
+                        if (seg.type === "text") {
+                          return (
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                p: ({ children }) => (
+                                  <p className="my-1 leading-snug">
+                                    {children}
+                                  </p>
+                                ),
 
-                    if (seg.type === "chart-loading") {
-                      return <ChartSkeleton key={i} />;
-                    }
+                                ol: ({ children }) => (
+                                  <ol className="list-decimal pl-5 -my-7 space-y-1">
+                                    {children}
+                                  </ol>
+                                ),
 
-                    if (seg.type === "latex") {
-                      return <LatexBlock key={i} latex={seg.content} />;
-                    }
+                                ul: ({ children }) => (
+                                  <ul className="list-disc pl-5 -my-7 space-y-1">
+                                    {children}
+                                  </ul>
+                                ),
 
-                    if (seg.type === "latex-loading") {
-                      return <LatexSkeleton key={i} />;
-                    }
+                                li: ({ children }) => (
+                                  <li className="leading-snug">
+                                    {children}
+                                  </li>
+                                ),
+                              }}
+                            >
+                              {seg.content}
+                            </ReactMarkdown>
+                          );
+                        }
 
-                    return null;
-                  })}
-                </div>
-                {msg.role != "user" &&
-                  <div className="w-full border-b border-gray-300 mt-5" ></div>
-                }
-              </div>
+                        if (seg.type === "table") {
+                          return <DataTable key={i} table={seg.content} dark={dark} />;
+                        }
 
-              {/* {msg.role == "user" &&
-                <div className="flex items-center justify-center mt-5">
-                  <div
-                    // onClick={() => setOpenDropdown(!openDropDown)}
-                    className={
-                      "w-10 h-10 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+                        if (seg.type === "table-loading") {
+                          return <TableSkeleton key={i} dark={dark} />;
+                        }
+
+                        if (seg.type === "chartjs") {
+                          return <ChartBlock key={i} chart={seg.content} dark={dark} />;
+                        }
+
+                        if (seg.type === "chart-loading") {
+                          return <ChartSkeleton key={i} />;
+                        }
+
+                        if (seg.type === "latex") {
+                          return <LatexBlock key={i} latex={seg.content} />;
+                        }
+
+                        if (seg.type === "latex-loading") {
+                          return <LatexSkeleton key={i} />;
+                        }
+
+                        return null;
+                      })}
+                    </div>
+                    {msg.role != "user" &&
+                      <div className="w-full border-b border-gray-300 mt-5" ></div>
                     }
-                  >
-                    {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
                   </div>
+
                 </div>
-              } */}
-
-            </div>
-          </div>
-        ))
-      }
-
-      {isLoading && (
-        <div className="flex justify-start mt-3">
-          <div
-            className={`
-        px-4 py-3 rounded-2xl flex items-center gap-3
-        shadow-sm
+              </div>
+            ))
+          }
+        </div>
+        {isLoading && (
+          <div className="w-9/12 flex flex-col items-start mt-2">
+            <div className="
+                ml-8
+                sm:ml-20
+                md:ml-24
+                lg:ml-32
+                xl:ml-60
+                max-w-[80%]
+                w-fit
+              ">
+              <div
+                className={`
+        px-4 py-3 rounded-2xl flex items-center gap-3 
+        shadow-sm 
         ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-700"}
       `}
-          >
-            <div className="flex items-center space-x-1">
-              <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:0ms]" />
-              <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:200ms]" />
-              <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:400ms]" />
+              >
+                <div className="flex items-center space-x-1">
+                  <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:0ms]" />
+                  <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:200ms]" />
+                  <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:400ms]" />
+                </div>
+
+                <span className="text-xs opacity-80 transition-opacity duration-300">
+                  {thinkingText}
+                </span>
+              </div>
             </div>
-
-            <span className="text-xs opacity-80 transition-opacity duration-300">
-              {thinkingText}
-            </span>
           </div>
-        </div>
-      )}
+        )}
 
-      <div ref={bottomRef}></div>
-    </div>
+        <div ref={bottomRef}></div>
+      </div>
 
   )
 }
@@ -548,7 +533,13 @@ function ChartBlock({ chart, dark }) {
     return bluePalette[Math.floor(Math.random() * bluePalette.length)];
   }
 
-  const primaryBlue = pickBlue();
+  const colorRef = React.useRef(null);
+
+  if (!colorRef.current) {
+    colorRef.current = pickBlue();
+  }
+
+  const primaryBlue = colorRef.current;
 
   const data = {
     labels: chart.labels,

@@ -10,23 +10,32 @@ const InputAreaHome = ({ dark, input,
   isStopRef, isGenerate,
   setIsGenerate, streamBufferRef, isStreamDoneRef, valButtonSize, lang
 }) => {
-  // const {
-  //   transcript,
-  //   listening,
-  //   browserSupportsSpeechRecognition,
-  //   resetTranscript,
-  // } = useSpeechRecognition();
   const textareaRef = useRef(null);
+  const autoCapitalizeFirst = (text) => {
+    if (!text) return text;
+
+    if (text.length === 1) {
+      return text.toUpperCase();
+    }
+
+    return text;
+  };
 
   const handleSendButton = () => {
 
     if (!isGenerate) {
-      if (input == "" || input == null) return
+      if (!input) return;
+
+      let value = input.trim();
+      if (!value) return;
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+
       isStopRef.current = false;
       setIsGenerate(true);
       streamBufferRef.current = "";
       isStreamDoneRef.current = false;
-      sendMessage();
+      sendMessage(value);
+
       setInput("");
       return;
     }
@@ -47,23 +56,6 @@ const InputAreaHome = ({ dark, input,
     }
   };
 
-
-  // const handleMic = () => {
-  //   if (!browserSupportsSpeechRecognition) {
-  //     alert("Browser tidak support voice input");
-  //     return;
-  //   }
-
-  //   if (!listening) {
-  //     resetTranscript();
-  //     SpeechRecognition.startListening({
-  //       language: "id-ID",
-  //       continuous: false,
-  //     });
-  //   } else {
-  //     SpeechRecognition.stopListening();
-  //   }
-  // };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -116,17 +108,24 @@ const InputAreaHome = ({ dark, input,
                 placeholder="Ketik pesan atau gunakan voice..."
                 value={input}
                 onChange={(e) => {
+                  const value = e.target.value;
+                  setInput(autoCapitalizeFirst(value));
                   setInput(e.target.value);
                   autoResize(e);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    if (input.trim()) {
-                      sendMessage();
-                      setInput("");
-                      resetHeight();
-                    }
+                    let value = input.trim();
+                    if (!value) return;
+                    value = value.charAt(0).toUpperCase() + value.slice(1);
+
+                    isStopRef.current = false;
+                    setIsGenerate(true);
+                    streamBufferRef.current = "";
+                    isStreamDoneRef.current = false;
+                    sendMessage(value);
+
+                    setInput("");
                   }
                 }}
               />

@@ -16,7 +16,9 @@ const SharedLayout = () => {
     const [showWelcome, setShowWelcome] = useState(() => {
         return localStorage.getItem("welcome_shown") !== "true";
     });
-    const [login, setLogin] = useState(false);
+    const [login, setLogin] = useState(() => {
+        return localStorage.getItem("username") == "" || localStorage.getItem("username") == null ? false : true;
+    });
     const [nama, setNama] = useState("");
     const [roleName, setRoleName] = useState("");
     const [roleId, setRoleId] = useState(0);
@@ -41,6 +43,7 @@ const SharedLayout = () => {
         localStorage.setItem("username", data.user.username);
         localStorage.setItem("login", true);
         setIsLoginOpen(false);
+        window.location.replace("/");
     };
     useEffect(() => {
         setLogin(localStorage.getItem("login"))
@@ -149,7 +152,7 @@ const SharedLayout = () => {
                     )}
 
                     <div className="flex-1 min-w-0 overflow-hidden h-full">
-                        <Outlet context={{ dark, valButtonSize, lang }} />
+                        <Outlet context={{ dark, valButtonSize, lang, login }} />
                     </div>
                 </div>
             </div>

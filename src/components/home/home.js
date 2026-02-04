@@ -8,7 +8,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 const Home = () => {
-  const { dark, valButtonSize, lang } = useOutletContext();
+  const { dark, valButtonSize, lang, login } = useOutletContext();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ const Home = () => {
   const navigate = useNavigate();
   const urlTopic = searchParams.get("topic");
   const urlCategory = searchParams.get("category");
-  const isFirstRef = useRef(!urlTopic);
+  const isFirstRef = useRef(login ? !urlTopic : true);
   const [isInitLoaded, setIsInitLoaded] = useState(false);
   const streamBufferRef = useRef("");
   const streamIntervalRef = useRef(null);
@@ -45,17 +45,22 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (urlTopic && urlCategory) {
-      setIdTopic(Number(urlTopic));
-      setIdCategory(Number(urlCategory));
-      isFirstRef.current = false;
+    if (login) {
+      if (urlTopic && urlCategory) {
+        setIdTopic(Number(urlTopic));
+        setIdCategory(Number(urlCategory));
+        isFirstRef.current = false;
 
-      loadHistory(urlTopic, urlCategory);
-    } else {
-      isFirstRef.current = true;
+        loadHistory(urlTopic, urlCategory);
+      } else {
+        isFirstRef.current = true;
+        setIsInitLoaded(true);
+        setMessages([]);
+        console.log("masuk")
+      }
+    }
+    else {
       setIsInitLoaded(true);
-      setMessages([]);
-      console.log("masuk")
     }
   }, [urlTopic, urlCategory]);
 
@@ -113,7 +118,7 @@ const Home = () => {
 
   useEffect(() => {
     if (!isInitLoaded) return;
-    const username = localStorage.getItem("username");
+    const username = localStorage.getItem("username") ?? "guest";
     const roleName = localStorage.getItem("roleName") ?? "guest";
     const query = new URLSearchParams({
       userId: username,
@@ -133,6 +138,14 @@ const Home = () => {
 
 
         if (data.type === "chunk") {
+          if (isFirstRef.current) {
+            setMessages(prev => [
+              ...prev,
+              { role: "bot", text: "", isStreaming: true }
+            ]);
+            isFirstRef.current = false;
+          }
+
           streamBufferRef.current += data.content;
           startStreamInterval();
           return;
@@ -142,42 +155,41 @@ const Home = () => {
 
           isStreamDoneRef.current = true;
 
+          //isFirstRef.current = true;
+
           if (
             isFirstRef.current &&
             data.topic_id &&
             data.category_id
           ) {
-            navigate(
-              `?topic=${data.topic_id}&category=${data.category_id}`,
-              { replace: true }
-            );
+            if (login) {
+              navigate(
+                `?topic=${data.topic_id}&category=${data.category_id}`,
+                { replace: true }
+              );
+              setIdTopic(data.topic_id);
+              setIdCategory(data.category_id);
+              window.dispatchEvent(
+                new CustomEvent("topic-updated", {
+                  detail: {
+                    topicId: data.topic_id,
+                    categoryId: data.category_id,
+                  },
+                })
+              );
 
-            setIdTopic(data.topic_id);
-            setIdCategory(data.category_id);
-            isFirstRef.current = false;
-
-            window.dispatchEvent(
-              new CustomEvent("topic-updated", {
-                detail: {
-                  topicId: data.topic_id,
-                  categoryId: data.category_id,
-                },
-              })
-            );
-
-            window.dispatchEvent(
-              new CustomEvent("category-updated", {
-                detail: {
-                  categoryId: data.category_id,
-                },
-              })
-            );
+              window.dispatchEvent(
+                new CustomEvent("category-updated", {
+                  detail: {
+                    categoryId: data.category_id,
+                  },
+                })
+              );
+            }
           }
-
-          return;
         }
 
-
+        isFirstRef.current = false;
         if (data.error) {
           setMessages((prev) => [
             ...prev,
@@ -221,6 +233,7 @@ const Home = () => {
         return;
       }
 
+      //console.log(streamBufferRef.current.length)
       if (streamBufferRef.current.length) {
         const nextChar = streamBufferRef.current[0];
         streamBufferRef.current = streamBufferRef.current.slice(1);
@@ -242,22 +255,19 @@ const Home = () => {
         return;
       }
 
-      // === STREAM DONE ===
       if (isStreamDoneRef.current) {
         stopStream();
       }
-    }, 1); // 1ms terlalu agresif
+    }, 1);
   };
 
   const stopStream = () => {
     const ws = socketRef.current;
 
-    // === WAJIB: cek EXISTENCE dulu ===
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: "stop" }));
     }
 
-    // === SISANYA UI CLEANUP ===
     isStoppedManuallyRef.current = true;
     isStopRef.current = true;
 
@@ -284,97 +294,32 @@ const Home = () => {
     setIsGenerate(false);
   };
 
-  // useEffect(() => {
-  //   if (!isGenerate) {
-  //     if (streamIntervalRef.current) {
-  //       clearInterval(streamIntervalRef.current);
-  //       streamIntervalRef.current = null;
-  //     }
-  //     return;
-  //   }
-
-  //   if (streamIntervalRef.current) return;
-
-  //   streamIntervalRef.current = window.setInterval(() => {
-  //     if (isStop) {
-  //       clearInterval(streamIntervalRef.current);
-  //       streamIntervalRef.current = null;
-  //       return;
-  //     }
-  //     if (streamBufferRef.current.length) {
-  //       const nextChar = streamBufferRef.current[0];
-  //       streamBufferRef.current = streamBufferRef.current.slice(1);
-  //       setMessages((prev) => {
-  //         const last = prev[prev.length - 1];
-
-  //         if (!last || last.role !== "bot") {
-  //           return [
-  //             ...prev,
-  //             { role: "bot", text: nextChar, isStreaming: true },
-  //           ];
-  //         }
-
-  //         const updated = [...prev];
-  //         updated[updated.length - 1] = {
-  //           ...last,
-  //           text: last.text + nextChar,
-  //         };
-
-  //         return updated;
-  //       });
-
-  //       return;
-  //     }
-
-  //     if (isStreamDoneRef.current) {
-  //       setMessages((prev) => {
-  //         const updated = [...prev];
-  //         const last = updated[updated.length - 1];
-
-  //         if (last?.role === "bot") {
-  //           updated[updated.length - 1] = {
-  //             ...last,
-  //             isStreaming: false,
-  //           };
-  //         }
-  //         return updated;
-  //       });
-
-  //       isStreamDoneRef.current = false;
-  //       clearInterval(streamIntervalRef.current);
-  //       streamIntervalRef.current = null;
-  //     }
-  //   }, 1);
-
-  //   return () => {
-  //     if (streamIntervalRef.current) {
-  //       clearInterval(streamIntervalRef.current);
-  //     }
-  //   };
-  // }, []);
-
-
-  const sendMessage = () => {
-    if (!input.trim()) return;
-
+  const sendMessage = (text) => {
+    if (!text.trim()) return;
+    // setInput(input.charAt(0).toUpperCase() + input.slice(1));
     const ws = socketRef.current;
 
-    // 🔒 GUARD WAJIB
+    //  GUARD
     if (!ws || ws.readyState !== WebSocket.OPEN) {
       console.warn("WS not ready");
       return;
     }
 
+    streamBufferRef.current = "";
+    isStreamDoneRef.current = false;
+    isStopRef.current = false;
+    isStoppedManuallyRef.current = false;
+    isFirstRef.current = true;
     setIsLoading(true);
 
     setMessages(prev => [
       ...prev,
-      { role: "user", text: input },
+      { role: "user", text: text },
     ]);
 
     ws.send(JSON.stringify({
       type: "ask",
-      text: input,
+      text: text,
       isFirst: isFirstRef.current,
       idCategory: idCategory || 0,
       topic: idTopic || 0,
