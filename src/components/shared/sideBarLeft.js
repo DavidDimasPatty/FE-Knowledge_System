@@ -772,6 +772,7 @@ const SideBarLeft =
                     onClose={() => setIsPasswordOpen(false)}
                     valButtonSize={valButtonSize}
                     dark={dark}
+                    lang={lang}
                 />
                 <LoginModal
                     isOpen={isLoginOpen}
