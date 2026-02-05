@@ -48,6 +48,12 @@ const SettingModal = (
         large: "text-base"
     };
 
+    const sizeLabel = {
+        small: "Kecil",
+        medium: "Sedang",
+        large: "Besar",
+    };
+
     useEffect(() => {
         if (!isOpen) return;
 
@@ -78,10 +84,10 @@ const SettingModal = (
                 {/* HEADER */}
                 <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
                     <h2 className={`font-semibold ${sizeTextUp[valButtonSize]}`}>
-                        Settings
+                        {lang ? "Settings" : "Pengaturan"}
                     </h2>
                     <p className="text-sm text-gray-400 mt-1">
-                        Customize your application preferences
+                        {lang ? "Customize your application preferences" : "Sesuaikan preferensi aplikasi Anda"}
                     </p>
                 </div>
 
@@ -92,10 +98,10 @@ const SettingModal = (
                     <div className="flex items-center justify-between">
                         <div>
                             <div className={`${sizeText[valButtonSize]} font-medium`}>
-                                Dark Mode
+                                {lang ? "Dark Mode" : "Mode Gelap"}
                             </div>
                             <div className="text-sm text-gray-400">
-                                Enable dark appearance
+                                {lang ? "Enable dark appearance" : "Aktifkan tampilan gelap"}
                             </div>
                         </div>
 
@@ -148,10 +154,10 @@ const SettingModal = (
                     <div className="flex items-center justify-between">
                         <div>
                             <div className={`${sizeText[valButtonSize]} font-medium`}>
-                                Language <span style={{ fontSize: '10px' }}>(ID/EN)</span>
+                                {lang ? "Language" : "Bahasa"} <span style={{ fontSize: '10px' }}>(ID/EN)</span>
                             </div>
                             <div className="text-sm text-gray-400">
-                                Interface language
+                                {lang ? "Interface language" : "Bahasa antarmuka"}
                             </div>
                         </div>
 
@@ -194,9 +200,9 @@ const SettingModal = (
                         {/* Label */}
                         <div className="flex flex-col">
                             <div className={`${sizeText[valButtonSize]} font-medium`}>
-                                Font Size
+                                {lang ? "Font Size" : "Ukuran Teks"}
                             </div>
-                            <div className="text-sm text-gray-400">Adjust interface font</div>
+                            <div className="text-sm text-gray-400">{lang ? "Adjust interface font" : "Sesuaikan teks antarmuka"}</div>
                         </div>
 
                         {/* Buttons */}
@@ -218,7 +224,7 @@ const SettingModal = (
                                         }
                                 `}
                                 >
-                                    {size.charAt(0).toUpperCase() + size.slice(1)}
+                                    {lang ? size.charAt(0).toUpperCase() + size.slice(1) : sizeLabel[size]}
                                 </button>
                             ))}
 
@@ -239,7 +245,7 @@ const SettingModal = (
                                 : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
                             `}
                     >
-                        Close
+                        {lang ? "Close" : "Tutup"}
                     </button>
                 </div>
             </div>

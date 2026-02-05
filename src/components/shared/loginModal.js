@@ -55,8 +55,8 @@ const LoginModal = (
 
 
             MySwal.fire({
-                title: "Login Successful!",
-                text: `Login Successful.`,
+                title: lang ? "Log In Successful!" : "Log In Berhasil!",
+                text: lang ? `Log In Successful.` : `Log In Berhasil.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -71,16 +71,16 @@ const LoginModal = (
             if (error.response) {
                 // alert(error.response.data.error || "Login gagal");
                 MySwal.fire({
-                    title: "Error!",
-                    text: `Error Login : ${error.response.data.error}.`,
+                    title: lang ? "Error!" : "Kesalahan!",
+                    text: lang ? `Error Log In : ${error.response.data.error}.` : `Gagal Log In : ${error.response.data.error}.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
                 });
             } else {
                 MySwal.fire({
-                    title: "Error!",
-                    text: `Error Login.`,
+                    title: lang ? "Error!" : "Kesalahan!",
+                    text: lang ? `Error Log In.` : `Gagal Log In.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
@@ -102,8 +102,8 @@ const LoginModal = (
             });
 
             MySwal.fire({
-                title: "Success!",
-                text: "Password reset link has been sent to your email.",
+                title: lang ? "Success!" : "Berhasil!",
+                text: lang ? "Password reset link has been sent to your email." : "Tautan reset kata sandi telah dikirim ke email Anda.",
                 icon: "success",
                 timer: 2000,
                 showConfirmButton: false,
@@ -114,8 +114,8 @@ const LoginModal = (
 
         } catch (error) {
             MySwal.fire({
-                title: "Error!",
-                text: error.response?.data?.error || "Failed to reset password.",
+                title: lang ? "Error!" : "Kesalahan!",
+                text: lang ? error.response?.data?.error || "Failed to reset password." : error.response?.data?.error || "Gagal reset kata sandi.",
                 icon: "error",
                 timer: 2000,
                 showConfirmButton: false,
@@ -126,20 +126,20 @@ const LoginModal = (
     };
 
     useEffect(() => {
-            if (!isOpen) return;
-    
-            const handleEsc = (e) => {
-                if (e.key === "Escape") {
-                    onClose();
-                }
-            };
-    
-            window.addEventListener("keydown", handleEsc);
-    
-            return () => {
-                window.removeEventListener("keydown", handleEsc);
-            };
-        }, [isOpen, onClose]);
+        if (!isOpen) return;
+
+        const handleEsc = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
     return (
@@ -163,7 +163,7 @@ const LoginModal = (
                     )}
                     {mode === "reset" && (
                         <>
-                            <h2 className={`font-semibold text-center ${sizeTextUp[valButtonSize] || "text-2xl"}`}>Reset Password</h2>
+                            <h2 className={`font-semibold text-center ${sizeTextUp[valButtonSize] || "text-2xl"}`}>Reset {lang ? "Password" : "Kata Sandi"}</h2>
                         </>
                     )}
                 </div>
@@ -188,7 +188,7 @@ const LoginModal = (
                                 <div className="relative shadow-lg">
                                     <input
                                         type={showPass ? "text" : "password"}
-                                        placeholder="Password"
+                                        placeholder={lang ? "Password" : "Kata Sandi"}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className={`w-full h-[52px] px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
@@ -237,7 +237,7 @@ const LoginModal = (
                                 ${loading ? "opacity-60 cursor-not-allowed" : ""}
                                 ${sizeText[valButtonSize] || "text-base"}`}
                         >
-                            {loading ? "Processing..." : mode === "login" ? "Log In" : "Reset Password"}
+                            {loading ? (lang ? "Processing..." : "Proses...") : mode === "login" ? "Log In" : (lang ? "Reset Password" : "Reset Kata Sandi")}
                         </button>
                     </div>
                 </form>
@@ -253,7 +253,7 @@ const LoginModal = (
                                 onClick={() => setMode("reset")}
                                 className="text-sm text-red-500 hover:underline"
                             >
-                                Forgot Password?
+                                {lang ? "Forgot Password?" : "Lupa Kata Sandi?"}
                             </button>
                         ) : (
                             <button
@@ -261,7 +261,7 @@ const LoginModal = (
                                 onClick={() => setMode("login")}
                                 className="text-sm text-blue-500 hover:underline"
                             >
-                                Back to <b>Log In</b>
+                                {lang ? "Back to" : "Kembali ke"} <b>Log In</b>
                             </button>
                         )}
 
@@ -275,7 +275,7 @@ const LoginModal = (
                                     : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
                             `}
                         >
-                            Cancel
+                            {lang ? "Cancel" : "Batal"}
                         </button>
                     </div>
                 </div>

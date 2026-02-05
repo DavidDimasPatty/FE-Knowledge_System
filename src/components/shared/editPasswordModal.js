@@ -8,7 +8,8 @@ const EditPasswordModal = (
         isOpen,
         onClose,
         valButtonSize,
-        dark
+        dark,
+        lang
     }) => {
     const [newPassword, setNewPassword] = useState("");
     const [oldPassword, setOldPassword] = useState("");
@@ -23,8 +24,8 @@ const EditPasswordModal = (
 
         if (retypeNewPassword != newPassword) {
             MySwal.fire({
-                title: "Error!",
-                text: `New passwords do not match.`,
+                title: lang ? "Error!" : "Kesalahan!",
+                text: lang ? `New passwords do not match.` : `Kata sandi baru tidak cocok.`,
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
@@ -44,9 +45,10 @@ const EditPasswordModal = (
 
         if (!isValidPassword) {
             MySwal.fire({
-                title: "Invalid Password",
-                html: `
-                        <div style="text-align:left;font-size:14px">
+                title: lang ? "Invalid Password" : "Kata sandi tidak valid",
+                html: lang ?
+                    `
+                    <div style="text-align:left;font-size:14px">
                         <p>Make sure the password meets the following requirements:</p>
                         <ul>
                             <li>${passwordRules.length ? "✅" : "❌"} Minimum 8 characters</li>
@@ -55,7 +57,19 @@ const EditPasswordModal = (
                             <li>${passwordRules.number ? "✅" : "❌"} Number</li>
                             <li>${passwordRules.special ? "✅" : "❌"} Special character</li>
                         </ul>
-                        </div>
+                    </div>
+                    ` :
+                    `
+                    <div style="text-align:left;font-size:14px">
+                        <p>Pastikan kata sandi memenuhi ketentuan berikut:</p>
+                        <ul>
+                            <li>${passwordRules.length ? "✅" : "❌"} Minimal 8 karakter</li>
+                            <li>${passwordRules.upper ? "✅" : "❌"} Mengandung huruf besar</li>
+                            <li>${passwordRules.lower ? "✅" : "❌"} Mengandung huruf kecil</li>
+                            <li>${passwordRules.number ? "✅" : "❌"} Mengandung angka</li>
+                            <li>${passwordRules.special ? "✅" : "❌"} Mengandung karakter khusus</li>
+                        </ul>
+                    </div>
                     `,
                 icon: "error",
                 timer: 2000,
@@ -74,8 +88,8 @@ const EditPasswordModal = (
             const data = response.data;
 
             MySwal.fire({
-                title: "Password Updated Successfully!",
-                text: `Password Updated Successfully.`,
+                title: lang ? "Password Updated Successfully!" : "Kata sandi berhasil diperbarui!",
+                text: lang ? `Password Updated Successfully.` : `Kata sandi berhasil diperbarui.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -87,16 +101,16 @@ const EditPasswordModal = (
 
             if (error.response) {
                 MySwal.fire({
-                    title: "Error!",
-                    text: `Failed to Edit Password : ${error.response.data.error}.`,
+                    title: lang ? "Error!" : "Kesalahan!",
+                    text: lang ? `Failed to Edit Password : ${error.response.data.error}.` : `Gagal mengubah kata sandi : ${error.response.data.error}.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
                 });
             } else {
                 MySwal.fire({
-                    title: "Error!",
-                    text: `Failed to Edit Password.`,
+                    title: lang ? "Error!" : "Kesalahan!",
+                    text: lang ? `Failed to Edit Password.` : `Gagal mengubah kata sandi.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
@@ -147,10 +161,10 @@ const EditPasswordModal = (
                 {/* HEADER */}
                 <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
                     <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-lg"}`}>
-                        Edit Password
+                        {lang ? "Edit Password" : "Ubah Kata Sandi"}
                     </h2>
                     <p className="text-sm text-gray-400 mt-1">
-                        Change your account password securely
+                        {lang ? "Change your account password securely" : "Ubah kata sandi akun Anda dengan aman"}
                     </p>
                 </div>
 
@@ -161,7 +175,7 @@ const EditPasswordModal = (
                         <div className="relative shadow-lg">
                             <input
                                 type={showOld ? "text" : "password"}
-                                placeholder="Current Password"
+                                placeholder={lang ? "Current Password" : "Kata Sandi Saat Ini"}
                                 value={oldPassword}
                                 onChange={(e) => setOldPassword(e.target.value)}
                                 className={`
@@ -185,7 +199,7 @@ const EditPasswordModal = (
                         <div className="relative shadow-lg">
                             <input
                                 type={showNew ? "text" : "password"}
-                                placeholder="New Password"
+                                placeholder={lang ? "New Password" : "Kata Sandi Baru"}
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 className={`
@@ -209,7 +223,7 @@ const EditPasswordModal = (
                         <div className="relative shadow-lg">
                             <input
                                 type={showRetype ? "text" : "password"}
-                                placeholder="Confirm New Password"
+                                placeholder={lang ? "Confirm New Password" : "Konfirmasi Kata Sandi Baru"}
                                 value={retypeNewPassword}
                                 onChange={(e) => setRetypeNewPassword(e.target.value)}
                                 className={`
@@ -238,7 +252,7 @@ const EditPasswordModal = (
                                     : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                                 ${sizeText[valButtonSize] || "text-base"}`}
                         >
-                            Update Password
+                            {lang ? "Update Password" : "Ubah Kata Sandi"}
                         </button>
                     </div>
                 </form>
@@ -254,7 +268,7 @@ const EditPasswordModal = (
                                 : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
                             `}
                     >
-                        Cancel
+                        {lang ? "Cancel" : "Batal"}
                     </button>
                 </div>
 
