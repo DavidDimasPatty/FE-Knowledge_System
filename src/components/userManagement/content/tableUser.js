@@ -11,7 +11,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const MySwal = withReactContent(Swal);
-    const { valButtonSize, dark } = useOutletContext();
+    const { valButtonSize, dark, lang } = useOutletContext();
 
     const sizeText = {
         small: "text-sm",
@@ -48,6 +48,16 @@ const TableUser = ({ users, loading, fetchUser }) => {
         medium: "86px",
         large: "94px"
     };
+
+    const sizeButtonAkNon = {
+        small: "85px",
+        medium: "95px",
+        large: "105px"
+    };
+
+    const buttonWidth = lang
+        ? sizeButtonAcDeac[valButtonSize]
+        : sizeButtonAkNon[valButtonSize];
 
     function formatTanggal(isoDate, locale = "en-US") {
         return new Intl.DateTimeFormat(locale, {
@@ -172,7 +182,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
         </div>
     );
 
-    const NoData = ({ dark, valButtonSize }) => (
+    const NoData = ({ dark, valButtonSize, lang }) => (
         <div
             className={`
             w-full text-center py-6
@@ -180,7 +190,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
             ${sizeText[valButtonSize] || "text-base"}
         `}
         >
-            There are no records to display
+            {lang ? "There are no records to display" : "Tidak ada data untuk ditampilkan"}
         </div>
     );
 
@@ -193,19 +203,19 @@ const TableUser = ({ users, loading, fetchUser }) => {
         const user = users?.find(u => u.ID === userId);
 
         MySwal.fire({
-            title: `Are you sure to delete "${user?.Nama ?? "this user"}"?`,
+            title: lang ? `Are you sure to delete "${user?.Nama ?? "this user"}"?` : `Apakah Anda yakin ingin menghapus "${user?.Nama ?? "pengguna ini"}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Delete!",
-            cancelButtonText: "Cancel",
+            confirmButtonText: lang ? "Delete!" : "Hapus!",
+            cancelButtonText: lang ? "Cancel" : "Batal",
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.post("http://localhost:8080/deleteUser", { "Id": userId });
 
                     MySwal.fire({
-                        title: "Deleted!",
-                        text: `${user.Nama} has been deleted.`,
+                        title: lang ? "Deleted!" : "Dihapus!",
+                        text: lang ? `${user.Nama} has been deleted.` : `${user.Nama} telah dihapus.`,
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
@@ -213,8 +223,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                     fetchUser();
                 } catch (err) {
                     MySwal.fire({
-                        title: "Error!",
-                        text: `${user.Nama} Error Deleted : ${err}.`,
+                        title: lang ? "Error!" : "Kesalahan!",
+                        text: lang ? `${user.Nama} Error Deleted : ${err}.` : `${user.Nama} Gagal Menghapus : ${err}.`,
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
@@ -228,19 +238,19 @@ const TableUser = ({ users, loading, fetchUser }) => {
         const user = users?.find(u => u.ID === userId);
 
         MySwal.fire({
-            title: `Are you sure to activate "${user?.Nama ?? "this user"}"?`,
+            title: lang ? `Are you sure to activate "${user?.Nama ?? "this user"}"?` : `Apakah Anda yakin ingin mengaktifkan "${user?.Nama ?? "pengguna ini"}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Activate!",
-            cancelButtonText: "Cancel",
+            confirmButtonText: lang ? "Activate!" : "Aktifkan!",
+            cancelButtonText: lang ? "Cancel" : "Batal",
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.post("http://localhost:8080/changeStatusUser", { "Id": userId, "Status": user.Status });
 
                     MySwal.fire({
-                        title: "Success!",
-                        text: `${user.Nama} has been activated.`,
+                        title: lang ? "Success!" : "Berhasil!",
+                        text: lang ? `${user.Nama} has been activated.` : `${user.Nama} telah diaktifkan.`,
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
@@ -248,8 +258,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                     fetchUser();
                 } catch (err) {
                     MySwal.fire({
-                        title: "Error!",
-                        text: `${user.Nama} Error activated : ${err}.`,
+                        title: lang ? "Error!" : "Kesalahan!",
+                        text: lang ? `${user.Nama} Error Activated : ${err}.` : `${user.Nama} Gagal Mengaktifkan : ${err}.`,
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
@@ -263,19 +273,19 @@ const TableUser = ({ users, loading, fetchUser }) => {
         const user = users?.find(u => u.ID === userId);
 
         MySwal.fire({
-            title: `Are you sure to block "${user?.Nama ?? "this user"}"?`,
+            title: lang ? `Are you sure to block "${user?.Nama ?? "this user"}"?` : `Apakah Anda yakin ingin memblokir "${user?.Nama ?? "pengguna ini"}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Block!",
-            cancelButtonText: "Cancel",
+            confirmButtonText: lang ? "Block!" : "Blok",
+            cancelButtonText: lang ? "Cancel" : "Batal",
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.post("http://localhost:8080/changeStatusUser", { "Id": userId, "Status": user.Status });
 
                     MySwal.fire({
-                        title: "Success!",
-                        text: `${user.Nama} has been block.`,
+                        title: lang ? "Success!" : "Berhasil!",
+                        text: lang ? `${user.Nama} has been block.` : `${user.Nama} telah diblokir.`,
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
@@ -283,8 +293,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                     fetchUser();
                 } catch (err) {
                     MySwal.fire({
-                        title: "Error!",
-                        text: `${user.Nama} Error block : ${err}.`,
+                        title: lang ? "Error!" : "Kesalahan!",
+                        text: lang ? `${user.Nama} Error Block : ${err}.` : `${user.Nama} Gagal Memblokir : ${err}.`,
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
@@ -304,25 +314,25 @@ const TableUser = ({ users, loading, fetchUser }) => {
             maxWidth: "80px",
         },
         {
-            name: "Name",
+            name: lang ? "Name" : "Nama",
             selector: row => row.Nama,
             sortable: true,
             wrap: true
         },
         {
-            name: "Role",
+            name: lang ? "Role" : "Hak Akses",
             selector: row => row.RoleName,
             sortable: true,
         },
         {
-            name: "Created At",
-            selector: row => formatTanggal(row.AddTime, "en-US"),
+            name: lang ? "Created At" : "Dibuat Pada",
+            selector: row => formatTanggal(row.AddTime, lang ? "en-US" : "id-ID"),
             sortable: true,
             maxWidth: "200px",
             wrap: true
         },
         {
-            name: "Action",
+            name: lang ? "Action" : "Aksi",
             cell: row => (
                 <div className="flex gap-2">
                     {/* Edit */}
@@ -337,7 +347,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
                             shadow-sm
                         `}
                     >
-                        Edit
+                        {lang ? "Edit" : "Ubah"}
                     </button>
 
                     {/* Delete */}
@@ -352,14 +362,14 @@ const TableUser = ({ users, loading, fetchUser }) => {
                             shadow-sm
                         `}
                     >
-                        Delete
+                        {lang ? "Delete" : "Hapus"}
                     </button>
 
                     {/* Activate / Deactivate */}
                     {row.Status === "Active" ? (
                         <button
                             onClick={() => handleDeactivate(row.ID)}
-                            style={{ width: sizeButtonAcDeac[valButtonSize] }}
+                            style={{ width: buttonWidth }}
                             className={`
                                 ${actionBtnBase}
                                 text-white
@@ -369,12 +379,12 @@ const TableUser = ({ users, loading, fetchUser }) => {
                                 shadow-sm
                             `}
                         >
-                            Deactivate
+                            {lang ? "Deactivate" : "Nonaktifkan"}
                         </button>
                     ) : (
                         <button
                             onClick={() => handleActivate(row.ID)}
-                            style={{ width: sizeButtonAcDeac[valButtonSize] }}
+                            style={{ width: buttonWidth }}
                             className={`
                                 ${actionBtnBase}
                                 text-white
@@ -384,7 +394,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
                                 shadow-sm
                             `}
                         >
-                            Activate
+                            {lang ? "Activate" : "Aktifkan"}
                         </button>
                     )}
                 </div>
@@ -413,7 +423,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         ${dark ? "text-gray-100" : "text-gray-800"}
                     `}
                     >
-                        User List
+                        {lang ? "User List" : "Daftar Pengguna"}
                     </h1>
 
                     <button
@@ -431,7 +441,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         ${sizeText[valButtonSize] || "text-sm"}
                     `}
                     >
-                        Add User
+                        {lang ? "Add User" : "Tambah Pengguna"}
                     </button>
                 </div>
 
@@ -451,7 +461,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         highlightOnHover
                         customStyles={customStyles}
                         noDataComponent={
-                            <NoData dark={dark} valButtonSize={valButtonSize} />
+                            <NoData dark={dark} valButtonSize={valButtonSize} lang={lang} />
                         }
                     />
                 </div>

@@ -11,7 +11,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
     // const [phoneNumber, setPhoneNumber] = useState("");
     const [role, setRole] = useState(0);
     const MySwal = withReactContent(Swal);
-    const { valButtonSize, dark } = useOutletContext();
+    const { valButtonSize, dark, lang } = useOutletContext();
 
     const sizeText = {
         small: "text-sm",
@@ -52,8 +52,8 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                 }
             );
             MySwal.fire({
-                title: "Added!",
-                text: `${nama} has been edited.`,
+                title: lang ? "Edited!" : "Data Berhasil Diubah!",
+                text: lang ? `${nama} has been edited.` : `${nama} berhasil diubah.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -63,8 +63,8 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
         } catch (err) {
             console.log("Backend error:", err.response.data);
             MySwal.fire({
-                title: "Error!",
-                text: `Error Add : ${err.response.data.error}.`,
+                title: lang ? "Error!" : "Kesalahan!",
+                text: lang ? `Error Edit : ${err.response.data.error}.` : `Gagal Mengubah : ${err.response.data.error}.`,
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
@@ -117,10 +117,10 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                 {/* HEADER */}
                 <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
                     <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-lg"}`}>
-                        Edit User
+                        {lang ? "Edit User" : "Ubah Pengguna"}
                     </h2>
                     <p className="text-sm text-gray-400 mt-1">
-                        Update user information and role
+                        {lang ? "Update user information and role" : "Perbarui informasi dan hak akses pengguna"}
                     </p>
                 </div>
 
@@ -152,7 +152,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                         <div className="relative shadow-lg">
                             <input
                                 type="text"
-                                placeholder="Full Name"
+                                placeholder={lang ? "Full Name" : "Nama Lengkap"}
                                 value={nama}
                                 onChange={(e) => setNama(e.target.value)}
                                 className={`
@@ -171,7 +171,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                         <div className="relative shadow-lg">
                             <input
                                 type="text"
-                                placeholder="Email Address"
+                                placeholder={lang ? "Email Address" : "Alamat Email"}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 readOnly
@@ -253,7 +253,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                                 ${sizeText[valButtonSize] || "text-base"}
                             `}
                         >
-                            Edit User
+                            {lang ? "Edit User" : "Ubah Pengguna"}
                         </button>
                     </div>
                 </form>
@@ -269,7 +269,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                                 : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
                             `}
                     >
-                        Cancel
+                        {lang ? "Cancel" : "Batal"}
                     </button>
                 </div>
             </div>

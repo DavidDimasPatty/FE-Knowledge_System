@@ -8,7 +8,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
     const [docName, setDocName] = useState("");
     const [file, setFile] = useState(null);
     const MySwal = withReactContent(Swal);
-    const { valButtonSize, dark } = useOutletContext();
+    const { valButtonSize, dark, lang } = useOutletContext();
 
     const sizeText = {
         small: "text-sm",
@@ -43,8 +43,8 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
             });
 
             MySwal.fire({
-                title: "Added!",
-                text: `${docName} has been added.`,
+                title: lang ? "Added!" : "Data Berhasil Ditambahkan!",
+                text: lang ? `${docName} has been added.` : `${docName} berhasil ditambahkan.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -56,8 +56,8 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
             setIsLoading(false)
             console.log("Backend error:", err.response.data);
             MySwal.fire({
-                title: "Error!",
-                text: `Error Add : ${err.response.data.error}.`,
+                title: lang ? "Error!" : "Kesalahan!",
+                text: lang ? `Error Add : ${err.response.data.error}.` : `Gagal Menambahkan : ${err.response.data.error}.`,
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
@@ -90,10 +90,10 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                 {/* HEADER */}
                 <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
                     <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-lg"}`}>
-                        Add Dokumen
+                        {lang ? "Add Document" : "Tambah Dokumen"}
                     </h2>
                     <p className="text-sm text-gray-400 mt-1">
-                        Upload and manage your document files
+                        {lang ? "Upload and manage your document files" : "Unggah dan kelola file dokumen Anda"}
                     </p>
                 </div>
 
@@ -105,7 +105,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                         <div className="relative shadow-lg">
                             <input
                                 type="text"
-                                placeholder="Document Name"
+                                placeholder={lang ? "Document Name" : "Nama Dokumen"}
                                 value={docName}
                                 onChange={(e) => setDocName(e.target.value)}
                                 className={`
@@ -144,12 +144,12 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                                             : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                                 `}
                                 >
-                                    Choose File
+                                    {lang ? "Choose File" : "Pilih File"}
                                 </span>
 
                                 {/* TEXT */}
                                 <span className={`truncate opacity-80 text-sm`}>
-                                    {file ? file.name : "No file chosen"}
+                                    {file ? file.name : lang ? "No file chosen" : "Belum ada file dipilih"}
                                 </span>
 
                                 {/* REAL INPUT */}
@@ -172,7 +172,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                                     : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"}
                                 ${sizeText[valButtonSize] || "text-base"}`}
                         >
-                            Add Dokumen
+                            {lang ? "Add Document" : "Tambah Dokumen"}
                         </button>
                     </div>
                 </form>
@@ -188,7 +188,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                                 : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
                             `}
                     >
-                        Cancel
+                        {lang ? "Cancel" : "Batal"}
                     </button>
                 </div>
 

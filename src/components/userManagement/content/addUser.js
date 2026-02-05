@@ -10,7 +10,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
     // const [phoneNumber, setPhoneNumber] = useState("");
     const [role, setRole] = useState(1);
     const MySwal = withReactContent(Swal);
-    const { valButtonSize, dark } = useOutletContext();
+    const { valButtonSize, dark, lang } = useOutletContext();
 
     const sizeText = {
         small: "text-sm",
@@ -45,8 +45,8 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
             );
             console.log("Success:", res.data);
             MySwal.fire({
-                title: "Added!",
-                text: `${nama} has been added.`,
+                title: lang ? "Added!" : "Pengguna Berhasil Ditambahkan!",
+                text: lang ? `${nama} has been added.` : `${nama} berhasil ditambahkan.`,
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -56,8 +56,8 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
         } catch (err) {
             console.log("Backend error:", err.response.data);
             MySwal.fire({
-                title: "Error!",
-                text: `Error Add : ${err.response.data.error}.`,
+                title: lang ? "Error!" : "Kesalahan!",
+                text: lang ? `Error Add : ${err.response.data.error}.` : `Gagal Menambahkan : ${err.response.data.error}.`,
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
@@ -94,10 +94,10 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                 {/* HEADER */}
                 <div className="px-8 py-6 pt-9 border-b border-gray-200 dark:border-gray-700">
                     <h2 className={`font-semibold ${sizeTextUp[valButtonSize] || "text-lg"}`}>
-                        Add User
+                        {lang ? "Add User" : "Tambah Pengguna"}
                     </h2>
                     <p className="text-sm text-gray-400 mt-1">
-                        Create and manage application users
+                        {lang ? "Create and manage application users" : "Buat dan kelola pengguna aplikasi"}
                     </p>
                 </div>
 
@@ -128,7 +128,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                         <div className="relative shadow-lg">
                             <input
                                 type="text"
-                                placeholder="Full Name"
+                                placeholder={lang ? "Full Name" : "Nama Lengkap"}
                                 value={nama}
                                 onChange={(e) => setNama(e.target.value)}
                                 className={`
@@ -147,7 +147,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                         <div className="relative shadow-lg">
                             <input
                                 type="text"
-                                placeholder="Email Address"
+                                placeholder={lang ? "Email Address" : "Alamat Email"}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className={`
@@ -245,7 +245,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                                 ${sizeText[valButtonSize] || "text-base"}
                         `}
                         >
-                            Add User
+                            {lang ? "Add User" : "Tambah Pengguna"}
                         </button>
                     </div>
                 </form>
@@ -261,7 +261,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                                 : "text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-100"}
                             `}
                     >
-                        Cancel
+                        {lang ? "Cancel" : "Batal"}
                     </button>
                 </div>
             </div>

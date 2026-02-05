@@ -266,8 +266,8 @@ const SideBarLeft =
             } catch (err) {
                 console.log("Backend error:", err.response.data);
                 MySwal.fire({
-                    title: "Error!",
-                    text: `Error Add : ${err.response.data.error}.`,
+                    title: lang ? "Error!" : "Kesalahan!",
+                    text: lang ? `Error Add : ${err.response.data.error}.` : `Gagal Menambahkan : ${err.response.data.error}.`,
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
@@ -457,7 +457,7 @@ const SideBarLeft =
                                 />
                                 <span className={`relative z-10 flex items-center gap-2 ${sizeText[valButtonSize] || "text-base"}`}>
                                     <FiPlus className={`transition-transform duration-300 group-hover:rotate-90 ${sizeText[valButtonSize] || "text-base"}`} />
-                                    Start Chat
+                                    {lang ? "Start Chat" : "Mulai Obrolan"}
                                 </span>
                             </button>
                         )}
@@ -508,7 +508,7 @@ const SideBarLeft =
                                 onClick={() => navigate("/dokumen", { state: { valButtonSize: valButtonSize } })}
                             >
                                 <FiDownload />
-                                {!isMinimized && <span>Document Management</span>}
+                                {!isMinimized && <span>{lang ? "Document Management" : "Manajemen Dokumen"}</span>}
                             </button>
                         )}
 
@@ -518,7 +518,7 @@ const SideBarLeft =
                                 onClick={() => navigate("/userManagement")}
                             >
                                 <FiUser />
-                                {!isMinimized && <span>User Management</span>}
+                                {!isMinimized && <span>{lang ? "User Management" : "Manajemen Pengguna"}</span>}
                             </button>
                         )}
 
@@ -526,12 +526,12 @@ const SideBarLeft =
                             <div className="mt-2">
                                 <div className="flex items-center gap-2 mb-2 w-full relative">
                                     <FiArchive />
-                                    <span className={`font-semibold transition-all ${sizeText[valButtonSize] || "text-base"}`}>Topics</span>
+                                    <span className={`font-semibold transition-all ${sizeText[valButtonSize] || "text-base"}`}>{lang ? "Topics" : "Topik"}</span>
 
                                     <div className="relative flex-1">
                                         <input
                                             type="text"
-                                            placeholder="Cari Topik..."
+                                            placeholder={lang ? "Search for topics..." : "Cari topik..."}
                                             value={searchKeyword}
                                             onChange={(e) => setSearchKeyword(e.target.value)}
                                             className={`
@@ -561,7 +561,7 @@ const SideBarLeft =
 
                                 </div>
                                 <div className="flex items-center gap-2 mb-2 ml-2 p-1 border-b">
-                                    <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Saved Topics</span>
+                                    <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>{lang ? "Favorite Topics" : "Topik Favorit"}</span>
                                 </div>
                                 <div className="m-2 space-y-2 custom-scroll" style={{ maxHeight: "150px", overflowY: "auto" }} onScroll={handleScrollFavorite}>
 
@@ -583,7 +583,7 @@ const SideBarLeft =
                                 </div>
 
                                 <div className="flex items-center gap-2 mb-2  ml-2 p-1 border-b ">
-                                    <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>Recents</span>
+                                    <span className={`font-semibold ${sizeText[valButtonSize] || "text-base"}`}>{lang ? "Recents" : "Terbaru"}</span>
                                 </div>
                                 <div
                                     className="m-2 space-y-2 custom-scroll"
@@ -682,6 +682,7 @@ const SideBarLeft =
                                             setLogin(false);
                                             window.location.href = "/";
                                         }}
+                                        lang={lang}
                                     />
                                 </div>
                             )}
@@ -702,7 +703,7 @@ const SideBarLeft =
 
                                 <div className="ml-3">
                                     <div className={`${sizeText[valButtonSize] || "text-base"}`}>
-                                        Halo, <b>{localStorage.getItem("nama")}</b>
+                                        {lang ? "Hallo" : "Halo"}, <b>{localStorage.getItem("nama")}</b>
                                     </div>
                                     <div className={`${sizeText[valButtonSize] || "text-base"}`}>
                                         <b>{localStorage.getItem("roleName")}</b>
@@ -759,6 +760,7 @@ const SideBarLeft =
                                             setLogin(false);
                                             window.location.href = "/";
                                         }}
+                                        lang={lang}
                                     />
                                 </div>
                             )}
@@ -864,7 +866,8 @@ const UserDropdown = ({
     valButtonSize,
     onPassword,
     onSetting,
-    onLogout
+    onLogout,
+    lang
 }) => {
     const sizeText = {
         small: "text-sm",
@@ -899,7 +902,7 @@ const UserDropdown = ({
                 ${dark ? "hover:bg-gray-600" : ""}
                 ${sizeText[valButtonSize] || "text-base"}`}
             >
-                <FiKey /> Edit Password
+                <FiKey /> {lang ? "Edit Password" : "Ubah Kata Sandi"}
             </button>
 
             <button
@@ -908,7 +911,7 @@ const UserDropdown = ({
                 ${dark ? "hover:bg-gray-600" : ""}
                 ${sizeText[valButtonSize] || "text-base"}`}
             >
-                <FiSettings /> Settings
+                <FiSettings /> {lang ? "Settings" : "Pengaturan"}
             </button>
 
             <button

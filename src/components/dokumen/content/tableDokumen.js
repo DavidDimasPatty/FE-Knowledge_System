@@ -14,10 +14,11 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
     const MySwal = withReactContent(Swal);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const { valButtonSize, dark } = useOutletContext();
+    const { valButtonSize, dark, lang } = useOutletContext();
 
     console.log("Font Size:", valButtonSize);
     console.log("Dark Mode:", dark);
+    console.log("Language:", lang);
 
     const sizeText = {
         small: "text-sm",
@@ -172,7 +173,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         </div>
     );
 
-    const NoData = ({ dark, valButtonSize }) => (
+    const NoData = ({ dark, valButtonSize, lang }) => (
         <div
             className={`
             w-full text-center py-6
@@ -180,7 +181,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             ${sizeText[valButtonSize] || "text-base"}
         `}
         >
-            There are no records to display
+            {lang ? "There are no records to display" : "Tidak ada data untuk ditampilkan"}
         </div>
     );
 
@@ -228,11 +229,11 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
     const handleDelete = async (id) => {
         const document = dokumen.find(u => u.ID === id);
         MySwal.fire({
-            title: `Are you sure to delete "${document.Judul}"?`,
+            title: lang ? `Are you sure to delete "${document.Judul}"?` : `Apakah Anda yakin ingin menghapus "${document.Judul}"?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Delete!",
-            cancelButtonText: "Cancel",
+            confirmButtonText: lang ? "Delete!" : "Hapus!",
+            cancelButtonText: lang ? "Cancel" : "Batal",
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -240,8 +241,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                     await axios.post("http://localhost:8080/deleteDokumen", { id });
 
                     MySwal.fire({
-                        title: "Deleted!",
-                        text: `${document.Judul} has been deleted.`,
+                        title: lang ? "Deleted!" : "Dihapus!",
+                        text: lang ? `${document.Judul} has been deleted.` : `${document.Judul}" telah dihapus.`,
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
@@ -251,8 +252,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                 } catch (err) {
                     setIsLoading(false)
                     MySwal.fire({
-                        title: "Error!",
-                        text: `${document.Judul} Error Deleted : ${err}.`,
+                        title: lang ? "Error!" : "Kesalahan!",
+                        text: lang ? `${document.Judul} Error Deleted : ${err}.` : `${document.Judul} Gagal Menghapus : ${err}.`,
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
@@ -272,27 +273,27 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             maxWidth: "80px"
         },
         {
-            name: "Document Name",
+            name: lang ? "Document Name" : "Nama Dokumen",
             selector: row => row.Judul,
             sortable: true,
             wrap: true
         },
         {
-            name: "Created At",
-            selector: row => formatTanggal(row.AddTime, "en-US"),
+            name: lang ? "Created At" : "Dibuat Pada",
+            selector: row => formatTanggal(row.AddTime, lang ? "en-US" : "id-ID"),
             sortable: true,
             maxWidth: "180px",
             wrap: true
         },
         {
-            name: "Created By",
+            name: lang ? "Created By" : "Dibuat Oleh",
             selector: row => row.AddId,
             sortable: true,
             maxWidth: "150px",
             wrap: true
         },
         {
-            name: "Action",
+            name: lang ? "Action" : "Aksi",
             cell: row => (
                 <div className="flex gap-2">
                     {/* Download */}
@@ -307,7 +308,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                             shadow-sm
                         `}
                     >
-                        Download
+                        {lang ? "Download" : "Unduh"}
                     </button>
 
                     {/* Edit */}
@@ -322,7 +323,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                             shadow-sm
                         `}
                     >
-                        Edit
+                        {lang ? "Edit" : "Ubah"}
                     </button>
 
                     {/* Delete */}
@@ -337,7 +338,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                             shadow-sm
                         `}
                     >
-                        Delete
+                        {lang ? "Delete" : "Hapus"}
                     </button>
 
                 </div>
@@ -377,7 +378,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         ${dark ? "text-gray-100" : "text-gray-800"}
                     `}
                     >
-                        Document List
+                        {lang ? "Document List" : "Daftar Dokumen"}
                     </h1>
 
                     <button
@@ -395,7 +396,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         ${sizeText[valButtonSize] || "text-sm"}
                     `}
                     >
-                        Add Dokumen
+                        {lang ? "Add Document" : "Tambah Dokumen"}
                     </button>
                 </div>
 
@@ -414,7 +415,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         highlightOnHover
                         customStyles={customStyles}
                         noDataComponent={
-                            <NoData dark={dark} valButtonSize={valButtonSize} />
+                            <NoData dark={dark} valButtonSize={valButtonSize} lang={lang} />
                         }
                     />
                 </div>
