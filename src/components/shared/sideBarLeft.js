@@ -183,6 +183,7 @@ const SideBarLeft =
                 if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
                     setOpenDropdown(false);
                 }
+
             };
 
             document.addEventListener("mousedown", handleClickOutside);
@@ -229,7 +230,7 @@ const SideBarLeft =
             };
         }, [openDropDown]);
 
- 
+
 
         const fetchFavorite = async (page = 1, search = "") => {
             if (username == null) return;
@@ -850,7 +851,7 @@ const SidebarItem = ({ dark, title, desc, icon, idCategory, idTopic, location, a
                     {icon}
                     <span className={`${sizeText[valButtonSize] || "text-base"}`}>{title}</span>
                 </div>
-                <div className={`ml-2 ${sizeTextDown[valButtonSize] || "text-base"}`}>
+                <div className={`ml-2 ${sizeTextDown[valButtonSize] || "text-base"} ml-6 mt-1`}>
                     {desc}
                 </div>
             </div>

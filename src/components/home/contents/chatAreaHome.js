@@ -19,6 +19,7 @@ import {
 } from "chart.js";
 import { BlockMath, InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
+import { CiLineHeight } from "react-icons/ci";
 const ChatAreaHome = ({ messages, isLoading, bottomRef,
   dark, isFirst, input,
   sendMessage, setInput, handleMic,
@@ -289,16 +290,16 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
             // messages.map((msg, idx) => (
             <div key={idx}
               className={
-                "w-9/12 flex flex-col " +
+                "w-9/12 flex flex-col" +
                 (msg.role === "user" ? "items-end" : "items-start")
               } >
 
 
 
-              <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-3`}>
+              <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-7`}>
 
                 {msg.role == "user" &&
-                  <div className="flex items-end justify-center mr-1">
+                  <div className="flex items-end justify-center mr-1 mb-5">
                     <div
                       // onClick={() => setOpenDropdown(!openDropDown)}
                       className={
@@ -346,10 +347,10 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                           <></>
                         ) : (
                           <div className="flex justify-start ml-10">
-                            <span className={`text-base italic 
+                            <span className={`text-base 
                          text-blue-600 dark:text-gray-400 
                          ml-2 mb-2 ${sizeText[valButtonSize] || "text-base"}`} style={{ letterSpacing: "2px" }}>
-                              AI Ikodora
+                              ● AI Ikodora
                             </span>
                           </div>
                         )
@@ -358,7 +359,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                         className={
                           [
                             "break-words whitespace-pre-wrap  leading-relaxed text-justify",
-                            "py-3  transition-transform transform prose prose-sm [&>p]:-my-3",
+                            "py-3  transition-transform transform prose prose-sm [&>p]:-my-3 mb-3",
 
                             sizeText[valButtonSize] || "text-base",
                             msg.role === "user"
@@ -380,25 +381,25 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                                 remarkPlugins={[remarkGfm]}
                                 components={{
                                   p: ({ children }) => (
-                                    <p className="my-1 leading-snug">
+                                    <p className="my-1 mt-2 leading-loose" style={{ CiLineHeight: "5px" }}>
                                       {children}
                                     </p>
                                   ),
 
                                   ol: ({ children }) => (
-                                    <ol className="list-decimal pl-5 -my-7 space-y-1">
+                                    <ol className="list-decimal pl-5 -my-4">
                                       {children}
                                     </ol>
                                   ),
 
                                   ul: ({ children }) => (
-                                    <ul className="list-disc pl-5 -my-7 space-y-1">
+                                    <ul className="list-disc pl-5 -my-4">
                                       {children}
                                     </ul>
                                   ),
 
                                   li: ({ children }) => (
-                                    <li className="leading-snug">
+                                    <li className="leading-loose ml-6 -my-1">
                                       {children}
                                     </li>
                                   ),
@@ -439,9 +440,9 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                       </div>
                     </>
                   )}
-                  {msg.role != "user" &&
-                    <div className="w-full border-b border-gray-300 mt-5" ></div>
-                  }
+                  {/* {msg.role != "user" && */}
+                  <div className="w-full border-b border-gray-300 mt-5" ></div>
+                  {/* } */}
                 </div>
 
               </div>
@@ -492,12 +493,12 @@ function DataTable({ table, dark }) {
   return (
     <div className="my-4 overflow-x-auto">
       {table.title && (
-        <div className={`mb-2 font-semibold text-sm dark:text-gray-300 ${dark ? " bg-gray-900" : ""}`}>
+        <div className={`mt-3 text-center mb-3 font-semibold text-sm dark:text-gray-300 ${dark ? " bg-gray-900" : ""}`}>
           {table.title}
         </div>
       )}
 
-      <table className="min-w-full border border-gray-300 dark:border-gray-600 text-sm">
+      <table className="min-w-full border border-gray-300 dark:border-gray-600 text-sm mb-6">
         <thead className="bg-blue-500">
           <tr>
             {table.columns.map((col, i) => (
@@ -632,7 +633,7 @@ function ChartBlock({ chart, dark }) {
   };
 
   return (
-    <div className="my-6">
+    <div className="my-6 mb-10">
       {chart.title && (
         <div className={`mb-3 text-center font-semibold text-sm
                         ${dark ? "text-white" : " text-gray-700"}`}>
