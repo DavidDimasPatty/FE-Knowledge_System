@@ -108,18 +108,18 @@ const SettingModal = (
                         <button
                             onClick={() => setDark(!dark)}
                             className={`relative w-16 h-8 rounded-full transition-colors duration-300 shadow-lg
-        ${dark
+                                ${dark
                                     ? "bg-gray-700"
-                                    : "bg-gradient-to-r from-blue-500 to-sky-500"}
-    `}
+                                    : "bg-gradient-to-r from-blue-500 to-indigo-500"}
+                            `}
                         >
                             {/* Sun */}
                             <span
                                 className={`
-            absolute left-2 top-1/2 -translate-y-1/2
-            transition-opacity duration-300
-            ${dark ? "opacity-0" : "opacity-100"}
-        `}
+                                    absolute left-2 top-1/2 -translate-y-1/2
+                                    transition-opacity duration-300
+                                    ${dark ? "opacity-0" : "opacity-100"}
+                                `}
                             >
                                 ☀️
                             </span>
@@ -127,10 +127,10 @@ const SettingModal = (
                             {/* Moon */}
                             <span
                                 className={`
-            absolute right-2 top-1/2 -translate-y-1/2
-            transition-opacity duration-300
-            ${dark ? "opacity-100" : "opacity-0"}
-        `}
+                                    absolute right-2 top-1/2 -translate-y-1/2
+                                    transition-opacity duration-300
+                                    ${dark ? "opacity-100" : "opacity-0"}
+                                `}
                             >
                                 🌙
                             </span>
@@ -138,11 +138,11 @@ const SettingModal = (
                             {/* Toggle knob */}
                             <div
                                 className={`
-            absolute top-1/2 left-1 -translate-y-1/2
-            w-6 h-6 bg-white rounded-full shadow-md
-            transition-transform duration-300 ease-in-out
-            ${dark ? "translate-x-0" : "translate-x-8"}
-        `}
+                                    absolute top-1/2 left-1 -translate-y-1/2
+                                    w-6 h-6 bg-white rounded-full shadow-md
+                                    transition-transform duration-300 ease-in-out
+                                    ${dark ? "translate-x-0" : "translate-x-8"}
+                                `}
                             />
                         </button>
 
@@ -161,7 +161,7 @@ const SettingModal = (
                             </div>
                         </div>
 
-                        <button
+                        {/* <button
                             onClick={() => setLang(!lang)}
                             className={`
                                 relative w-16 h-8 rounded-full p-1
@@ -170,7 +170,6 @@ const SettingModal = (
                                 bg-white shadow-lg
                             `}
                         >
-                            {/* BACKGROUND IMAGE */}
                             <div
                                 className="absolute inset-0 rounded-full transition-all duration-300"
                                 style={{
@@ -180,7 +179,6 @@ const SettingModal = (
                                 }}
                             ></div>
 
-                            {/* TOGGLE KNOB */}
                             <div
                                 className={`
                                     absolute top-1 left-1
@@ -189,6 +187,42 @@ const SettingModal = (
                                     ${lang ? "translate-x-8" : "translate-x-0"}
                                     `}
                             ></div>
+                        </button> */}
+
+                        <button
+                            onClick={() => setLang(!lang)}
+                            className={`
+                                relative w-16 h-8 rounded-full p-1
+                                overflow-hidden
+                                transition-colors duration-300
+                                shadow-lg
+                                ${lang
+                                    ? dark ? "bg-gradient-to-r from-blue-600 to-indigo-800" : "bg-gradient-to-r from-blue-500 to-indigo-500"
+                                    : dark ? "bg-gradient-to-r from-red-600 to-pink-800" : "bg-gradient-to-r from-red-500 to-pink-500"}
+                            `}
+                        >
+                            {/* LABEL */}
+                            <span
+                                className={`
+                                    absolute inset-0
+                                    flex items-center
+                                    ${lang ? "justify-start pl-3" : "justify-end pr-3"}
+                                    text-xs font-bold text-white
+                                    transition-all duration-300
+                                `}
+                            >
+                                {lang ? "EN" : "ID"}
+                            </span>
+
+                            {/* TOGGLE KNOB */}
+                            <div
+                                className={`
+                                    absolute top-1 left-1
+                                    w-6 h-6 rounded-full bg-white shadow-md
+                                    transition-transform duration-300 ease-in-out
+                                    ${lang ? "translate-x-8" : "translate-x-0"}
+                                `}
+                            />
                         </button>
 
                     </div>
