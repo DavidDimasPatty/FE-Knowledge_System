@@ -65,6 +65,19 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     ? [...messages, { role: "bot", isLoading: true }]
     : messages;
 
+  const [indoQuest, setIndoQuest] = useState("");
+  const [engQuest, setEngQuest] = useState("");
+  const arrIndo = ["Pertanyaan apa hari ini?", "Apa yang ada dalam pikiranmu?",
+    "Ingin memulai obrolan?"
+  ]
+  const arrEng = ["What's the question for today?", "What's on your mind?", "Want to start a new chat?"]
+
+  useEffect(() => {
+    const ranIndex = Math.floor(Math.random() * arrIndo.length)
+    setIndoQuest(arrIndo[ranIndex]);
+    setEngQuest(arrEng[ranIndex]);
+  }, [])
+
   const [thinkingText, setThinkingText] = useState(thinkingTexts[0]);
   const textareaRef = useRef(null);
   const autoResize = (e) => {
@@ -179,9 +192,24 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
       <div className={(dark
         ? " text-white"
         : " text-gray-900") + " flex flex-col items-center justify-center h-full"}>
-
+        {/* 
         <div className={`flex items-center justify-center text-3xl ${sizeTextUp[valButtonSize] || "text-base"} `}>
-          Pertanyaan Apa Hari Ini?
+          {lang ? engQuest : indoQuest}
+        </div> */}
+
+        <div
+          className={`
+         inset-0  flex items-center justify-center
+        transition-opacity duration-1000
+       opacity-100
+      `}
+        >
+          <div className="text-center px-6">
+            <h1 className="text-3xl md:text-3xl font-bold mb-4">
+              <TypingText text={lang ? engQuest : indoQuest} />
+              <span className="animate-pulse">|</span>
+            </h1>
+          </div>
         </div>
 
         <div className="flex items-center justify-center w-full mt-4">
@@ -212,7 +240,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                   boxShadow: "0 0px 20px rgba(0,0,0,0.2)",
                   zIndex: 50,
                 }}
-                placeholder="Ketik pesan atau gunakan voice..."
+                placeholder={lang ? "Type a message or use voice..." : "Ketik pesan atau gunakan voice..."}
                 value={input}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -415,7 +443,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                           }
 
                           if (seg.type === "table-loading") {
-                            return <TableSkeleton key={i} dark={dark} />;
+                            return <TableSkeleton key={i} dark={dark} lang={lang} />;
                           }
 
                           if (seg.type === "chartjs") {
@@ -423,7 +451,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                           }
 
                           if (seg.type === "chart-loading") {
-                            return <ChartSkeleton key={i} />;
+                            return <ChartSkeleton key={i} lang={lang} />;
                           }
 
                           if (seg.type === "latex") {
@@ -431,7 +459,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                           }
 
                           if (seg.type === "latex-loading") {
-                            return <LatexSkeleton key={i} />;
+                            return <LatexSkeleton key={i} lang={lang} />;
                           }
 
                           return null;
@@ -440,9 +468,17 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
                       </div>
                     </>
                   )}
-                  {/* {msg.role != "user" && */}
-                  <div className="w-full border-b border-gray-300 mt-5" ></div>
-                  {/* } */}
+                  {msg.role != "user" &&
+                    <div className="w-full border-b border-gray-300 mt-5" ></div>
+                  }
+                  {msg.role === "user" && (
+                    <div className="w-full mt-5 h-px 
+                  bg-gradient-to-r 
+                  from-transparent 
+                  via-gray-400/70 
+                  to-transparent"
+                    />
+                  )}
                 </div>
 
               </div>
@@ -533,7 +569,7 @@ function DataTable({ table, dark }) {
   );
 }
 
-function TableSkeleton({ dark }) {
+function TableSkeleton({ dark, lang }) {
   return (
     <div
       className={`mt-4 w-4/5 rounded-xl border p-4 animate-pulse
@@ -558,7 +594,7 @@ function TableSkeleton({ dark }) {
       ))}
 
       <div className="mt-3 text-xs italic text-gray-500">
-        AI sedang menyusun tabel…
+        {lang ? "AI creating table, please wait...." : "AI membuat tabel, mohon tunggu...."}
       </div>
     </div>
   );
@@ -663,7 +699,7 @@ function ChartBlock({ chart, dark }) {
   );
 }
 
-function ChartSkeleton({ dark }) {
+function ChartSkeleton({ dark, lang }) {
   return (
     <div
       className={`mt-4 w-4/5 rounded-xl border p-4 animate-pulse
@@ -680,7 +716,7 @@ function ChartSkeleton({ dark }) {
       ></div>
 
       <div className="mt-3 text-xs italic text-gray-500">
-        AI sedang menyusun chart…
+        {lang ? "AI creating chart, please wait...." : "AI membuat grafik, mohon tunggu...."}
       </div>
     </div>
   );
@@ -694,7 +730,7 @@ function LatexBlock({ latex }) {
   );
 }
 
-function LatexSkeleton({ dark }) {
+function LatexSkeleton({ dark, lang }) {
   return (
     <div
       className={`mt-4 w-3/5 rounded-xl border p-4 animate-pulse
@@ -709,9 +745,27 @@ function LatexSkeleton({ dark }) {
       ></div>
 
       <div className="mt-3 text-xs italic text-gray-500">
-        AI sedang menyusun rumus…
+        {lang ? "AI creating formula, please wait...." : "AI membuat rumus, mohon tunggu...."}
       </div>
     </div>
   );
+}
+
+function TypingText({ text, speed = 80 }) {
+  const [displayedText, setDisplayedText] = useState("");
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (index < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + text[index]);
+        setIndex(index + 1);
+      }, speed);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [index, text, speed]);
+
+  return <>{displayedText}</>;
 }
 export default ChatAreaHome;
