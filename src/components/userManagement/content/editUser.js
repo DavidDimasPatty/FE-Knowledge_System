@@ -41,7 +41,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8080/editUser",
+            await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/editUser`,
                 {
                     "id": idUser,
                     "nama": nama,
@@ -76,7 +76,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
 
     const fetchEditUser = async () => {
         try {
-            const res = await axios.get("http://localhost:8080/editUserGet?id=" + idUser);
+            const res = await axios.get(`${process.env.REACT_APP_BE_BASE_URL}/editUserGet?id=` + idUser);
             console.log(res.data.data)
             setUsername(res.data.data.Username);
             setEmail(res.data.data.Email);

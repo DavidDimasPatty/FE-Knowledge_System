@@ -31,7 +31,7 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
 
     const fetchEditDokumen = async () => {
         try {
-            const res = await axios.get("http://localhost:8080/editDokumenGet?id=" + idDokumen);
+            const res = await axios.get(`${process.env.REACT_APP_BE_BASE_URL}/editDokumenGet?id=` + idDokumen);
             console.log(res.data.data)
             setDocName(res.data.data.Judul);
             setDocLink(res.data.data.Link);
@@ -59,7 +59,7 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
         formData.append("updId", "David");
         try {
             setIsLoading(true)
-            const res = await fetch("http://localhost:8080/editDokumen", {
+            const res = await fetch(`${process.env.REACT_APP_BE_BASE_URL}/editDokumen`, {
                 method: "POST",
                 body: formData,
             });

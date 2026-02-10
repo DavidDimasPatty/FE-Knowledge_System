@@ -43,7 +43,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
             return;
         }
 
-        axios.get("http://localhost:8080/validateResetToken", {
+        axios.get(`${process.env.REACT_APP_BE_BASE_URL}/validateResetToken`, {
             params: { token }
         })
             .then(() => setCheckingToken(false))
@@ -104,7 +104,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
 
         try {
             setLoading(true);
-            await axios.post("http://localhost:8080/resetPassword", { token, newPassword });
+            await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/resetPassword`, { token, newPassword });
 
             MySwal.fire({
                 title: "Success!",

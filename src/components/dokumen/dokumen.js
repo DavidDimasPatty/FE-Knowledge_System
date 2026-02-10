@@ -6,7 +6,7 @@ const Dokumen = () => {
     const [loading, setLoading] = useState(true);
     const fetchDokumen = async () => {
         try {
-            const res = await axios.get("http://localhost:8080/getAllDokumen");
+            const res = await axios.get(`${process.env.REACT_APP_BE_BASE_URL}/getAllDokumen`);
             console.log(res.data.dokumen.data)
             setDokumen(res.data.dokumen.data);
         } catch (err) {

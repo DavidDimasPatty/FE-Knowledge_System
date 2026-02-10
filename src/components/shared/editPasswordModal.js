@@ -81,7 +81,7 @@ const EditPasswordModal = (
         }
 
         try {
-            const response = await axios.post("http://localhost:8080/editPassword", {
+            const response = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/editPassword`, {
                 Username: username,
                 NewPassword: newPassword,
                 OldPassword: oldPassword

@@ -37,7 +37,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
         formData.append("addId", "David");
         try {
             setIsLoading(true)
-            const res = await fetch("http://localhost:8080/addDokumen", {
+            const res = await fetch(`${process.env.REACT_APP_BE_BASE_URL}/addDokumen`, {
                 method: "POST",
                 body: formData,
             });

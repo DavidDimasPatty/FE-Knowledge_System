@@ -70,7 +70,7 @@ const Home = () => {
       const username = localStorage.getItem("username");
       setIsLoading(true);
       const res = await fetch(
-        `http://localhost:8080/?topic=${topic}&category=${category}&username=${username}`
+        `${process.env.REACT_APP_BE_BASE_URL}/?topic=${topic}&category=${category}&username=${username}`
       );
       const data = await res.json();
       console.log(data)
@@ -126,7 +126,7 @@ const Home = () => {
       role: roleName
     });
 
-    const ws = new WebSocket("ws://localhost:8080/ws?" + query.toString());
+    const ws = new WebSocket(`${process.env.REACT_APP_WS_BASE_URL}/ws?` + query.toString());
     socketRef.current = ws;
     ws.onopen = () => console.log("WS Connected");
 

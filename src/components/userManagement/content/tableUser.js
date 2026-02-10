@@ -211,7 +211,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.post("http://localhost:8080/deleteUser", { "Id": userId });
+                    await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/deleteUser`, { "Id": userId });
 
                     MySwal.fire({
                         title: lang ? "Deleted!" : "Dihapus!",
@@ -249,7 +249,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.post("http://localhost:8080/changeStatusUser", { "Id": userId, "Status": user.Status });
+                    await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/changeStatusUser`, { "Id": userId, "Status": user.Status });
 
                     MySwal.fire({
                         title: lang ? "Success!" : "Berhasil!",
@@ -287,7 +287,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.post("http://localhost:8080/changeStatusUser", { "Id": userId, "Status": user.Status });
+                    await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/changeStatusUser`, { "Id": userId, "Status": user.Status });
 
                     MySwal.fire({
                         title: lang ? "Success!" : "Berhasil!",

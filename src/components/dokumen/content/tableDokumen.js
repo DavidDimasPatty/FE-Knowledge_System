@@ -189,7 +189,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
         try {
             setIsLoading(true)
             const response = await axios.post(
-                "http://localhost:8080/downloadDokumen",
+                `${process.env.REACT_APP_BE_BASE_URL}/downloadDokumen`,
                 { id },
                 {
                     responseType: "blob",
@@ -240,7 +240,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             if (result.isConfirmed) {
                 try {
                     setIsLoading(true)
-                    await axios.post("http://localhost:8080/deleteDokumen", { id });
+                    await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/deleteDokumen`, { id });
 
                     MySwal.fire({
                         title: lang ? "Deleted!" : "Dihapus!",

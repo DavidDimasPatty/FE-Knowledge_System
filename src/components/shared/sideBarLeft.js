@@ -121,7 +121,7 @@ const SideBarLeft =
             if (loading) return;
             setLoading(true);
             const res = await axios.get(
-                `http://localhost:8080/getAllCategoryUser`, {
+                `${process.env.REACT_APP_BE_BASE_URL}/getAllCategoryUser`, {
                 params: {
                     username,
                     page,
@@ -238,7 +238,7 @@ const SideBarLeft =
             if (loadingFavorite) return;
             setLoadingFavorite(true);
 
-            const res = await axios.get(`http://localhost:8080/getAllTopicUser`, {
+            const res = await axios.get(`${process.env.REACT_APP_BE_BASE_URL}/getAllTopicUser`, {
                 params: { username, isFavorite: true, page, limit: limit, search }
             });
 
@@ -253,7 +253,7 @@ const SideBarLeft =
 
         const handleFavoriteTopic = async (idTopic, like) => {
             try {
-                var res = await axios.post("http://localhost:8080/editFavTopic",
+                var res = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/editFavTopic`,
                     {
                         "idTopic": idTopic,
                         "username": username,
@@ -281,7 +281,7 @@ const SideBarLeft =
             if (loadingNonFavorite) return;
             setLoadingNonFavorite(true);
             const res = await axios.get(
-                `http://localhost:8080/getAllTopicUser`, {
+                `${process.env.REACT_APP_BE_BASE_URL}/getAllTopicUser`, {
                 params: {
                     username,
                     isFavorite: false,

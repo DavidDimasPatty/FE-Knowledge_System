@@ -8,7 +8,7 @@ const UserManagement = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get("http://localhost:8080/getAllUser");
+            const res = await axios.get(`${process.env.REACT_APP_BE_BASE_URL}/getAllUser`);
             console.log(res.data.user.data)
             setUsers(res.data.user.data);
         } catch (err) {

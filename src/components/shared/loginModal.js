@@ -46,7 +46,7 @@ const LoginModal = (
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:8080/login", {
+            const response = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/login`, {
                 username: username,
                 password: password,
             });
@@ -100,7 +100,7 @@ const LoginModal = (
         setLoading(true);
 
         try {
-            const response = await axios.post("http://localhost:8080/sendEmailResetPassword", {
+            const response = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/sendEmailResetPassword`, {
                 email: email,
             });
 

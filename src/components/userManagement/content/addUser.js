@@ -33,7 +33,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            var res = await axios.post("http://localhost:8080/addUser",
+            var res = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/addUser`,
                 {
                     "nama": nama,
                     "username": username,

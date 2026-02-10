@@ -44,7 +44,7 @@ const SideBarRight = ({ dark }) => {
         if (loadingFavorite) return;
         setLoadingFavorite(true);
 
-        const res = await axios.get(`http://localhost:8080/getAllTopicUser`, {
+        const res = await axios.get(`${process.env.REACT_APP_BE_BASE_URL}/getAllTopicUser`, {
             params: { username, isFavorite: true, page, limit: limit, search }
         });
 
@@ -60,7 +60,7 @@ const SideBarRight = ({ dark }) => {
     const handleFavoriteTopic = async (idTopic, like) => {
         // e.preventDefault();
         try {
-            var res = await axios.post("http://localhost:8080/editFavTopic",
+            var res = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/editFavTopic`,
                 {
                     "idTopic": idTopic,
                     "username": username,
@@ -89,7 +89,7 @@ const SideBarRight = ({ dark }) => {
         if (loadingNonFavorite) return;
         setLoadingNonFavorite(true);
         const res = await axios.get(
-            `http://localhost:8080/getAllTopicUser`, {
+            `${process.env.REACT_APP_BE_BASE_URL}/getAllTopicUser`, {
             params: {
                 username,
                 isFavorite: false,
