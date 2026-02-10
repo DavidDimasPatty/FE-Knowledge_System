@@ -234,6 +234,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
             showCancelButton: true,
             confirmButtonText: lang ? "Delete!" : "Hapus!",
             cancelButtonText: lang ? "Cancel" : "Batal",
+
+            background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -245,7 +247,8 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         text: lang ? `${document.Judul} has been deleted.` : `${document.Judul}" telah dihapus.`,
                         icon: "success",
                         timer: 1500,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
                     });
                     fetchDokumen();
                     setIsLoading(false)
@@ -257,6 +260,7 @@ const TableDokumen = ({ dokumen, loading, fetchDokumen }) => {
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
                     });
                 }
             }

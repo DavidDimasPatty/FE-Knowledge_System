@@ -47,7 +47,8 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                 text: lang ? `${docName} has been added.` : `${docName} berhasil ditambahkan.`,
                 icon: "success",
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             fetchDokumen();
             onClose();
@@ -61,6 +62,7 @@ const AddDokumen = ({ isOpen, onClose, fetchDokumen, isLoading, setIsLoading }) 
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
     };

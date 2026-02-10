@@ -49,7 +49,8 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                 text: lang ? `${nama} has been added.` : `${nama} berhasil ditambahkan.`,
                 icon: "success",
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             fetchUser();
             onClose();
@@ -61,6 +62,7 @@ const AddUser = ({ isOpen, onClose, fetchUser }) => {
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
     };

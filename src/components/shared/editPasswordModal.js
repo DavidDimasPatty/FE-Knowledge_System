@@ -29,6 +29,7 @@ const EditPasswordModal = (
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             return null;
         }
@@ -74,6 +75,7 @@ const EditPasswordModal = (
                 icon: "error",
                 timer: 2000,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             return;
         }
@@ -92,7 +94,8 @@ const EditPasswordModal = (
                 text: lang ? `Password Updated Successfully.` : `Kata sandi berhasil diperbarui.`,
                 icon: "success",
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             onClose();
 
@@ -106,6 +109,7 @@ const EditPasswordModal = (
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
+                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
                 });
             } else {
                 MySwal.fire({
@@ -114,6 +118,7 @@ const EditPasswordModal = (
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
+                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
                 });
             }
         }

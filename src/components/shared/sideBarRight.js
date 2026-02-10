@@ -20,7 +20,7 @@ const SideBarRight = ({ dark }) => {
     const [limit, setLimit] = useState(20);
     const navigate = useNavigate();
     const username = localStorage.getItem("username");
-    
+
 
     useEffect(() => {
         fetchFavorite(1);
@@ -78,6 +78,7 @@ const SideBarRight = ({ dark }) => {
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
     };
@@ -203,7 +204,7 @@ const SideBarRight = ({ dark }) => {
                         <SidebarItem
                             key={item.ID}
                             dark={dark}
-                            icon={<div onClick={()=>handleFavoriteTopic(item.ID, 0)}><BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} /></div>}
+                            icon={<div onClick={() => handleFavoriteTopic(item.ID, 0)}><BsFillStarFill style={{ color: "yellow", stroke: "black", strokeWidth: "0.6px" }} /></div>}
                             title={item.Topic}
                             desc={item.Desctription}
                             idCategory={item.IdCategories}
@@ -220,7 +221,7 @@ const SideBarRight = ({ dark }) => {
                         <SidebarItem
                             key={item.ID}
                             dark={dark}
-                            icon={<div onClick={()=>handleFavoriteTopic(item.ID, 1)}><FiStar /></div>}
+                            icon={<div onClick={() => handleFavoriteTopic(item.ID, 1)}><FiStar /></div>}
                             title={item.Topic}
                             desc={item.Desctription}
                             idCategory={item.IdCategories}

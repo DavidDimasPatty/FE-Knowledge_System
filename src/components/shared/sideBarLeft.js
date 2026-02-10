@@ -271,6 +271,7 @@ const SideBarLeft =
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
+                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
                 });
             }
         };

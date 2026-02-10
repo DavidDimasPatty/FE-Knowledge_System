@@ -206,7 +206,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
         >
           <div className="text-center px-6">
             <h1 className="text-3xl md:text-3xl font-bold mb-4">
-              <TypingText text={lang ? engQuest : indoQuest} />
+              <TypingText key={lang} text={lang ? engQuest : indoQuest} />
               <span className="animate-pulse">|</span>
             </h1>
           </div>

@@ -38,6 +38,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                 title: "Error",
                 text: "Token not found.",
                 icon: "error",
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             }).then(() => navigate("/"));
             return;
         }
@@ -51,6 +52,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                     title: "Error",
                     text: error.response?.data?.error || "The password reset link is invalid or has already been used.",
                     icon: "error",
+                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
                 }).then(() => navigate("/"));
             });
     }, [token]);
@@ -67,6 +69,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
 
@@ -95,6 +98,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                 icon: "error",
                 timer: 2000,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
 
@@ -108,6 +112,8 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+
             });
 
             setTimeout(() => navigate("/"), 1500);
@@ -116,6 +122,7 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                 title: "Error!",
                 text: error.response?.data?.error || "Failed to reset password.",
                 icon: "error",
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         } finally {
             setLoading(false);
@@ -202,12 +209,12 @@ const ResetPassword = ({ dark = false, valButtonSize = "medium" }) => {
                 <div className="px-8 py-5 border-t border-gray-200 dark:border-gray-700 text-center">
                     <div className="flex items-center justify-center">
                         <button
-                                type="button"
-                                onClick={() => navigate("/")}
-                                className="text-sm text-blue-500 hover:underline"
-                            >
-                                Back to <b>Log In</b>
-                            </button>
+                            type="button"
+                            onClick={() => navigate("/")}
+                            className="text-sm text-blue-500 hover:underline"
+                        >
+                            Back to <b>Log In</b>
+                        </button>
                     </div>
                 </div>
             </div>

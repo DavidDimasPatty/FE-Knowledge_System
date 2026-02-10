@@ -43,6 +43,8 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+
             });
         }
     };
@@ -67,7 +69,8 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
                 text: lang ? `${docName} success edited.` : `${docName} berhasil diubah.`,
                 icon: "success",
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             fetchDokumen();
             onClose();
@@ -81,6 +84,7 @@ const EditDokumen = ({ isOpen, onClose, idDokumen, fetchDokumen, loading, setIsL
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
     };

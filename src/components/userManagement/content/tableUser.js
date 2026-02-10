@@ -218,7 +218,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         text: lang ? `${user.Nama} has been deleted.` : `${user.Nama} telah dihapus.`,
                         icon: "success",
                         timer: 1500,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                     });
                     fetchUser();
                 } catch (err) {
@@ -228,6 +229,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black",
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                     });
                 }
             }
@@ -253,7 +256,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         text: lang ? `${user.Nama} has been activated.` : `${user.Nama} telah diaktifkan.`,
                         icon: "success",
                         timer: 1500,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                     });
                     fetchUser();
                 } catch (err) {
@@ -263,6 +267,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                     });
                 }
             }
@@ -278,6 +283,7 @@ const TableUser = ({ users, loading, fetchUser }) => {
             showCancelButton: true,
             confirmButtonText: lang ? "Block!" : "Blok",
             cancelButtonText: lang ? "Cancel" : "Batal",
+            background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -288,7 +294,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         text: lang ? `${user.Nama} has been block.` : `${user.Nama} telah diblokir.`,
                         icon: "success",
                         timer: 1500,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                     });
                     fetchUser();
                 } catch (err) {
@@ -298,6 +305,8 @@ const TableUser = ({ users, loading, fetchUser }) => {
                         icon: "error",
                         timer: 1500,
                         showConfirmButton: false,
+                        background: dark ? "#0F172A" : "white", color: dark ? "white" : "black",
+
                     });
                 }
             }

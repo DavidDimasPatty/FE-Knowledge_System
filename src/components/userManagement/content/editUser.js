@@ -56,7 +56,8 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                 text: lang ? `${nama} has been edited.` : `${nama} berhasil diubah.`,
                 icon: "success",
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
             fetchUser();
             onClose();
@@ -68,6 +69,7 @@ const EditUser = ({ isOpen, onClose, idUser, fetchUser }) => {
                 icon: "error",
                 timer: 1500,
                 showConfirmButton: false,
+                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
             });
         }
     };
