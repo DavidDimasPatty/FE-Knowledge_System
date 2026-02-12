@@ -102,70 +102,6 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     return text;
   };
 
-  function parseMessageSegments(message) {
-    const segments = [];
-
-    const BLOCKS = [
-      { type: "datatable", segment: "table", loading: "table-loading" },
-      { type: "chartjs", segment: "chartjs", loading: "chart-loading" },
-      { type: "latex", segment: "latex", loading: "latex-loading" },
-    ];
-
-    let cursor = 0;
-
-    while (cursor < message.length) {
-      let found = null;
-
-      for (const b of BLOCKS) {
-        const idx = message.indexOf("```" + b.type, cursor);
-        if (idx !== -1 && (!found || idx < found.start)) {
-          found = { ...b, start: idx };
-        }
-      }
-
-      if (!found) {
-        const tail = message.slice(cursor);
-        if (tail.trim()) {
-          segments.push({ type: "text", content: tail });
-        }
-        break;
-      }
-
-      if (found.start > cursor) {
-        segments.push({
-          type: "text",
-          content: message.slice(cursor, found.start),
-        });
-      }
-
-      const blockStart = found.start + ("```" + found.type).length;
-      const blockEnd = message.indexOf("```", blockStart);
-
-      if (blockEnd === -1) {
-        segments.push({ type: found.loading });
-        break;
-      }
-
-      const raw = message.slice(blockStart, blockEnd).trim();
-
-      try {
-        const content =
-          found.type === "latex" ? raw : JSON.parse(raw);
-
-        segments.push({
-          type: found.segment,
-          content,
-        });
-      } catch {
-        segments.push({ type: found.loading });
-      }
-
-      cursor = blockEnd + 3;
-    }
-
-    return segments;
-  }
-
   useEffect(() => {
     if (!isLoading) return;
 
@@ -192,10 +128,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
       <div className={(dark
         ? " text-white"
         : " text-gray-900") + " flex flex-col items-center justify-center h-full"}>
-        {/* 
-        <div className={`flex items-center justify-center text-3xl ${sizeTextUp[valButtonSize] || "text-base"} `}>
-          {lang ? engQuest : indoQuest}
-        </div> */}
+
 
         <div
           className={`
@@ -206,7 +139,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
         >
           <div className="text-center px-6">
             <h1 className={`font-bold mb-4 ${sizeTextUp[valButtonSize] || "text-2xl"}`}>
-              <TypingText key={lang} text={lang ? engQuest : indoQuest}  />
+              <TypingText key={lang} text={lang ? engQuest : indoQuest} />
               <span className="animate-pulse">|</span>
             </h1>
           </div>
@@ -315,214 +248,275 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
       <div className="flex  flex-col overflow-y-auto  m-5 custom-scroll" style={{ maxHeight: "calc(100vh - 170px)", overflow: "auto" }}>
         <div className="flex flex-col items-center">
           {renderedMessages.map((msg, idx) => (
-            // messages.map((msg, idx) => (
-            <div key={idx}
-              className={
-                "w-9/12 flex flex-col" +
-                (msg.role === "user" ? "items-end" : "items-start")
-              } >
 
-
-
-              <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-7`}>
-
-                {msg.role == "user" &&
-                  <div className="flex items-end justify-center mr-1 mb-5">
-                    <div
-                      // onClick={() => setOpenDropdown(!openDropDown)}
-                      className={
-                        " w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
-                      }
-                    >
-                      {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
-                    </div>
-                  </div>
-                }
-
-                <div className="flex-col w-full">
-                  {/* {
-                    msg.role === "user" ? (
-                      <></>
-                    ) : (
-                      <div className="flex justify-start ml-10">
-                        <span className={`text-base italic 
-                         text-blue-600 dark:text-gray-400 
-                         ml-4 mb-2 ${sizeText[valButtonSize] || "text-base"}`} style={{ letterSpacing: "2px" }}>
-                          AI Ikodora
-                        </span>
-                      </div>
-                    )
-                  } */}
-
-                  {msg.isLoading ? (
-                    <div
-                      className={`
-              ml-12 w-fit px-4 py-3 rounded-2xl flex items-center gap-3
-              ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-700"}
-            `}
-                    >
-                      <div className="flex space-x-1">
-                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" />
-                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-150" />
-                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-300" />
-                      </div>
-                      <span className="text-xs">{thinkingText}</span>
-                    </div>
-                  ) : (
-                    <>
-                      {
-                        msg.role === "user" ? (
-                          <></>
-                        ) : (
-                          <div className="flex justify-start ml-10">
-                            <span className={`text-base 
-                         text-blue-600 dark:text-gray-400 
-                         ml-2 mb-2 ${sizeText[valButtonSize] || "text-base"}`} style={{ letterSpacing: "2px" }}>
-                              ● AI Ikodora
-                            </span>
-                          </div>
-                        )
-                      }
-                      < div
-                        className={
-                          [
-                            "break-words whitespace-pre-wrap  leading-relaxed text-justify",
-                            "py-3  transition-transform transform prose prose-sm [&>p]:-my-3 mb-3",
-
-                            sizeText[valButtonSize] || "text-base",
-                            msg.role === "user"
-                              ? " w-4/5  rounded-br-[8px] "
-                              + " rounded-bl-2xl hover:scale-[1.01]  mr-auto self-start"
-                              : (dark
-                                ? "ml-12 w-4/5 bg-gray-900 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
-                                : "ml-12 w-4/5 hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents")
-                          ].join(" ")
-                        }
-                        style={{ wordBreak: "break-word" }}
-                      >
-
-                        {parseMessageSegments(msg.text).map((seg, i) => {
-                          if (seg.type === "text") {
-                            return (
-                              <ReactMarkdown
-                                key={i}
-                                remarkPlugins={[remarkGfm]}
-                                components={{
-                                  p: ({ children }) => (
-                                    <p className="my-1 mt-2 leading-loose" style={{ CiLineHeight: "5px" }}>
-                                      {children}
-                                    </p>
-                                  ),
-
-                                  ol: ({ children }) => (
-                                    <ol className="list-decimal pl-5 -my-4">
-                                      {children}
-                                    </ol>
-                                  ),
-
-                                  ul: ({ children }) => (
-                                    <ul className="list-disc pl-5 -my-4">
-                                      {children}
-                                    </ul>
-                                  ),
-
-                                  li: ({ children }) => (
-                                    <li className="leading-loose ml-6 -my-1">
-                                      {children}
-                                    </li>
-                                  ),
-                                }}
-                              >
-                                {seg.content}
-                              </ReactMarkdown>
-                            );
-                          }
-
-                          if (seg.type === "table") {
-                            return <DataTable key={i} table={seg.content} dark={dark} />;
-                          }
-
-                          if (seg.type === "table-loading") {
-                            return <TableSkeleton key={i} dark={dark} lang={lang} />;
-                          }
-
-                          if (seg.type === "chartjs") {
-                            return <ChartBlock key={i} chart={seg.content} dark={dark} />;
-                          }
-
-                          if (seg.type === "chart-loading") {
-                            return <ChartSkeleton key={i} lang={lang} />;
-                          }
-
-                          if (seg.type === "latex") {
-                            return <LatexBlock key={i} latex={seg.content} />;
-                          }
-
-                          if (seg.type === "latex-loading") {
-                            return <LatexSkeleton key={i} lang={lang} />;
-                          }
-
-                          return null;
-
-                        })}
-                      </div>
-                    </>
-                  )}
-                  {msg.role != "user" &&
-                    <div className="w-full border-b border-gray-300 mt-5" ></div>
-                  }
-                  {msg.role === "user" && (
-                    <div className="w-full mt-5 h-px 
-                  bg-gradient-to-r 
-                  from-transparent 
-                  via-gray-400/70 
-                  to-transparent"
-                    />
-                  )}
-                </div>
-
-              </div>
-            </div>
-            // ))
+            <MessageBubble
+              key={idx}
+              msg={msg}
+              dark={dark}
+              lang={lang}
+              thinkingText={thinkingText}
+              sizeText={sizeText}
+              valButtonSize={valButtonSize}
+              setInput={setInput}
+            />
           ))
           }
         </div>
-        {/* {isLoading && (
-          <div className="w-9/12 flex flex-col items-start mt-2">
-            <div className="
-                ml-8
-                sm:ml-20
-                md:ml-24
-                lg:ml-32
-                xl:ml-60
-                max-w-[80%]
-                w-fit
-              ">
-              <div
-                className={`
-        px-4 py-3 rounded-2xl flex items-center gap-3 
-        shadow-sm 
-        ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-700"}
-      `}
-              >
-                <div className="flex items-center space-x-1">
-                  <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:0ms]" />
-                  <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:200ms]" />
-                  <span className="w-2 h-2 rounded-full bg-gray-500 animate-pulse [animation-delay:400ms]" />
-                </div>
-
-                <span className="text-xs opacity-80 transition-opacity duration-300">
-                  {thinkingText}
-                </span>
-              </div>
-            </div>
-          </div>
-        )} */}
 
         <div ref={bottomRef}></div>
       </div >
 
   )
+}
+
+function MessageBubble({ key, msg, dark, lang, thinkingText, sizeText, valButtonSize, setInput }) {
+  console.log("data")
+  console.log(msg)
+  const segments = React.useMemo(() => {
+    return parseMessageSegments(msg.text ?? "");
+  }, [msg.text]);
+
+  function parseMessageSegments(message) {
+    const segments = [];
+
+    const BLOCKS = [
+      { type: "table", segment: "table", loading: "table-loading" },
+      { type: "chart", segment: "chart", loading: "chart-loading" },
+      { type: "formula", segment: "latex", loading: "latex-loading" },
+      { type: "source", segment: "source" },
+      { type: "follow_up", segment: "follow_up" }
+    ];
+
+    let cursor = 0;
+
+    while (cursor < message.length) {
+      let found = null;
+
+      for (const b of BLOCKS) {
+        const idx = message.indexOf("```" + b.type, cursor);
+        if (idx !== -1 && (!found || idx < found.start)) {
+          found = { ...b, start: idx };
+        }
+      }
+
+      if (!found) {
+        const tail = message.slice(cursor);
+        if (tail.trim()) {
+          segments.push({ type: "text", content: tail });
+        }
+        break;
+      }
+
+      if (found.start > cursor) {
+        segments.push({
+          type: "text",
+          content: message.slice(cursor, found.start),
+        });
+      }
+
+      const blockStart = found.start + ("```" + found.type).length;
+      const blockEnd = message.indexOf("```", blockStart);
+
+      if (blockEnd === -1) {
+        if (found.loading) {
+          segments.push({ type: found.loading });
+        }
+        cursor = message.length;
+        break;
+      }
+
+      const raw = message.slice(blockStart, blockEnd).trim();
+
+      try {
+        const content =
+          found.type === "latex"
+            ? raw
+            : found.type === "source" || found.type === "follow_up"
+              ? raw
+              : JSON.parse(raw);
+
+        segments.push({
+          type: found.segment,
+          content,
+        });
+      } catch {
+        if (found.loading) {
+          segments.push({ type: found.loading });
+        } else {
+          segments.push({ type: found.segment, content: raw });
+        }
+      }
+
+      cursor = blockEnd + 3;
+    }
+
+    return segments;
+  }
+
+  return (
+    // messages.map((msg, idx) => (
+    <div key={key}
+      className={
+        "w-9/12 flex flex-col" +
+        (msg.role === "user" ? "items-end" : "items-start")
+      } >
+
+      <div className={`flex w-full ${msg.role === "user" ? "justify-start space-y-1" : "justify-start"} gap-2 mt-7`}>
+
+        {msg.role == "user" &&
+          <div className="flex items-end justify-center mr-1 mb-5">
+            <div
+              // onClick={() => setOpenDropdown(!openDropDown)}
+              className={
+                " w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-500 text-white"
+              }
+            >
+              {localStorage.getItem("nama")?.charAt(0).toUpperCase()}
+            </div>
+          </div>
+        }
+
+        <div className="flex-col w-full">
+
+          {msg.isLoading ? (
+            <div
+              className={`
+              ml-12 w-fit px-4 py-3 rounded-2xl flex items-center gap-3
+              ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-700"}
+            `}
+            >
+              <div className="flex space-x-1">
+                <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" />
+                <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-150" />
+                <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-300" />
+              </div>
+              <span className="text-xs">{thinkingText}</span>
+            </div>
+          ) : (
+            <>
+              {
+                msg.role === "user" ? (
+                  <></>
+                ) : (
+                  <div className="flex justify-start ml-10">
+                    <span className={`text-base 
+                         text-blue-600 dark:text-gray-400 
+                         ml-2 mb-2 ${sizeText[valButtonSize] || "text-base"}`} style={{ letterSpacing: "2px" }}>
+                      ● AI Ikodora
+                    </span>
+                  </div>
+                )
+              }
+              < div
+                className={
+                  [
+                    "break-words whitespace-pre-wrap  leading-relaxed text-justify",
+                    "py-3  transition-transform transform prose prose-sm [&>p]:-my-3 mb-3",
+
+                    sizeText[valButtonSize] || "text-base",
+                    msg.role === "user"
+                      ? " w-4/5  rounded-br-[8px] "
+                      + " rounded-bl-2xl hover:scale-[1.01]  mr-auto self-start"
+                      : (dark
+                        ? "ml-12 w-4/5 bg-gray-900 text-white hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents"
+                        : "ml-12 w-4/5 hover:scale-[1.01] transition-all duration-200 ease-out will-change-contents")
+                  ].join(" ")
+                }
+                style={{ wordBreak: "break-word" }}
+              >
+
+                {segments.map((seg, i) => {
+                  if (seg.type === "text") {
+                    return (
+                      <ReactMarkdown
+                        key={i}
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({ children }) => (
+                            <p className="my-1 mt-2 leading-loose" style={{ CiLineHeight: "5px" }}>
+                              {children}
+                            </p>
+                          ),
+
+                          ol: ({ children }) => (
+                            <ol className="list-decimal pl-5 -my-4">
+                              {children}
+                            </ol>
+                          ),
+
+                          ul: ({ children }) => (
+                            <ul className="list-disc pl-5 -my-4">
+                              {children}
+                            </ul>
+                          ),
+
+                          li: ({ children }) => (
+                            <li className="leading-loose ml-6 -my-1">
+                              {children}
+                            </li>
+                          ),
+                        }}
+                      >
+                        {seg.content}
+                      </ReactMarkdown>
+                    );
+                  }
+
+                  if (seg.type === "table") {
+                    return <DataTable key={i} table={seg.content} dark={dark} />;
+                  }
+
+                  if (seg.type === "table-loading") {
+                    return <TableSkeleton key={i} dark={dark} lang={lang} />;
+                  }
+
+                  if (seg.type === "chart") {
+                    return <ChartBlock key={i} chart={seg.content} dark={dark} />;
+                  }
+
+                  if (seg.type === "chart-loading") {
+                    return <ChartSkeleton key={i} lang={lang} />;
+                  }
+
+                  if (seg.type === "formula") {
+                    return <LatexBlock key={i} latex={seg.content} />;
+                  }
+
+                  if (seg.type === "latex-loading") {
+                    return <LatexSkeleton key={i} lang={lang} />;
+                  }
+
+                  if (seg.type === "source") {
+                    return <Source key={i} data={seg.content} />;
+                  }
+
+                  if (seg.type === "follow_up") {
+                    return <FollowUp key={i} data={seg.content} onSetMessage={setInput} />;
+                  }
+                  return null;
+
+                })}
+              </div>
+            </>
+          )}
+          {msg.role != "user" &&
+            <div className="w-full border-b border-gray-300 mt-5" ></div>
+          }
+          {msg.role === "user" && (
+            <div className="w-full mt-5 h-px 
+                  bg-gradient-to-r 
+                  from-transparent 
+                  via-gray-400/70 
+                  to-transparent"
+            />
+          )}
+        </div>
+
+      </div>
+    </div>
+    // ))
+  )
+
 }
 
 function DataTable({ table, dark }) {
@@ -622,10 +616,10 @@ function ChartBlock({ chart, dark }) {
   const primaryBlue = colorRef.current;
 
   const data = {
-    labels: chart.labels,
+    labels: chart.title,
     datasets: [
       {
-        label: chart.title,
+        label: chart.labels,
         data: chart.values,
         borderColor: primaryBlue,
         backgroundColor:
@@ -679,10 +673,10 @@ function ChartBlock({ chart, dark }) {
 
       <div
         className={`mx-auto w-full max-w-3xl h-72
-                   rounded-2xl border ${dark ? "bg-gray-500  border-gray-500" : "border-gray-300 bg-white"}
+                   rounded-2xl border 
+                   ${dark ? "bg-gray-500  border-gray-500" : "border-gray-300 bg-white"}
                    shadow-sm p-4
-                   flex items-center justify-center`}
-      >
+                   flex items-center justify-center`}>
         <div className="w-full h-full">
           {chart.type_of_chart === "line" && (
             <Line data={data} options={options} />
@@ -749,6 +743,106 @@ function LatexSkeleton({ dark, lang }) {
       </div>
     </div>
   );
+}
+function Source({ data }) {
+  return (
+    <div className="my-3">
+      <div>Source :</div>
+      <ol className="list-decimal list-inside marker:text-gray-800">
+        <li
+          key={data}
+          className="text-blue-600 underline cursor-pointer hover:text-blue-800"
+          onClick={() => window.open(data, "_blank")}
+        >
+          {data}
+        </li>
+      </ol>
+    </div>
+  );
+}
+
+
+function FollowUp({ data, onSetMessage }) {
+  const dataSplit = splitFollowUps(data)
+
+  return (
+    <div className="my-3">
+      <div>Pertanyaan Tambahan :</div>
+
+      <ul className="list-disc list-inside marker:text-gray-800">
+        {Array.isArray(dataSplit)
+          ? dataSplit.map((item, idx) => (
+            <FollowUpItem
+              key={idx}
+              text={item}
+              idx={idx}
+              onSetMessage={onSetMessage}
+            />
+          ))
+          : (
+            <FollowUpItem
+              text={dataSplit}
+              idx={0}
+              onSetMessage={onSetMessage}
+            />
+          )
+        }
+      </ul>
+    </div>
+  );
+}
+
+
+const FollowUpItem = React.memo(function FollowUpItem({ text, idx, onSetMessage }) {
+  return (
+    <li
+      onClick={() => onSetMessage(text)}
+      className="
+        group flex items-center gap-2
+        text-blue-600 cursor-pointer
+        hover:text-blue-800
+        my-1
+      "
+    >
+      <span className="flex-1">{text}</span>
+
+      {idx === 0 && (
+        <span
+          className="
+            text-[10px]
+            px-2 py-[2px]
+            rounded-full
+            bg-blue-100 text-blue-700
+            border border-blue-300
+            opacity-20
+            group-hover:opacity-100
+            transition-all duration-50
+            animate-pulse
+            select-none
+          "
+        >
+          Click Pertanyaan
+        </span>
+      )}
+    </li>
+  );
+});
+
+function splitFollowUps(followUpString) {
+  if (!followUpString) return [];
+
+  const lines = followUpString
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  const questions = [];
+  lines.forEach(line => {
+    const parts = line.split(/\?+/).map(p => p.trim()).filter(Boolean);
+    parts.forEach(p => questions.push(p + "?"));
+  });
+
+  return questions;
 }
 
 function TypingText({ text, speed = 80 }) {
