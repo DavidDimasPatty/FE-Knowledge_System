@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState,memo } from "react";
 import { FiSend, FiMic, FiHome, FiSettings, FiStar, FiAlignCenter, FiCode, FiScissors } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -819,7 +819,7 @@ function FollowUp({ data, onSetMessage, showHint, setShowHint }) {
 }
 
 
-const FollowUpItem = React.memo(function FollowUpItem({ text, idx, onSetMessage, showHint, setShowHint }) {
+const FollowUpItem = memo(function FollowUpItem({ text, idx, onSetMessage, showHint, setShowHint }) {
   return (
     <li
       onClick={() => onSetMessage(text)}
