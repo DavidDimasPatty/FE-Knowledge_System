@@ -45,6 +45,8 @@ const SideBarLeft =
         setIsSettingOpen,
         valButtonSize,
         setValButtonSize,
+        valThink,
+        setValThink,
     }) => {
         const [isSearch, setIsSearch] = useState(false)
         const [categories, setCategories] = useState([]);
@@ -271,7 +273,7 @@ const SideBarLeft =
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
-                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+                    background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                 });
             }
         };
@@ -794,6 +796,8 @@ const SideBarLeft =
                     setLang={setLang}
                     valButtonSize={valButtonSize}
                     setValButtonSize={setValButtonSize}
+                    valThink={valThink}
+                    setValThink={setValThink}
                 />
             </div >
         );

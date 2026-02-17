@@ -56,7 +56,6 @@ const Home = () => {
         isFirstRef.current = true;
         setIsInitLoaded(true);
         setMessages([]);
-        console.log("masuk")
       }
     }
     else {
@@ -323,6 +322,7 @@ const Home = () => {
       isFirst: isFirstRef.current,
       idCategory: idCategory || 0,
       topic: idTopic || 0,
+      level:localStorage.getItem("ai_think"),
     }));
 
     setInput("");

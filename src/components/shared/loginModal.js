@@ -49,7 +49,10 @@ const LoginModal = (
             const response = await axios.post(`${process.env.REACT_APP_BE_BASE_URL}/login`, {
                 username: username,
                 password: password,
-            });
+            }, {
+                withCredentials: true,
+            }
+            );
 
             const data = response.data;
 
@@ -60,7 +63,7 @@ const LoginModal = (
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false,
-                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+                background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
             });
             onLogin(data);
             setLogin(!login);
@@ -77,7 +80,7 @@ const LoginModal = (
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
-                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+                    background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                 });
             } else {
                 MySwal.fire({
@@ -86,7 +89,7 @@ const LoginModal = (
                     icon: "error",
                     timer: 1500,
                     showConfirmButton: false,
-                    background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+                    background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
                 });
             }
         }
@@ -110,7 +113,7 @@ const LoginModal = (
                 icon: "success",
                 timer: 2000,
                 showConfirmButton: false,
-                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+                background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
             });
 
             setMode("login");
@@ -123,7 +126,7 @@ const LoginModal = (
                 icon: "error",
                 timer: 2000,
                 showConfirmButton: false,
-                background: dark ? "#0F172A" : "white", color:dark ? "white" : "black"
+                background: dark ? "#0F172A" : "white", color: dark ? "white" : "black"
             });
         } finally {
             setLoading(false);

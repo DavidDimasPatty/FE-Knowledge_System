@@ -12,7 +12,9 @@ const SettingModal = (
         lang,
         setLang,
         valButtonSize,
-        setValButtonSize
+        setValButtonSize,
+        valThink,
+        setValThink,
     }) => {
 
     const getButtonClass = (size) => {
@@ -52,6 +54,12 @@ const SettingModal = (
         small: "Kecil",
         medium: "Sedang",
         large: "Besar",
+    };
+
+    const thinkLabel = {
+        low: "Rendah",
+        medium: "Sedang",
+        high: "Tinggi",
     };
 
     useEffect(() => {
@@ -259,6 +267,44 @@ const SettingModal = (
                                 `}
                                 >
                                     {lang ? size.charAt(0).toUpperCase() + size.slice(1) : sizeLabel[size]}
+                                </button>
+                            ))}
+
+                        </div>
+
+                    </div>
+
+                <hr className="border-gray-200 dark:border-gray-700" />
+                    {/* AI Thinking*/}
+                    <div className="flex items-center justify-between">
+                        {/* Label */}
+                        <div className="flex flex-col">
+                            <div className={`${sizeText[valButtonSize]} font-medium`}>
+                                {lang ? "AI Think Level" : "Tingkatan Berpikir AI"}
+                            </div>
+                            <div className="text-sm text-gray-400">{lang ? "Adjust AI Thinking Level" : "Adjust AI Thinking Level"}</div>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg">
+                            {["low", "medium", "high"].map(valThinkItem => (
+                                <button
+                                    key={valThinkItem}
+                                    onClick={() => setValThink(valThinkItem)}
+                                    className={`
+                                    px-4 py-2 text-sm font-medium transition-all duration-300
+                                    rounded-md
+                                    ${valThink === valThinkItem
+                                            ? dark
+                                                ? "bg-gradient-to-r from-indigo-600 to-blue-800 text-white shadow-lg scale-105"
+                                                : "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg scale-105"
+                                            : dark
+                                                ? "bg-gray-800 hover:bg-gray-700 hover:shadow-md text-gray-200"
+                                                : "bg-gray-100 hover:bg-gray-200 hover:shadow-md text-gray-800"
+                                        }
+                                `}
+                                >
+                                    {lang ? valThinkItem.charAt(0).toUpperCase() + valThinkItem.slice(1) : thinkLabel[valThinkItem]}
                                 </button>
                             ))}
 

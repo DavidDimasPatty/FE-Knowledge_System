@@ -15,7 +15,9 @@ const TopBar = ({
     lang,
     setLang,
     valButtonSize,
-    setValButtonSize
+    setValButtonSize,
+    valThink,
+    setValThink
 }) => {
     const navigate = useNavigate();
     const [isSettingOpen, setIsSettingOpen] = useState(false);
@@ -129,6 +131,8 @@ const TopBar = ({
                 setLang={setLang}
                 valButtonSize={valButtonSize}
                 setValButtonSize={setValButtonSize}
+                valThink={valThink}
+                setValThink={setValThink}
             />
         </div>
     );

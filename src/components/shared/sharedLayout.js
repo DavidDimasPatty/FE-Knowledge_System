@@ -5,6 +5,10 @@ import SideBarRight from "./sideBarRight";
 import TopBar from "./topBar";
 
 const SharedLayout = () => {
+    const [authCheck, setAuthCheck] = useState(null);
+    const [login, setLogin] = useState(() => {
+        return localStorage.getItem("username") == "" || localStorage.getItem("username") == null ? false : true;
+    });
     const [dark, setDark] = useState(() => {
         const saved = localStorage.getItem("ui_dark_mode");
         return saved === "true";
@@ -15,9 +19,6 @@ const SharedLayout = () => {
     });
     const [showWelcome, setShowWelcome] = useState(() => {
         return localStorage.getItem("welcome_shown") !== "true";
-    });
-    const [login, setLogin] = useState(() => {
-        return localStorage.getItem("username") == "" || localStorage.getItem("username") == null ? false : true;
     });
     const [nama, setNama] = useState("");
     const [roleName, setRoleName] = useState("");
@@ -32,6 +33,51 @@ const SharedLayout = () => {
     const [valButtonSize, setValButtonSize] = useState(() => {
         return localStorage.getItem("ui_font_size") || "medium";
     });
+    const [isLogin, setIsLogin] = useState(() => {
+        return localStorage.getItem("login") || false;
+    });
+    const [valThink, setValThink] = useState(() => {
+        return localStorage.getItem("ai_think") || "medium";
+    });
+
+    useEffect(() => {
+        if (isLogin) {
+            const interval = setInterval(async () => {
+                try {
+                    const res = await fetch(
+                        `${process.env.REACT_APP_BE_BASE_URL}/authCheck`,
+                        { credentials: "include" }
+                    );
+
+                    if (!res.ok) {
+                        setAuthCheck(false);
+                    } else {
+                        setAuthCheck(true);
+                    }
+                } catch {
+                    setAuthCheck(false);
+                }
+            }, 1 * 60 * 1000);
+
+            return () => clearInterval(interval)
+        }
+    }, [isLogin]);
+
+    useEffect(() => {
+        if (authCheck === false) {
+            const uiDarkMode = localStorage.getItem("ui_dark_mode");
+            const uiLang = localStorage.getItem("ui_lang");
+            const uiFontSize = localStorage.getItem("ui_font_size");
+
+            localStorage.clear();
+
+            if (uiDarkMode) localStorage.setItem("ui_dark_mode", uiDarkMode);
+            if (uiLang) localStorage.setItem("ui_lang", uiLang);
+            if (uiFontSize) localStorage.setItem("ui_font_size", uiFontSize);
+
+            window.location.href = "/";
+        }
+    }, [authCheck]);
 
     const handleLogin = (data) => {
         setNama(data.user.nama);
@@ -51,6 +97,9 @@ const SharedLayout = () => {
     useEffect(() => {
         localStorage.setItem("ui_font_size", valButtonSize);
     }, [valButtonSize]);
+    useEffect(() => {
+        localStorage.setItem("ai_think", valThink);
+    }, [valThink]);
     useEffect(() => {
         localStorage.setItem("ui_dark_mode", dark.toString());
     }, [dark]);
@@ -124,6 +173,8 @@ const SharedLayout = () => {
                         setIsSettingOpen={setIsSettingOpen}
                         valButtonSize={valButtonSize}
                         setValButtonSize={setValButtonSize}
+                        valThink={valThink}
+                        setValThink={setValThink}
                     />
                 )}
 
@@ -150,6 +201,8 @@ const SharedLayout = () => {
                             setIsSettingOpen={setIsSettingOpen}
                             valButtonSize={valButtonSize}
                             setValButtonSize={setValButtonSize}
+                            valThink={valThink}
+                            setValThink={setValThink}
                         />
                     )}
 
