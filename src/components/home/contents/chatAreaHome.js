@@ -35,6 +35,15 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
     Tooltip,
     Legend
   );
+  const [showHint, setShowHint] = useState(() => {
+    const stored = localStorage.getItem("showHint");
+    return stored !== null ? JSON.parse(stored) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("showHint", JSON.stringify(showHint));
+  }, [showHint]);
+
   const sizeText = {
     small: "text-sm",
     medium: "text-base",
@@ -258,6 +267,8 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
               sizeText={sizeText}
               valButtonSize={valButtonSize}
               setInput={setInput}
+              showHint={showHint}
+              setShowHint={setShowHint}
             />
           ))
           }
@@ -269,7 +280,7 @@ const ChatAreaHome = ({ messages, isLoading, bottomRef,
   )
 }
 
-function MessageBubble({ key, msg, dark, lang, thinkingText, sizeText, valButtonSize, setInput }) {
+function MessageBubble({ key, msg, dark, lang, thinkingText, sizeText, valButtonSize, setInput, showHint, setShowHint }) {
   console.log("data")
   console.log(msg)
   const segments = React.useMemo(() => {
@@ -491,7 +502,7 @@ function MessageBubble({ key, msg, dark, lang, thinkingText, sizeText, valButton
                   }
 
                   if (seg.type === "follow_up") {
-                    return <FollowUp key={i} data={seg.content} onSetMessage={setInput} />;
+                    return <FollowUp key={i} data={seg.content} onSetMessage={setInput} showHint={showHint} setShowHint={setShowHint} />;
                   }
                   return null;
 
@@ -752,7 +763,18 @@ function Source({ data }) {
         <li
           key={data}
           className="text-blue-600 underline cursor-pointer hover:text-blue-800"
-          onClick={() => window.open(data, "_blank")}
+          onClick={
+            () => {
+              if (typeof data === "string" && data.endsWith("|internal|")) {
+                const cleaned = data.replace("|internal|", "");
+                window.open(
+                  `${process.env.REACT_APP_FE_STORAGE_BASE_URL}/${cleaned}`,
+                  "_blank"
+                );
+              } else {
+                window.open(data, "_blank");
+              }
+            }}
         >
           {data}
         </li>
@@ -762,7 +784,7 @@ function Source({ data }) {
 }
 
 
-function FollowUp({ data, onSetMessage }) {
+function FollowUp({ data, onSetMessage, showHint, setShowHint }) {
   const dataSplit = splitFollowUps(data)
 
   return (
@@ -777,6 +799,8 @@ function FollowUp({ data, onSetMessage }) {
               text={item}
               idx={idx}
               onSetMessage={onSetMessage}
+              showHint={showHint}
+              setShowHint={setShowHint}
             />
           ))
           : (
@@ -784,6 +808,8 @@ function FollowUp({ data, onSetMessage }) {
               text={dataSplit}
               idx={0}
               onSetMessage={onSetMessage}
+              showHint={showHint}
+              setShowHint={setShowHint}
             />
           )
         }
@@ -793,7 +819,7 @@ function FollowUp({ data, onSetMessage }) {
 }
 
 
-const FollowUpItem = React.memo(function FollowUpItem({ text, idx, onSetMessage }) {
+const FollowUpItem = React.memo(function FollowUpItem({ text, idx, onSetMessage, showHint, setShowHint }) {
   return (
     <li
       onClick={() => onSetMessage(text)}
@@ -802,27 +828,38 @@ const FollowUpItem = React.memo(function FollowUpItem({ text, idx, onSetMessage 
         text-blue-600 cursor-pointer
         hover:text-blue-800
         my-1
-      "
-    >
-      <span className="flex-1">{text}</span>
+      ">
+      <span className="flex mr-4 my-1">{text}</span>
 
-      {idx === 0 && (
-        <span
+      {idx === 0 && showHint && (
+        <div
+          onClick={(e) => e.stopPropagation()}
           className="
-            text-[10px]
-            px-2 py-[2px]
-            rounded-full
-            bg-blue-100 text-blue-700
-            border border-blue-300
-            opacity-20
-            group-hover:opacity-100
-            transition-all duration-50
-            animate-pulse
-            select-none
+            flex items-start gap-2
+            bg-blue-500 text-white
+            text-xs
+            px-3 py-1.5
+            rounded-t-2xl rounded-r-2xl rounded-bl-sm
+            shadow-md
+            animate-bounce
+            transition-all duration-300
+            justify-start
           "
         >
-          Click Pertanyaan
-        </span>
+          <span>Click Pertanyaan</span>
+
+          <button
+            onClick={() => setShowHint(false)}
+            className="
+              ml-1
+              text-white/80
+              hover:text-white
+              text-xs
+              font-bold
+            ">
+            ×
+          </button>
+        </div>
       )}
     </li>
   );
